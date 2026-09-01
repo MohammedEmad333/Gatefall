@@ -1,0 +1,13 @@
+{
+  "scene_id": "dana_b5_full_truth", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "dana", "text": "I stopped believing the two worlds could really mix. Believing it once cost me everything. This house made me hope again. That terrifies me more than the gates do.",
+      "choices": [
+        { "choice_id": "brave", "text": "\"Hope is worth the risk. I'm not going anywhere.\"", "next": "end",
+          "effects": { "set_flags": { "DANA_CONFESSED": true }, "bond_delta": 20 } },
+        { "choice_id": "quiet", "text": "(Stay. Don't rush her past it.)", "next": "end",
+          "effects": { "set_flags": { "DANA_CONFESSED": true }, "bond_delta": 15 } }
+      ] },
+    "end": { "end_scene": true }
+  }
+}

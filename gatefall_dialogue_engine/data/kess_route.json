@@ -1,0 +1,165 @@
+{
+  "character_id": "kess",
+  "display_name": "Kess",
+  "gift_preferences": {
+    "loved": [
+      "street_food",
+      "flashy_trinket",
+      "stream_gear",
+      "homeworld_item",
+      "festival_ticket"
+    ],
+    "liked": [
+      "local_snacks",
+      "editing_gear"
+    ],
+    "disliked": [
+      "money_lecture",
+      "pity_gift",
+      "slow_down_note",
+      "heavy_sentimental_gift"
+    ]
+  },
+  "beats": [
+    {
+      "beat_id": "kess_b0_recruitment",
+      "order": 0,
+      "title": "Content and Rent",
+      "unlock_conditions": {
+        "story_act_min": 1
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/kess_b0_recruitment.json"
+    },
+    {
+      "beat_id": "kess_b1_the_wall",
+      "order": 1,
+      "title": "Not A Big Deal",
+      "unlock_conditions": {
+        "bond_tier_min": 1,
+        "requires_beats_complete": [
+          "kess_b0_recruitment"
+        ]
+      },
+      "trigger_context": "home_visit",
+      "scene_ref": "data/scenes/kess_b1_the_wall.json"
+    },
+    {
+      "beat_id": "kess_b2_proving_ground",
+      "order": 2,
+      "title": "I Got This",
+      "unlock_conditions": {
+        "bond_tier_min": 2,
+        "requires_beats_complete": [
+          "kess_b1_the_wall"
+        ]
+      },
+      "trigger_context": "post_raid",
+      "scene_ref": "data/scenes/kess_b2_proving_ground.json"
+    },
+    {
+      "beat_id": "kess_b3_first_truth",
+      "order": 3,
+      "title": "Not About The Fame",
+      "unlock_conditions": {
+        "bond_tier_min": 3,
+        "requires_beats_complete": [
+          "kess_b2_proving_ground"
+        ]
+      },
+      "trigger_context": "date",
+      "scene_ref": "data/scenes/kess_b3_first_truth.json"
+    },
+    {
+      "beat_id": "kess_b4_the_fracture",
+      "order": 4,
+      "title": "The Lead",
+      "unlock_conditions": {
+        "bond_tier_min": 4,
+        "story_act_min": 2,
+        "requires_beats_complete": [
+          "kess_b3_first_truth"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/kess_b4_the_fracture.json"
+    },
+    {
+      "beat_id": "kess_b5_full_truth",
+      "order": 5,
+      "title": "Then What Am I",
+      "unlock_conditions": {
+        "bond_tier_min": 5,
+        "requires_flags": [
+          {
+            "flag": "KESS_FRACTURE",
+            "in": [
+              "stop",
+              "join"
+            ]
+          }
+        ],
+        "requires_beats_complete": [
+          "kess_b4_the_fracture"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/kess_b5_full_truth.json"
+    },
+    {
+      "beat_id": "kess_b6_the_choice",
+      "order": 6,
+      "title": "What I Was Looking For",
+      "unlock_conditions": {
+        "bond_tier_min": 6,
+        "story_act_min": 3,
+        "requires_beats_complete": [
+          "kess_b5_full_truth"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/kess_b6_the_choice.json"
+    }
+  ],
+  "endings": [
+    {
+      "ending_id": "kess_true",
+      "priority": 1,
+      "conditions": {
+        "bond_tier_min": 6,
+        "requires_flags": [
+          {
+            "flag": "KESS_FRACTURE",
+            "in": [
+              "stop",
+              "join"
+            ]
+          },
+          {
+            "flag": "KESS_CONFESSED",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "ending_id": "kess_lost",
+      "priority": 2,
+      "conditions": {
+        "requires_flags": [
+          {
+            "flag": "KESS_FRACTURE",
+            "equals": "release"
+          }
+        ]
+      }
+    },
+    {
+      "ending_id": "kess_bittersweet",
+      "priority": 3,
+      "conditions": {
+        "bond_tier_min": 3
+      }
+    }
+  ]
+}

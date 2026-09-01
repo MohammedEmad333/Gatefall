@@ -1,0 +1,16 @@
+{
+  "scene_id": "thora_b1_the_wall", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "player", "text": "(You find her holding a small carved token, grief plain on her face — gone the instant she notices you.)", "next": "n2" },
+    "n2": { "speaker": "thora", "text": "It's nothing. Are you hungry? Let me make something.",
+      "choices": [
+        { "choice_id": "press", "text": "\"You don't have to hide it from me.\"", "next": "n3_press",
+          "effects": { "set_flags": { "THORA_APPROACH": "press" }, "bond_delta": 15 } },
+        { "choice_id": "patience", "text": "(Let her change the subject. Accept the food.)", "next": "n3_patience",
+          "effects": { "set_flags": { "THORA_APPROACH": "patience" }, "bond_delta": 10 } }
+      ] },
+    "n3_press": { "speaker": "thora", "text": "...It was my clan's. One of the few things that crossed with me.", "next": "end" },
+    "n3_patience": { "speaker": "thora", "text": "...Thank you for not pushing.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

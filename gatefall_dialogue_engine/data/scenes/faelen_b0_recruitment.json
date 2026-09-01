@@ -1,0 +1,27 @@
+{
+  "scene_id": "faelen_b0_recruitment",
+  "start_node": "n1",
+  "nodes": {
+    "n1": {
+      "speaker": "player",
+      "text": "(You find her standing over a fallen stranger, outnumbered, bleeding, refusing to fall.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "faelen",
+      "text": "I don't need shelter.",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "(She collapses two steps later. You catch her before the ground does.)",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "faelen",
+      "text": "...One night. I'll be gone by morning.",
+      "next": "end"
+    },
+    "end": { "end_scene": true }
+  }
+}

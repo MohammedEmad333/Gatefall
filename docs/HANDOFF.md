@@ -92,9 +92,8 @@ Future gacha: a pull grants the character, then a **character-specific unlock qu
 ### Code
 | File | Contents |
 |---|---|
-| `gatefall_dialogue_engine.zip` | Pure-Dart dialogue engine + **all 5 characters' routes as real JSON** (40 files) |
-| `gatefall_prototype.html` | **Playable step-2 prototype** — open in any browser |
-| `gatefall_flame.zip` | Flutter/Flame scaffold mirroring the prototype + balance tests |
+| `gatefall_dialogue_engine/` | Pure-Dart dialogue engine + **all 5 characters' routes as real JSON** (40 files) |
+| `gatefall_flame/` | Flutter/Flame scaffold mirroring the prototype + balance tests |
 
 ---
 

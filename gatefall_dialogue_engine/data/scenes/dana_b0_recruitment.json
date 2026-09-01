@@ -1,0 +1,9 @@
+{
+  "scene_id": "dana_b0_recruitment", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "player", "text": "(A caseworker with a clipboard and zero patience for unregistered tenants shows up at your door.)", "next": "n2" },
+    "n2": { "speaker": "dana", "text": "This building is housing undocumented Gatekin. You have thirty days to file, or I shut it down.", "next": "n3" },
+    "n3": { "speaker": "player", "text": "(She keeps coming back long after the paperwork's filed.)", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

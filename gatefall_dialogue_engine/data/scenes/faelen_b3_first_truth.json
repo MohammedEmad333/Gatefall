@@ -1,0 +1,35 @@
+{
+  "scene_id": "faelen_b3_first_truth",
+  "start_node": "n1",
+  "nodes": {
+    "n1": {
+      "speaker": "faelen",
+      "text": "I didn't flee here. I was a Warden. I crossed chasing something I failed to stop back home.",
+      "next": "n1b"
+    },
+    "n1b": {
+      "speaker": "faelen",
+      "text": "You were right, that night with the tea. About the caring.",
+      "condition": { "requires_flags": [{ "flag": "FAELEN_APPROACH", "equals": "press" }] },
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "choices": [
+        {
+          "choice_id": "ask_hunting",
+          "text": "\"What are you hunting?\"",
+          "next": "end",
+          "effects": { "set_flags": { "FAELEN_WARDEN_KNOWN": true }, "bond_delta": 10 }
+        },
+        {
+          "choice_id": "no_debt",
+          "text": "\"You don't owe me the story.\"",
+          "next": "end",
+          "effects": { "set_flags": { "FAELEN_WARDEN_KNOWN": true }, "bond_delta": 15 }
+        }
+      ]
+    },
+    "end": { "end_scene": true }
+  }
+}

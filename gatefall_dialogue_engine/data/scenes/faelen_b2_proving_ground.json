@@ -1,0 +1,30 @@
+{
+  "scene_id": "faelen_b2_proving_ground",
+  "start_node": "n1",
+  "nodes": {
+    "n1": {
+      "speaker": "faelen",
+      "text": "Get behind me.",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(She takes the hit meant for the party and refuses healing until everyone else is safe.)",
+      "choices": [
+        {
+          "choice_id": "order_retreat",
+          "text": "\"Next time, you fall back when I say.\"",
+          "next": "end",
+          "effects": { "set_flags": { "FAELEN_COMMAND_STYLE": "order" }, "bond_delta": 10 }
+        },
+        {
+          "choice_id": "trust_her",
+          "text": "\"I trust you to make the call.\"",
+          "next": "end",
+          "effects": { "set_flags": { "FAELEN_COMMAND_STYLE": "trust" }, "bond_delta": 15 }
+        }
+      ]
+    },
+    "end": { "end_scene": true }
+  }
+}

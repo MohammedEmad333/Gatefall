@@ -1,0 +1,9 @@
+name: gatefall_dialogue_engine
+description: >
+  Pure-Dart dialogue/branching engine for Gatefall — Beat/Scene/Condition
+  models plus the shared evaluator. No Flutter dependency: drop the lib/
+  folder straight into a Flutter+Flame project and load scene JSON via
+  rootBundle instead of dart:io in production.
+version: 0.1.0
+environment:
+  sdk: '>=2.19.0 <4.0.0'

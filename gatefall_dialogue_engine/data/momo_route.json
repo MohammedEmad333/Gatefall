@@ -1,0 +1,163 @@
+{
+  "character_id": "momo",
+  "display_name": "Momo",
+  "gift_preferences": {
+    "loved": [
+      "rare_book",
+      "reading_lamp",
+      "soft_blanket",
+      "pressed_flowers"
+    ],
+    "liked": [
+      "tea_set",
+      "bookmark"
+    ],
+    "disliked": [
+      "crowd_ticket",
+      "spotlight_gift",
+      "go_out_more_note"
+    ]
+  },
+  "beats": [
+    {
+      "beat_id": "momo_b0_recruitment",
+      "order": 0,
+      "title": "Please Don't",
+      "unlock_conditions": {
+        "story_act_min": 1
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/momo_b0_recruitment.json"
+    },
+    {
+      "beat_id": "momo_b1_the_wall",
+      "order": 1,
+      "title": "I'm Sorry, I Should Have Said Sooner",
+      "unlock_conditions": {
+        "bond_tier_min": 1,
+        "requires_beats_complete": [
+          "momo_b0_recruitment"
+        ]
+      },
+      "trigger_context": "home_visit",
+      "scene_ref": "data/scenes/momo_b1_the_wall.json"
+    },
+    {
+      "beat_id": "momo_b2_proving_ground",
+      "order": 2,
+      "title": "It's Here Because Of Me",
+      "unlock_conditions": {
+        "bond_tier_min": 2,
+        "requires_beats_complete": [
+          "momo_b1_the_wall"
+        ]
+      },
+      "trigger_context": "post_raid",
+      "scene_ref": "data/scenes/momo_b2_proving_ground.json"
+    },
+    {
+      "beat_id": "momo_b3_first_truth",
+      "order": 3,
+      "title": "Not Normal",
+      "unlock_conditions": {
+        "bond_tier_min": 3,
+        "requires_beats_complete": [
+          "momo_b2_proving_ground"
+        ]
+      },
+      "trigger_context": "date",
+      "scene_ref": "data/scenes/momo_b3_first_truth.json"
+    },
+    {
+      "beat_id": "momo_b4_the_fracture",
+      "order": 4,
+      "title": "Hunting Me Specifically",
+      "unlock_conditions": {
+        "bond_tier_min": 4,
+        "story_act_min": 2,
+        "requires_beats_complete": [
+          "momo_b3_first_truth"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/momo_b4_the_fracture.json"
+    },
+    {
+      "beat_id": "momo_b5_full_truth",
+      "order": 5,
+      "title": "Wanted, Not Tolerated",
+      "unlock_conditions": {
+        "bond_tier_min": 5,
+        "requires_flags": [
+          {
+            "flag": "MOMO_FRACTURE",
+            "in": [
+              "stop",
+              "join"
+            ]
+          }
+        ],
+        "requires_beats_complete": [
+          "momo_b4_the_fracture"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/momo_b5_full_truth.json"
+    },
+    {
+      "beat_id": "momo_b6_the_choice",
+      "order": 6,
+      "title": "The Warning, Not The Danger",
+      "unlock_conditions": {
+        "bond_tier_min": 6,
+        "story_act_min": 3,
+        "requires_beats_complete": [
+          "momo_b5_full_truth"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/momo_b6_the_choice.json"
+    }
+  ],
+  "endings": [
+    {
+      "ending_id": "momo_true",
+      "priority": 1,
+      "conditions": {
+        "bond_tier_min": 6,
+        "requires_flags": [
+          {
+            "flag": "MOMO_FRACTURE",
+            "in": [
+              "stop",
+              "join"
+            ]
+          },
+          {
+            "flag": "MOMO_CONFESSED",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "ending_id": "momo_lost",
+      "priority": 2,
+      "conditions": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_FRACTURE",
+            "equals": "release"
+          }
+        ]
+      }
+    },
+    {
+      "ending_id": "momo_bittersweet",
+      "priority": 3,
+      "conditions": {
+        "bond_tier_min": 3
+      }
+    }
+  ]
+}

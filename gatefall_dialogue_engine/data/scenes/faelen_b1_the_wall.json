@@ -1,0 +1,45 @@
+{
+  "scene_id": "faelen_b1_the_wall",
+  "start_node": "n1",
+  "nodes": {
+    "n1": {
+      "speaker": "faelen",
+      "text": "You're up early.",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(You find her leaving tea outside Momo's door after her nightmare.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "faelen",
+      "text": "Don't mistake this for kindness. Someone has to keep this house functioning.",
+      "choices": [
+        {
+          "choice_id": "press",
+          "text": "\"You don't have to hide that you care.\"",
+          "next": "n4_press",
+          "effects": { "set_flags": { "FAELEN_APPROACH": "press" }, "bond_delta": 15 }
+        },
+        {
+          "choice_id": "patience",
+          "text": "(Say nothing. Just nod.)",
+          "next": "n4_patience",
+          "effects": { "set_flags": { "FAELEN_APPROACH": "patience" }, "bond_delta": 10 }
+        }
+      ]
+    },
+    "n4_press": {
+      "speaker": "faelen",
+      "text": "...Tch. You see too much.",
+      "next": "end"
+    },
+    "n4_patience": {
+      "speaker": "faelen",
+      "text": "...Thank you. For not asking.",
+      "next": "end"
+    },
+    "end": { "end_scene": true }
+  }
+}
