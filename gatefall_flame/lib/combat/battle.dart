@@ -1,7 +1,10 @@
 import 'dart:math';
 
 import '../data/combat_config.dart';
+import '../data/element.dart';
 import '../data/roster.dart';
+
+export '../data/element.dart';
 
 /// Pure combat simulation — no Flame, no Flutter, no rendering.
 /// Kept separate so balance can be unit-tested in milliseconds, and so the
@@ -41,6 +44,7 @@ class Fighter {
   final double attack;
   final double attackSpeed; // attacks per second
   final bool melee;
+  final GateElement element;
   final BattleRow row;
 
   double hp;
@@ -56,6 +60,7 @@ class Fighter {
     required this.attack,
     required this.attackSpeed,
     required this.melee,
+    required this.element,
     required this.row,
   }) : hp = maxHp;
 
@@ -68,12 +73,14 @@ class Enemy {
   final double maxHp;
   final double baseDps;
   final bool isBoss;
+  final GateElement element;
   double hp;
 
   Enemy({
     required this.name,
     required this.maxHp,
     required this.baseDps,
+    required this.element,
     this.isBoss = false,
   }) : hp = maxHp;
 
@@ -93,6 +100,10 @@ class Battle {
   final List<Fighter> party;
   final List<Ability> abilities;
 
+  /// The gate's element for this whole raid — every wave and the boss share
+  /// it (see docs/combat-spec.md §3: "each [gate] shows its element").
+  final GateElement gateElement;
+
   /// When true, abilities fire off cooldown automatically. Auto must stay
   /// fully viable — manual is an optimization, never a requirement.
   bool autoCast;
@@ -110,14 +121,17 @@ class Battle {
   Battle({
     required this.party,
     required this.abilities,
+    this.gateElement = GateElement.verdant,
     this.autoCast = true,
     Random? rng,
   }) : _rng = rng ?? Random();
 
-  factory Battle.fromFormation(Map<String, BattleRow> formation, {Random? rng}) {
+  factory Battle.fromFormation(Map<String, BattleRow> formation,
+      {GateElement gateElement = GateElement.verdant, Random? rng}) {
     return Battle(
       party: Roster.partyFrom(formation),
       abilities: Roster.abilitiesFor(formation.keys),
+      gateElement: gateElement,
       rng: rng,
     );
   }
@@ -143,7 +157,11 @@ class Battle {
   }
 
   static const _waveNames = [
-    'Rift Stalker', 'Gloam Hound', 'Bramble Shade', 'Verdant Husk', 'Thornbound',
+    'Rift Stalker',
+    'Gloam Hound',
+    'Bramble Shade',
+    'Verdant Husk',
+    'Thornbound',
   ];
 
   void _spawn() {
@@ -154,16 +172,19 @@ class Battle {
         name: 'The Root That Walks',
         maxHp: CombatConfig.bossHp,
         baseDps: CombatConfig.bossDps,
+        element: gateElement,
         isBoss: true,
       );
       _emit('The gate guardian stirs.', 'hurt');
     } else {
-      final hp = CombatConfig.waveEnemyHp +
-          CombatConfig.waveEnemyHpGrowth * waveIndex;
+      final hp =
+          CombatConfig.waveEnemyHp + CombatConfig.waveEnemyHpGrowth * waveIndex;
       enemy = Enemy(
         name: _waveNames[waveIndex % _waveNames.length],
         maxHp: hp,
-        baseDps: CombatConfig.enemyDps + CombatConfig.enemyDpsGrowth * waveIndex,
+        baseDps:
+            CombatConfig.enemyDps + CombatConfig.enemyDpsGrowth * waveIndex,
+        element: gateElement,
       );
     }
   }
@@ -200,21 +221,26 @@ class Battle {
         final crit = _rng.nextDouble() < CombatConfig.abilityCritChance;
         final dmg = a.power *
             (crit ? CombatConfig.abilityCritMult : 1.0) *
+            elementMultiplier(owner.element, enemy.element) *
             _jitter(0.9, 1.1);
         enemy.hp -= dmg;
         _emit(
           a.kind == AbilityKind.ultimate
               ? '${owner.name} — ${a.name}! ${dmg.round()} damage'
               : '${owner.name} uses ${a.name}: ${dmg.round()}${crit ? " (critical)" : ""}',
-          a.kind == AbilityKind.ultimate ? 'ultimate' : (crit ? 'crit' : 'damage'),
+          a.kind == AbilityKind.ultimate
+              ? 'ultimate'
+              : (crit ? 'crit' : 'damage'),
         );
         break;
 
       case AbilityKind.taunt:
         owner.shield += a.power;
         owner.taunt = a.duration;
-        _emit('${owner.name}: "Get behind me." '
-            '(+${a.power.round()} shield, drawing fire)', 'ultimate');
+        _emit(
+            '${owner.name}: "Get behind me." '
+                '(+${a.power.round()} shield, drawing fire)',
+            'ultimate');
         break;
 
       case AbilityKind.heal:
@@ -239,7 +265,8 @@ class Battle {
     if (taunter != null) return taunter;
 
     final weights = living
-        .map((p) => p.row == BattleRow.front ? CombatConfig.frontAggroWeight : 1.0)
+        .map((p) =>
+            p.row == BattleRow.front ? CombatConfig.frontAggroWeight : 1.0)
         .toList();
     final total = weights.fold<double>(0, (a, b) => a + b);
     var r = _rng.nextDouble() * total;
@@ -285,9 +312,11 @@ class Battle {
         final dmg = p.attack *
             rowMult *
             (crit ? CombatConfig.allyCritMult : 1.0) *
+            elementMultiplier(p.element, enemy.element) *
             _jitter(0.85, 1.15);
         enemy.hp -= dmg;
-        if (crit) _emit('${p.name} strikes for ${dmg.round()} (critical)', 'crit');
+        if (crit)
+          _emit('${p.name} strikes for ${dmg.round()} (critical)', 'crit');
       }
     }
 

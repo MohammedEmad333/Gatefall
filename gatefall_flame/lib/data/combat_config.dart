@@ -1,16 +1,26 @@
-/// Step-2 combat constants: party of 4 with front/back rows.
+/// Step-3 combat constants: party of 4 with front/back rows and elements.
 ///
 /// These numbers are simulation-tuned, not guessed. At these values every
 /// composition clears (96-100%) but they trade speed against safety —
-/// fast-and-fragile finishes around 316s, safe-with-a-healer around 418s.
+/// fast-and-fragile finishes around 300s, safe-with-a-healer around 340s.
 ///
-/// Four of these are load-bearing. Changing them casually will break the
+/// Five of these are load-bearing. Changing them casually will break the
 /// design, so the reasoning is recorded here:
 ///
 ///  * [bossEnrage] — without a damage ramp, sustain-vs-incoming is a hard
 ///    threshold: below it you cannot lose, above it you cannot win, and the
 ///    flip happens within a few points of boss damage. The ramp turns that
 ///    cliff into a race.
+///  * Elements (step 3) sit directly on that cliff: a single disadvantaged
+///    character costs the party ~30% of one damage source, and at the old
+///    enrage rate (0.25) that alone crashed a viable comp's win rate to
+///    ~15-23% — a wall, not "slower," which docs/combat-spec.md §3
+///    explicitly rules out. Lowering enrage to 0.18 buys back the margin:
+///    the same disadvantaged comp clears ~97% of the time but still takes
+///    noticeably longer (~302s neutral vs ~342s disadvantaged), while every
+///    step-2 composition still clears 100% of the time at full element
+///    neutrality. Re-check this whenever ability power, HP, or the
+///    advantage/disadvantage multipliers change.
 ///  * Faelen's Guard is a TAUNT (see Roster). With row-weighted targeting,
 ///    damage spreads across the party, so a self-only shield sustains
 ///    nobody — every no-healer composition sat at 0% until Guard began
@@ -35,11 +45,11 @@ class CombatConfig {
   // Boss
   static const double bossHp = 16000;
   static const double bossDps = 30;
-  static const double bossEnrage = 0.25; // dps added per second of boss fight
+  static const double bossEnrage = 0.18; // dps added per second of boss fight
 
   // Rows
   static const double frontAggroWeight = 3.0; // front is 3x as likely targeted
-  static const double backDamageTaken = 0.5;  // back takes half damage
+  static const double backDamageTaken = 0.5; // back takes half damage
   static const double backMeleePenalty = 0.6; // melee from back is weaker
 
   // Between-wave relief
@@ -59,6 +69,7 @@ class CombatConfig {
 
   // Speed
   static const List<int> speedOptions = [1, 2];
+
   /// 2x speed is unlocked by clearing the gate once — a reward, not a default.
   static const int clearsToUnlockDoubleSpeed = 1;
 }

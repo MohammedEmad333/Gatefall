@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'combat/battle.dart';
 import 'data/combat_config.dart';
+import 'data/gate.dart';
 import 'data/roster.dart';
 
 /// Step-2 raid screen: formation, then the auto-battle.
@@ -62,6 +63,9 @@ class _RaidScreenState extends State<RaidScreen> {
 
   Map<String, BattleRow> formation = Map.of(Roster.defaultFormation());
 
+  final GateGenerator _gates = GateGenerator();
+  late Gate gate = _gates.next();
+
   bool get speedUnlocked => clears >= CombatConfig.clearsToUnlockDoubleSpeed;
   int get partyCount => formation.length;
 
@@ -92,7 +96,8 @@ class _RaidScreenState extends State<RaidScreen> {
   }
 
   void _startRaid() {
-    final b = Battle.fromFormation(formation)..start();
+    final b = Battle.fromFormation(formation, gateElement: gate.element)
+      ..start();
     b.autoCast = autoCast;
     battle = b;
     showFormation = false;
@@ -122,6 +127,9 @@ class _RaidScreenState extends State<RaidScreen> {
     setState(() {
       battle = null;
       showFormation = true;
+      // Next gate rolls now — rotation reacts to the elements the player
+      // just faced, so the same disadvantage can't stack three raids deep.
+      gate = _gates.next();
     });
   }
 
@@ -170,18 +178,28 @@ class _RaidScreenState extends State<RaidScreen> {
 
   Widget _header(Battle? b) {
     final mana = totalMana + (b?.manaEarned ?? 0);
+    final g = gate;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Verdant Rift', style: TextStyle(color: _bone, fontSize: 19)),
-              SizedBox(height: 2),
-              Text('A tear over the old rail yard',
-                  style: TextStyle(
-                      color: _boneDim, fontSize: 12.5, fontStyle: FontStyle.italic)),
+              Row(
+                children: [
+                  Text(g.name,
+                      style: const TextStyle(color: _bone, fontSize: 19)),
+                  const SizedBox(width: 7),
+                  _elementChip(g.element),
+                ],
+              ),
+              const SizedBox(height: 2),
+              Text(g.description,
+                  style: const TextStyle(
+                      color: _boneDim,
+                      fontSize: 12.5,
+                      fontStyle: FontStyle.italic)),
             ],
           ),
         ),
@@ -192,12 +210,22 @@ class _RaidScreenState extends State<RaidScreen> {
     );
   }
 
+  Widget _elementChip(GateElement e) => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: BoxDecoration(border: Border.all(color: _riftDim)),
+        child: Text(e.label,
+            style: const TextStyle(color: _boneDim, fontSize: 10.5)),
+      );
+
   // ---------------- formation ----------------
 
   Widget _formationPanel() {
-    final front = formation.entries.where((e) => e.value == BattleRow.front).toList();
-    final back = formation.entries.where((e) => e.value == BattleRow.back).toList();
-    final bench = Roster.all.where((f) => !formation.containsKey(f.id)).toList();
+    final front =
+        formation.entries.where((e) => e.value == BattleRow.front).toList();
+    final back =
+        formation.entries.where((e) => e.value == BattleRow.back).toList();
+    final bench =
+        Roster.all.where((f) => !formation.containsKey(f.id)).toList();
 
     return Container(
       padding: const EdgeInsets.all(13),
@@ -216,8 +244,32 @@ class _RaidScreenState extends State<RaidScreen> {
             'Back row takes half damage, but melee hits from there are weaker. '
             'Tap anyone to move them.',
             style: TextStyle(
-                color: _boneDim, fontSize: 12, fontStyle: FontStyle.italic, height: 1.5),
+                color: _boneDim,
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+                height: 1.5),
           ),
+          if (formation.keys.every((id) =>
+              matchupOf(Roster.byId(id).element, gate.element) !=
+              Matchup.advantage))
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                decoration: BoxDecoration(
+                  border:
+                      const Border(left: BorderSide(color: _blood, width: 2)),
+                  color: _blood.withValues(alpha: .07),
+                ),
+                child: Text(
+                  'No one deployed has the advantage against this ${gate.element.label} '
+                  'gate — it will take longer, not fail. Never a hard wall.',
+                  style: const TextStyle(
+                      color: _blood, fontSize: 11.5, height: 1.5),
+                ),
+              ),
+            ),
           _rowLabel('Front', '${front.length} — full damage, draws attacks'),
           _slotRow(front.map((e) => e.key).toList(),
               'No one up front — everyone will be exposed.'),
@@ -237,7 +289,8 @@ class _RaidScreenState extends State<RaidScreen> {
                 'Only $partyCount of ${CombatConfig.partyMax} deployed. Fewer '
                 'fighters means less damage, and the guardian grows stronger '
                 'the longer it lives.',
-                style: const TextStyle(color: _gold, fontSize: 11.5, height: 1.5),
+                style:
+                    const TextStyle(color: _gold, fontSize: 11.5, height: 1.5),
               ),
             ),
           ],
@@ -270,7 +323,9 @@ class _RaidScreenState extends State<RaidScreen> {
           ? Center(
               child: Text(emptyText,
                   style: const TextStyle(
-                      color: _boneDim, fontSize: 11, fontStyle: FontStyle.italic)))
+                      color: _boneDim,
+                      fontSize: 11,
+                      fontStyle: FontStyle.italic)))
           : Row(
               children: [
                 for (final id in ids) ...[
@@ -283,13 +338,19 @@ class _RaidScreenState extends State<RaidScreen> {
   }
 
   Widget _unitChip(FighterDef def) {
+    final matchup = matchupOf(def.element, gate.element);
+    final matchupColor = switch (matchup) {
+      Matchup.advantage => _verdant,
+      Matchup.disadvantage => _blood,
+      Matchup.neutral => _riftDim,
+    };
     return GestureDetector(
       onTap: () => _cycle(def.id),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 4),
         decoration: BoxDecoration(
           color: _night2,
-          border: Border.all(color: _riftDim),
+          border: Border.all(color: matchupColor),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -300,7 +361,20 @@ class _RaidScreenState extends State<RaidScreen> {
             const SizedBox(height: 2),
             Text(def.role,
                 style: const TextStyle(
-                    color: _boneDim, fontSize: 9.5, fontStyle: FontStyle.italic)),
+                    color: _boneDim,
+                    fontSize: 9.5,
+                    fontStyle: FontStyle.italic)),
+            const SizedBox(height: 2),
+            Text(
+              matchup == Matchup.advantage
+                  ? '${def.element.label} · advantage'
+                  : matchup == Matchup.disadvantage
+                      ? '${def.element.label} · disadvantage'
+                      : def.element.label,
+              style: TextStyle(
+                  color: matchup == Matchup.neutral ? _boneDim : matchupColor,
+                  fontSize: 9),
+            ),
           ],
         ),
       ),
@@ -326,7 +400,8 @@ class _RaidScreenState extends State<RaidScreen> {
         children: [
           Text(e.name,
               style: TextStyle(
-                  color: e.isBoss ? _blood : _bone, fontSize: e.isBoss ? 21 : 17)),
+                  color: e.isBoss ? _blood : _bone,
+                  fontSize: e.isBoss ? 21 : 17)),
           const SizedBox(height: 3),
           Text(
             e.isBoss
@@ -334,7 +409,8 @@ class _RaidScreenState extends State<RaidScreen> {
                     ? 'gate guardian — growing stronger ($stacks)'
                     : 'gate guardian')
                 : 'wave ${b.waveIndex + 1} of ${CombatConfig.waves}',
-            style: TextStyle(color: stacks > 2 ? _blood : _boneDim, fontSize: 11.5),
+            style: TextStyle(
+                color: stacks > 2 ? _blood : _boneDim, fontSize: 11.5),
           ),
           const SizedBox(height: 12),
           _bar(e.hpFraction, e.isBoss ? _blood : const Color(0xFFA33B52)),
@@ -417,7 +493,8 @@ class _RaidScreenState extends State<RaidScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(f.name, style: const TextStyle(color: _bone, fontSize: 13)),
+                Text(f.name,
+                    style: const TextStyle(color: _bone, fontSize: 13)),
                 Text(tag,
                     style: TextStyle(
                         color: f.isTaunting ? _gold : _boneDim,
@@ -580,9 +657,7 @@ class _AbilityButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final pctLeft =
         ability.remaining > 0 ? ability.remaining / ability.cooldown : 0.0;
-    final borderColor = enabled
-        ? (isUltimate ? _gold : _verdant)
-        : _riftDim;
+    final borderColor = enabled ? (isUltimate ? _gold : _verdant) : _riftDim;
     return GestureDetector(
       onTap: enabled ? onTap : null,
       child: Container(
@@ -601,9 +676,7 @@ class _AbilityButton extends StatelessWidget {
               child: Text(
                 ability.name,
                 style: TextStyle(
-                  color: enabled
-                      ? (isUltimate ? _gold : _bone)
-                      : _boneDim,
+                  color: enabled ? (isUltimate ? _gold : _bone) : _boneDim,
                   fontSize: 12,
                 ),
               ),
