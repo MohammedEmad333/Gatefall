@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'combat/battle.dart';
 import 'data/combat_config.dart';
 import 'data/gate.dart';
+import 'data/progression.dart';
 import 'data/roster.dart';
 
 /// Step-2 raid screen: formation, then the auto-battle.
@@ -66,6 +67,11 @@ class _RaidScreenState extends State<RaidScreen> {
   final GateGenerator _gates = GateGenerator();
   late Gate gate = _gates.next();
 
+  // Companion combat levels (step 4) — bought with Mana between raids.
+  final Map<String, int> levels = {
+    for (final f in Roster.all) f.id: Progression.minLevel,
+  };
+
   bool get speedUnlocked => clears >= CombatConfig.clearsToUnlockDoubleSpeed;
   int get partyCount => formation.length;
 
@@ -95,8 +101,18 @@ class _RaidScreenState extends State<RaidScreen> {
     });
   }
 
+  void _levelUp(String id) {
+    final cost = Progression.costFor(levels[id] ?? Progression.minLevel);
+    if (cost < 0 || totalMana < cost) return;
+    setState(() {
+      totalMana -= cost;
+      levels[id] = (levels[id] ?? Progression.minLevel) + 1;
+    });
+  }
+
   void _startRaid() {
-    final b = Battle.fromFormation(formation, gateElement: gate.element)
+    final b = Battle.fromFormation(formation,
+        levels: levels, gateElement: gate.element)
       ..start();
     b.autoCast = autoCast;
     battle = b;
@@ -154,9 +170,11 @@ class _RaidScreenState extends State<RaidScreen> {
                   const SizedBox(height: 14),
                   if (finished)
                     _resultPanel(b)
-                  else if (showFormation || b == null)
-                    _formationPanel()
-                  else ...[
+                  else if (showFormation || b == null) ...[
+                    _formationPanel(),
+                    const SizedBox(height: 12),
+                    _levelsPanel(),
+                  ] else ...[
                     _enemyPanel(b),
                     const SizedBox(height: 9),
                     _waveTrack(b),
@@ -359,7 +377,7 @@ class _RaidScreenState extends State<RaidScreen> {
                 style: TextStyle(
                     color: def.locked ? _boneDim : _bone, fontSize: 12)),
             const SizedBox(height: 2),
-            Text(def.role,
+            Text('${def.role} · Lv.${levels[def.id] ?? Progression.minLevel}',
                 style: const TextStyle(
                     color: _boneDim,
                     fontSize: 9.5,
@@ -377,6 +395,88 @@ class _RaidScreenState extends State<RaidScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // ---------------- levels ----------------
+
+  Widget _levelsPanel() {
+    return Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        border: Border.all(color: _riftDim),
+        color: Colors.black.withValues(alpha: .2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Companion levels',
+                  style: TextStyle(color: _bone, fontSize: 14)),
+              Text('$totalMana mana banked',
+                  style: const TextStyle(
+                      color: _verdant, fontSize: 11, fontFamily: 'monospace')),
+            ],
+          ),
+          const SizedBox(height: 3),
+          const Text(
+            'Mana spent between raids grows a companion\'s attack and max HP '
+            'permanently. Never required to clear a gate — just faster.',
+            style: TextStyle(
+                color: _boneDim,
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+                height: 1.5),
+          ),
+          const SizedBox(height: 8),
+          for (final def in Roster.all) _levelRow(def),
+        ],
+      ),
+    );
+  }
+
+  Widget _levelRow(FighterDef def) {
+    final level = levels[def.id] ?? Progression.minLevel;
+    final cost = Progression.costFor(level);
+    final maxed = cost < 0;
+    final affordable = !maxed && totalMana >= cost;
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${def.name}  ·  Lv.$level',
+                    style: const TextStyle(color: _bone, fontSize: 12.5)),
+                Text(
+                  maxed
+                      ? 'max level'
+                      : '+4% ATK & HP per level — next: $cost mana',
+                  style: const TextStyle(color: _boneDim, fontSize: 10.5),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: 84,
+            child: OutlinedButton(
+              onPressed: (!maxed && affordable) ? () => _levelUp(def.id) : null,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: affordable ? _gold : _boneDim,
+                side: BorderSide(color: affordable ? _gold : _riftDim),
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                shape: const RoundedRectangleBorder(),
+              ),
+              child: Text(maxed ? 'Max' : 'Level up',
+                  style: const TextStyle(fontSize: 11)),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -493,7 +593,7 @@ class _RaidScreenState extends State<RaidScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(f.name,
+                Text('${f.name}  Lv.${f.level}',
                     style: const TextStyle(color: _bone, fontSize: 13)),
                 Text(tag,
                     style: TextStyle(

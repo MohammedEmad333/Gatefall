@@ -46,6 +46,7 @@ class Fighter {
   final bool melee;
   final GateElement element;
   final BattleRow row;
+  final int level;
 
   double hp;
   double shield = 0;
@@ -62,6 +63,7 @@ class Fighter {
     required this.melee,
     required this.element,
     required this.row,
+    this.level = 1,
   }) : hp = maxHp;
 
   double get hpFraction => (hp / maxHp).clamp(0, 1);
@@ -127,10 +129,12 @@ class Battle {
   }) : _rng = rng ?? Random();
 
   factory Battle.fromFormation(Map<String, BattleRow> formation,
-      {GateElement gateElement = GateElement.verdant, Random? rng}) {
+      {Map<String, int> levels = const {},
+      GateElement gateElement = GateElement.verdant,
+      Random? rng}) {
     return Battle(
-      party: Roster.partyFrom(formation),
-      abilities: Roster.abilitiesFor(formation.keys),
+      party: Roster.partyFrom(formation, levels: levels),
+      abilities: Roster.abilitiesFor(formation.keys, levels: levels),
       gateElement: gateElement,
       rng: rng,
     );

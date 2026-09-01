@@ -1,4 +1,5 @@
 import '../combat/battle.dart';
+import 'progression.dart';
 
 enum BattleRow { front, back }
 
@@ -117,14 +118,22 @@ class Roster {
         cooldown: 7.0),
   ];
 
-  /// Only abilities whose owner is actually deployed.
-  static List<Ability> abilitiesFor(Iterable<String> deployedIds) => abilities
-      .where((a) => deployedIds.contains(a.ownerId))
-      .map((d) => d.instantiate())
-      .toList();
+  /// Only abilities whose owner is actually deployed. [levels] scales each
+  /// ability's power with its owner's companion level (step 4).
+  static List<Ability> abilitiesFor(Iterable<String> deployedIds,
+          {Map<String, int> levels = const {}}) =>
+      abilities
+          .where((a) => deployedIds.contains(a.ownerId))
+          .map((d) =>
+              d.instantiate(level: levels[d.ownerId] ?? Progression.minLevel))
+          .toList();
 
-  static List<Fighter> partyFrom(Map<String, BattleRow> formation) =>
-      formation.entries.map((e) => byId(e.key).instantiate(e.value)).toList();
+  static List<Fighter> partyFrom(Map<String, BattleRow> formation,
+          {Map<String, int> levels = const {}}) =>
+      formation.entries
+          .map((e) => byId(e.key).instantiate(e.value,
+              level: levels[e.key] ?? Progression.minLevel))
+          .toList();
 }
 
 class FighterDef {
@@ -145,17 +154,21 @@ class FighterDef {
     this.locked = false,
   });
 
-  Fighter instantiate(BattleRow row) => Fighter(
-        id: id,
-        name: name,
-        role: role,
-        maxHp: maxHp,
-        attack: attack,
-        attackSpeed: attackSpeed,
-        melee: melee,
-        element: element,
-        row: row,
-      );
+  Fighter instantiate(BattleRow row, {int level = Progression.minLevel}) {
+    final mult = Progression.statMultiplier(level);
+    return Fighter(
+      id: id,
+      name: name,
+      role: role,
+      maxHp: maxHp * mult,
+      attack: attack * mult,
+      attackSpeed: attackSpeed,
+      melee: melee,
+      element: element,
+      row: row,
+      level: level,
+    );
+  }
 }
 
 class AbilityDef {
@@ -173,12 +186,12 @@ class AbilityDef {
     this.duration = 0,
   });
 
-  Ability instantiate() => Ability(
+  Ability instantiate({int level = Progression.minLevel}) => Ability(
         id: id,
         name: name,
         ownerId: ownerId,
         kind: kind,
-        power: power,
+        power: power * Progression.statMultiplier(level),
         cooldown: cooldown,
         duration: duration,
       );

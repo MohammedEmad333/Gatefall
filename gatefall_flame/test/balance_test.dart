@@ -8,12 +8,15 @@ import 'dart:math';
 import 'package:test/test.dart';
 
 import '../lib/combat/battle.dart';
+import '../lib/data/progression.dart';
 import '../lib/data/roster.dart';
 
 ({bool won, double seconds}) _run(Map<String, BattleRow> formation, int seed,
-    {double cap = 2400, GateElement gateElement = GateElement.verdant}) {
+    {double cap = 2400,
+    GateElement gateElement = GateElement.verdant,
+    Map<String, int> levels = const {}}) {
   final b = Battle.fromFormation(formation,
-      gateElement: gateElement, rng: Random(seed));
+      gateElement: gateElement, levels: levels, rng: Random(seed));
   b.start();
   const dt = 0.1;
   while (b.status == BattleStatus.fighting && b.elapsed < cap) {
@@ -23,19 +26,26 @@ import '../lib/data/roster.dart';
 }
 
 double _winRate(Map<String, BattleRow> formation,
-    {int trials = 60, GateElement gateElement = GateElement.verdant}) {
+    {int trials = 60,
+    GateElement gateElement = GateElement.verdant,
+    Map<String, int> levels = const {}}) {
   var wins = 0;
   for (var i = 0; i < trials; i++) {
-    if (_run(formation, i, gateElement: gateElement).won) wins++;
+    if (_run(formation, i, gateElement: gateElement, levels: levels).won) {
+      wins++;
+    }
   }
   return wins / trials;
 }
 
 double _avgWinSeconds(Map<String, BattleRow> formation,
-    {int trials = 40, GateElement gateElement = GateElement.verdant}) {
+    {int trials = 40,
+    GateElement gateElement = GateElement.verdant,
+    Map<String, int> levels = const {}}) {
   final times = <double>[];
   for (var i = 0; i < trials; i++) {
-    final r = _run(formation, 500 + i, gateElement: gateElement);
+    final r =
+        _run(formation, 500 + i, gateElement: gateElement, levels: levels);
     if (r.won) times.add(r.seconds);
   }
   if (times.isEmpty) return 0;
@@ -265,6 +275,50 @@ void main() {
             greaterThan(0.85),
             reason: '${entry.key} regressed under the default gate element');
       }
+    });
+  });
+
+  group('progression (step 4)', () {
+    test('level 1 has no bonus — the multiplier is neutral at the floor', () {
+      expect(Progression.statMultiplier(Progression.minLevel), equals(1.0));
+    });
+
+    test('leveling is a real Mana sink with rising cost, and eventually caps',
+        () {
+      var prevCost = Progression.costFor(Progression.minLevel);
+      expect(prevCost, greaterThan(0));
+      for (var lvl = Progression.minLevel + 1;
+          lvl < Progression.maxLevel;
+          lvl++) {
+        final cost = Progression.costFor(lvl);
+        expect(cost, greaterThan(prevCost),
+            reason: 'each level should cost more than the last');
+        prevCost = cost;
+      }
+      expect(Progression.costFor(Progression.maxLevel), equals(-1),
+          reason: 'a maxed companion has nothing left to buy');
+    });
+
+    test(
+        'a leveled party clears faster than an unleveled one, not just '
+        'more reliably', () {
+      final maxLevels = {
+        for (final f in ['player', 'faelen', 'kess', 'momo', 'thora']) f: 10,
+      };
+      final baseline = _avgWinSeconds(_kessBack);
+      final leveled = _avgWinSeconds(_kessBack, levels: maxLevels);
+      expect(leveled, lessThan(baseline),
+          reason:
+              'docs/combat-spec.md §6: companion level is "the main Mana sink" '
+              '— it should visibly pay off in pace');
+    });
+
+    test(
+        'an unleveled party is still fully viable — leveling is a speed '
+        'bonus, never a gate requirement', () {
+      expect(_winRate(Roster.defaultFormation()), greaterThan(0.85),
+          reason: 'the default formation at level 1 must clear on its own, '
+              'same as before companion leveling existed');
     });
   });
 }

@@ -102,7 +102,7 @@ Future gacha: a pull grants the character, then a **character-specific unlock qu
 - [x] **Step 1** — one character, auto-battle to a boss
 - [x] **Step 2** — party of 4 + front/back rows, 2× speed unlock
 - [x] **Step 3** — elements and the matchup wheel
-- [ ] Step 4 — Mana rewards → companion leveling
+- [x] **Step 4** — Mana rewards → companion leveling
 - [ ] Step 5 — gear drops and upgrades
 - [ ] Step 6 — Bond buffs + `post_raid` story hooks
 - [ ] Step 7 — offline accrual
@@ -128,6 +128,8 @@ Each is a real bug if undone. All are encoded in `test/balance_test.dart`.
 
 7. **Elements (step 3) landed directly on the enrage cliff from finding #2.** A single disadvantaged character (−30% on one damage source) crashed a viable comp's win rate to ~15-23% at the old enrage rate — a wall, not "slower," which the elements spec explicitly forbids. Lowered `bossEnrage` 0.25 → 0.18: the same disadvantaged comp now clears ~97% of the time but still takes noticeably longer (~302s → ~342s), and every step-2 composition still clears 100% at full neutrality. Re-check this balance whenever ability power, HP, or the ±30% multipliers change.
 
+8. **Companion leveling (step 4) had to stay a speed bonus, never a gate.** Combat spec §6 calls companion level "the main Mana sink" but the no-fail-state promise (finding #2/#7) means it must never become a required floor. `Progression.statMultiplier` is +4%/level, applied to attack, max HP, *and* ability power (a caster's damage is mostly her ability, so skipping abilities would make leveling near-invisible for Momo). At level 1 (the default) `_kessBack` still clears the same as before leveling existed; at level 10 the same comp's average clear drops from ~339s to ~240s. Cost curve is `40 * 1.18^(level-1)`, capped at level 20 (~4,937 cumulative Mana to max one character) — a real, long-running sink, not a same-session freebie.
+
 ### Current tuning (all compositions viable, speed/safety tradeoff)
 | Composition | Win | Avg |
 |---|---|---|
@@ -140,7 +142,7 @@ Each is a real bug if undone. All are encoded in `test/balance_test.dart`.
 
 ## Known caveats
 
-- A Dart + Flutter SDK is now available in the build environment (as of step 3). `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (17/17). Still never run on a device/emulator — expect to sanity-check the UI on first real `flutter run`.
+- A Dart + Flutter SDK is now available in the build environment (as of step 3). `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (21/21 as of step 4). Still never run on a device/emulator — expect to sanity-check the UI on first real `flutter run`.
 - `Row` was renamed to **`BattleRow`** in the Dart code to avoid colliding with Flutter's `Row` widget; the elements enum is likewise **`GateElement`**, not `Element`, to avoid colliding with Flutter's own `Element` (widget tree node) class.
 
 ---
@@ -161,7 +163,7 @@ That conversation was left unfinished and is a good place to resume.
 
 ## Suggested next steps
 
-1. **Play the prototype** and answer: does the formation choice feel meaningful, and does an elemental disadvantage read as "slower" rather than "stuck"?
-2. **Step 4: Mana rewards → companion leveling.** Spend the mana the raid already earns on per-companion stat growth; watch that leveling doesn't quietly re-break the enrage-cliff balance from finding #7.
+1. **Play the prototype** and answer: does the formation choice feel meaningful, does an elemental disadvantage read as "slower" rather than "stuck," and does spending Mana on a level-up feel like a real choice against the temptation to just re-raid?
+2. **Step 5: gear drops and upgrades.** The third power track from combat-spec.md §6 — dropped in raids, upgraded with Mana, equipped per character. Once this lands, revisit whether Mana should still fully fund companion leveling on its own, or start competing with gear upgrades for the same pool.
 3. **Art direction** — see open question above.
 4. **Write real dialogue** for a beat, using the existing JSON schema, to lock a character's voice.
