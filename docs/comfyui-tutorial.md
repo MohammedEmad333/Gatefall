@@ -87,14 +87,39 @@ Base SD has no built-in character-reference feature like Midjourney's
 
 Do this per character once its model sheet is locked — not before.
 
-## 7. No-GPU option
+## 7. No-GPU option: Google Colab (recommended starting point)
 
-- **Civitai's online generator** — free daily credits, same
-  Illustrious/Pony checkpoints, no install. Good for testing prompts
-  before committing to local setup.
-- **Google Colab** — free-tier GPU notebooks exist for running
-  ComfyUI/Automatic1111 in the cloud; session time is limited on the
-  free tier but enough for exploration passes.
+No local GPU needed — Colab's free tier gives a Tesla T4, enough to
+run ComfyUI + an SDXL checkpoint.
+
+1. Open `docs/colab/gatefall_comfyui.ipynb` in this repo, either by
+   uploading it to Google Drive and opening with Colab, or via
+   `colab.research.google.com` -> `File` -> `Open notebook` -> `GitHub`
+   tab -> paste this repo's URL and pick the notebook.
+2. `Runtime` -> `Change runtime type` -> `T4 GPU` -> `Save`.
+3. Run the cells top to bottom:
+   - Cell 1 confirms the GPU is attached.
+   - Cell 2 installs ComfyUI.
+   - Cell 3 downloads a checkpoint — paste an Illustrious or Pony
+     Diffusion XL download URL from Civitai (see the notebook's own
+     instructions for where to find it; some models need a free
+     Civitai API key too).
+   - Cell 4 launches ComfyUI and prints a public
+     `https://....trycloudflare.com` link — open that, it's the same
+     ComfyUI web UI described in step 4 of this doc.
+   - Paste prompts from `docs/art-direction.md` and generate as usual.
+   - Last cell zips and downloads everything in `output/` before you
+     close the session — **Colab wipes its disk when the session
+     ends**, so don't skip this.
+4. Free-tier limits: sessions disconnect after a period of inactivity
+   and there's a rolling weekly GPU-time cap. Fine for exploration
+   passes (model sheets, prompt iteration); if LoRA training or heavy
+   batch generation becomes the bottleneck later, that's the point to
+   consider Colab Pro or a local/rented GPU.
+
+- **Civitai's online generator** is a lighter-weight alternative for
+  just testing a prompt idea — free daily credits, same checkpoints,
+  no notebook setup at all.
 
 ## 8. Suggested workflow for this project
 
