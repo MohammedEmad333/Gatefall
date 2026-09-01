@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -72,6 +73,12 @@ class _RaidScreenState extends State<RaidScreen> {
     for (final f in Roster.all) f.id: Progression.minLevel,
   };
 
+  // Gear (step 5) — one slot per character. A win always drops something;
+  // it's either equipped (if it's an upgrade) or salvaged into Mana.
+  final Map<String, Gear?> gear = {for (final f in Roster.all) f.id: null};
+  final Random _dropRng = Random();
+  String? lastDropMessage;
+
   bool get speedUnlocked => clears >= CombatConfig.clearsToUnlockDoubleSpeed;
   int get partyCount => formation.length;
 
@@ -110,9 +117,43 @@ class _RaidScreenState extends State<RaidScreen> {
     });
   }
 
+  void _enhanceGear(String id) {
+    final current = gear[id];
+    if (current == null) return;
+    final cost = current.enhanceCost;
+    if (cost < 0 || totalMana < cost) return;
+    setState(() {
+      totalMana -= cost;
+      current.enhanceLevel++;
+    });
+  }
+
+  /// A win always drops gear (docs/combat-spec.md §2, resolve step). It goes
+  /// to a random deployed character; if it isn't an upgrade over what
+  /// they're already wearing, it's salvaged into Mana instead so the drop
+  /// is never wasted.
+  void _rollGearDrop() {
+    final ownerId =
+        formation.keys.elementAt(_dropRng.nextInt(formation.length));
+    final drop = Gear(rarity: GearDrop.roll(_dropRng).rarity);
+    final current = gear[ownerId];
+    final name = Roster.byId(ownerId).name;
+    if (current == null || drop.statMultiplier > current.statMultiplier) {
+      gear[ownerId] = drop;
+      lastDropMessage =
+          '${drop.rarity.label} gear dropped — equipped on $name.';
+    } else {
+      totalMana += drop.rarity.salvageValue;
+      lastDropMessage =
+          '${drop.rarity.label} gear dropped for $name — salvaged for '
+          '+${drop.rarity.salvageValue} mana (their current gear is better).';
+    }
+  }
+
   void _startRaid() {
+    lastDropMessage = null;
     final b = Battle.fromFormation(formation,
-        levels: levels, gateElement: gate.element)
+        levels: levels, gear: gear, gateElement: gate.element)
       ..start();
     b.autoCast = autoCast;
     battle = b;
@@ -129,7 +170,10 @@ class _RaidScreenState extends State<RaidScreen> {
           _timer?.cancel();
           _timer = null;
           totalMana += b.manaEarned;
-          if (b.status == BattleStatus.won) clears++;
+          if (b.status == BattleStatus.won) {
+            clears++;
+            _rollGearDrop();
+          }
         }
         setState(() {});
       },
@@ -174,6 +218,8 @@ class _RaidScreenState extends State<RaidScreen> {
                     _formationPanel(),
                     const SizedBox(height: 12),
                     _levelsPanel(),
+                    const SizedBox(height: 12),
+                    _gearPanel(),
                   ] else ...[
                     _enemyPanel(b),
                     const SizedBox(height: 9),
@@ -481,6 +527,89 @@ class _RaidScreenState extends State<RaidScreen> {
     );
   }
 
+  // ---------------- gear ----------------
+
+  Widget _gearPanel() {
+    return Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        border: Border.all(color: _riftDim),
+        color: Colors.black.withValues(alpha: .2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Gear', style: TextStyle(color: _bone, fontSize: 14)),
+          const SizedBox(height: 3),
+          const Text(
+            'A win always drops one piece of gear. It\'s equipped '
+            'automatically if it beats what that character has, otherwise '
+            'it\'s salvaged into Mana on the spot — nothing is ever wasted.',
+            style: TextStyle(
+                color: _boneDim,
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+                height: 1.5),
+          ),
+          const SizedBox(height: 8),
+          for (final def in Roster.all) _gearRow(def),
+        ],
+      ),
+    );
+  }
+
+  Widget _gearRow(FighterDef def) {
+    final g = gear[def.id];
+    final bonusPct = g == null ? 0 : ((g.statMultiplier - 1) * 100).round();
+    final cost = g?.enhanceCost ?? -1;
+    final maxed = g != null && cost < 0;
+    final affordable = g != null && !maxed && totalMana >= cost;
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  g == null
+                      ? '${def.name}  ·  no gear yet'
+                      : '${def.name}  ·  ${g.rarity.label} +${g.enhanceLevel}',
+                  style: const TextStyle(color: _bone, fontSize: 12.5),
+                ),
+                Text(
+                  g == null
+                      ? 'clear a gate to find a first piece'
+                      : maxed
+                          ? '+$bonusPct% ATK, HP & ability power — max enhance'
+                          : '+$bonusPct% ATK, HP & ability power — enhance: $cost mana',
+                  style: const TextStyle(color: _boneDim, fontSize: 10.5),
+                ),
+              ],
+            ),
+          ),
+          if (g != null)
+            SizedBox(
+              width: 84,
+              child: OutlinedButton(
+                onPressed:
+                    (!maxed && affordable) ? () => _enhanceGear(def.id) : null,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: affordable ? _gold : _boneDim,
+                  side: BorderSide(color: affordable ? _gold : _riftDim),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  shape: const RoundedRectangleBorder(),
+                ),
+                child: Text(maxed ? 'Max' : 'Enhance',
+                    style: const TextStyle(fontSize: 11)),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   // ---------------- battle ----------------
 
   Widget _enemyPanel(Battle b) {
@@ -664,6 +793,13 @@ class _RaidScreenState extends State<RaidScreen> {
         Text('+${b.manaEarned} mana earned',
             style: const TextStyle(
                 color: _gold, fontSize: 15, fontFamily: 'monospace')),
+        if (won && lastDropMessage != null) ...[
+          const SizedBox(height: 10),
+          Text(lastDropMessage!,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: _verdant, fontSize: 12.5, height: 1.4)),
+        ],
         if (justUnlocked) ...[
           const SizedBox(height: 14),
           Container(

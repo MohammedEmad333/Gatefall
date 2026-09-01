@@ -103,7 +103,7 @@ Future gacha: a pull grants the character, then a **character-specific unlock qu
 - [x] **Step 2** — party of 4 + front/back rows, 2× speed unlock
 - [x] **Step 3** — elements and the matchup wheel
 - [x] **Step 4** — Mana rewards → companion leveling
-- [ ] Step 5 — gear drops and upgrades
+- [x] **Step 5** — gear drops and upgrades
 - [ ] Step 6 — Bond buffs + `post_raid` story hooks
 - [ ] Step 7 — offline accrual
 
@@ -130,6 +130,8 @@ Each is a real bug if undone. All are encoded in `test/balance_test.dart`.
 
 8. **Companion leveling (step 4) had to stay a speed bonus, never a gate.** Combat spec §6 calls companion level "the main Mana sink" but the no-fail-state promise (finding #2/#7) means it must never become a required floor. `Progression.statMultiplier` is +4%/level, applied to attack, max HP, *and* ability power (a caster's damage is mostly her ability, so skipping abilities would make leveling near-invisible for Momo). At level 1 (the default) `_kessBack` still clears the same as before leveling existed; at level 10 the same comp's average clear drops from ~339s to ~240s. Cost curve is `40 * 1.18^(level-1)`, capped at level 20 (~4,937 cumulative Mana to max one character) — a real, long-running sink, not a same-session freebie.
 
+9. **Gear (step 5) stacks *with* level rather than replacing it, and every win pays out.** Combat spec §2's resolve step says a win always drops gear (only losing withholds it) — so `_rollGearDrop()` isn't RNG-gated on top of the win, it always fires, only the *rarity* (common/rare/epic, weighted 65/28/7) is random. One slot per character, no inventory screen: a drop auto-equips only if it beats what's already worn (comparing `Gear.statMultiplier`, which folds in any enhance investment), otherwise it's salvaged into Mana on the spot — a "bad" drop is never a dead click. `Gear.statMultiplier` combines multiplicatively with `Progression.statMultiplier`, so a well-geared low-level character and a well-leveled ungeared one both feel the payoff. Same guardrail as leveling: a fully ungeared party still clears at the same rate as before gear existed.
+
 ### Current tuning (all compositions viable, speed/safety tradeoff)
 | Composition | Win | Avg |
 |---|---|---|
@@ -142,7 +144,8 @@ Each is a real bug if undone. All are encoded in `test/balance_test.dart`.
 
 ## Known caveats
 
-- A Dart + Flutter SDK is now available in the build environment (as of step 3). `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (21/21 as of step 4). Still never run on a device/emulator — expect to sanity-check the UI on first real `flutter run`.
+- A Dart + Flutter SDK is now available in the build environment (as of step 3). `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (27/27 as of step 5). Still never run on a device/emulator — expect to sanity-check the UI on first real `flutter run`.
+- Gear (step 5) is in-memory only, same as everything else — no save/load layer exists yet for any of Mana, levels, or gear. That's a pre-existing gap, not new to this step.
 - `Row` was renamed to **`BattleRow`** in the Dart code to avoid colliding with Flutter's `Row` widget; the elements enum is likewise **`GateElement`**, not `Element`, to avoid colliding with Flutter's own `Element` (widget tree node) class.
 
 ---
@@ -163,7 +166,8 @@ That conversation was left unfinished and is a good place to resume.
 
 ## Suggested next steps
 
-1. **Play the prototype** and answer: does the formation choice feel meaningful, does an elemental disadvantage read as "slower" rather than "stuck," and does spending Mana on a level-up feel like a real choice against the temptation to just re-raid?
-2. **Step 5: gear drops and upgrades.** The third power track from combat-spec.md §6 — dropped in raids, upgraded with Mana, equipped per character. Once this lands, revisit whether Mana should still fully fund companion leveling on its own, or start competing with gear upgrades for the same pool.
+1. **Play the prototype** and answer: does the formation choice feel meaningful, does an elemental disadvantage read as "slower" rather than "stuck," does spending Mana on a level-up or gear enhance feel like a real choice against the temptation to just re-raid, and does the single-slot auto-equip-or-salvage gear model feel satisfying without an inventory screen — or does it need one?
+2. **Step 6: Bond buffs + `post_raid` story hooks.** Wire the dialogue engine's Bond tier (0–6, combat-spec.md §5) into a flat ATK/HP bonus, and fire `post_raid` dialogue hooks from a won raid. This is the "the two halves of the game resolve in the same moment" keystone from the bible — worth prioritizing over step 7.
 3. **Art direction** — see open question above.
 4. **Write real dialogue** for a beat, using the existing JSON schema, to lock a character's voice.
+5. **Persistence** — Mana, companion levels, and gear are all in-memory only (see caveats). Worth a save/load layer before this goes much further, so playtesting progress survives a restart.

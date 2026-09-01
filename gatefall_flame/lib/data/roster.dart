@@ -119,20 +119,24 @@ class Roster {
   ];
 
   /// Only abilities whose owner is actually deployed. [levels] scales each
-  /// ability's power with its owner's companion level (step 4).
+  /// ability's power with its owner's companion level (step 4); [gear]
+  /// stacks a further multiplier from their equipped item (step 5).
   static List<Ability> abilitiesFor(Iterable<String> deployedIds,
-          {Map<String, int> levels = const {}}) =>
+          {Map<String, int> levels = const {},
+          Map<String, Gear?> gear = const {}}) =>
       abilities
           .where((a) => deployedIds.contains(a.ownerId))
-          .map((d) =>
-              d.instantiate(level: levels[d.ownerId] ?? Progression.minLevel))
+          .map((d) => d.instantiate(
+              level: levels[d.ownerId] ?? Progression.minLevel,
+              gear: gear[d.ownerId]))
           .toList();
 
   static List<Fighter> partyFrom(Map<String, BattleRow> formation,
-          {Map<String, int> levels = const {}}) =>
+          {Map<String, int> levels = const {},
+          Map<String, Gear?> gear = const {}}) =>
       formation.entries
           .map((e) => byId(e.key).instantiate(e.value,
-              level: levels[e.key] ?? Progression.minLevel))
+              level: levels[e.key] ?? Progression.minLevel, gear: gear[e.key]))
           .toList();
 }
 
@@ -154,8 +158,10 @@ class FighterDef {
     this.locked = false,
   });
 
-  Fighter instantiate(BattleRow row, {int level = Progression.minLevel}) {
-    final mult = Progression.statMultiplier(level);
+  Fighter instantiate(BattleRow row,
+      {int level = Progression.minLevel, Gear? gear}) {
+    final mult =
+        Progression.statMultiplier(level) * (gear?.statMultiplier ?? 1.0);
     return Fighter(
       id: id,
       name: name,
@@ -186,12 +192,15 @@ class AbilityDef {
     this.duration = 0,
   });
 
-  Ability instantiate({int level = Progression.minLevel}) => Ability(
+  Ability instantiate({int level = Progression.minLevel, Gear? gear}) =>
+      Ability(
         id: id,
         name: name,
         ownerId: ownerId,
         kind: kind,
-        power: power * Progression.statMultiplier(level),
+        power: power *
+            Progression.statMultiplier(level) *
+            (gear?.statMultiplier ?? 1.0),
         cooldown: cooldown,
         duration: duration,
       );

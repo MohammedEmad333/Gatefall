@@ -2,9 +2,11 @@ import 'dart:math';
 
 import '../data/combat_config.dart';
 import '../data/element.dart';
+import '../data/gear.dart';
 import '../data/roster.dart';
 
 export '../data/element.dart';
+export '../data/gear.dart';
 
 /// Pure combat simulation — no Flame, no Flutter, no rendering.
 /// Kept separate so balance can be unit-tested in milliseconds, and so the
@@ -130,11 +132,13 @@ class Battle {
 
   factory Battle.fromFormation(Map<String, BattleRow> formation,
       {Map<String, int> levels = const {},
+      Map<String, Gear?> gear = const {},
       GateElement gateElement = GateElement.verdant,
       Random? rng}) {
     return Battle(
-      party: Roster.partyFrom(formation, levels: levels),
-      abilities: Roster.abilitiesFor(formation.keys, levels: levels),
+      party: Roster.partyFrom(formation, levels: levels, gear: gear),
+      abilities:
+          Roster.abilitiesFor(formation.keys, levels: levels, gear: gear),
       gateElement: gateElement,
       rng: rng,
     );

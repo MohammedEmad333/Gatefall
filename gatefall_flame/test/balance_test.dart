@@ -14,9 +14,10 @@ import '../lib/data/roster.dart';
 ({bool won, double seconds}) _run(Map<String, BattleRow> formation, int seed,
     {double cap = 2400,
     GateElement gateElement = GateElement.verdant,
-    Map<String, int> levels = const {}}) {
+    Map<String, int> levels = const {},
+    Map<String, Gear?> gear = const {}}) {
   final b = Battle.fromFormation(formation,
-      gateElement: gateElement, levels: levels, rng: Random(seed));
+      gateElement: gateElement, levels: levels, gear: gear, rng: Random(seed));
   b.start();
   const dt = 0.1;
   while (b.status == BattleStatus.fighting && b.elapsed < cap) {
@@ -28,10 +29,12 @@ import '../lib/data/roster.dart';
 double _winRate(Map<String, BattleRow> formation,
     {int trials = 60,
     GateElement gateElement = GateElement.verdant,
-    Map<String, int> levels = const {}}) {
+    Map<String, int> levels = const {},
+    Map<String, Gear?> gear = const {}}) {
   var wins = 0;
   for (var i = 0; i < trials; i++) {
-    if (_run(formation, i, gateElement: gateElement, levels: levels).won) {
+    if (_run(formation, i, gateElement: gateElement, levels: levels, gear: gear)
+        .won) {
       wins++;
     }
   }
@@ -41,11 +44,12 @@ double _winRate(Map<String, BattleRow> formation,
 double _avgWinSeconds(Map<String, BattleRow> formation,
     {int trials = 40,
     GateElement gateElement = GateElement.verdant,
-    Map<String, int> levels = const {}}) {
+    Map<String, int> levels = const {},
+    Map<String, Gear?> gear = const {}}) {
   final times = <double>[];
   for (var i = 0; i < trials; i++) {
-    final r =
-        _run(formation, 500 + i, gateElement: gateElement, levels: levels);
+    final r = _run(formation, 500 + i,
+        gateElement: gateElement, levels: levels, gear: gear);
     if (r.won) times.add(r.seconds);
   }
   if (times.isEmpty) return 0;
@@ -319,6 +323,70 @@ void main() {
       expect(_winRate(Roster.defaultFormation()), greaterThan(0.85),
           reason: 'the default formation at level 1 must clear on its own, '
               'same as before companion leveling existed');
+    });
+  });
+
+  group('gear (step 5)', () {
+    test('no gear equipped is a neutral multiplier', () {
+      // No Gear instance at all — the common case before a first drop.
+      final unequipped = Roster.byId('kess').instantiate(BattleRow.front);
+      final explicitNull =
+          Roster.byId('kess').instantiate(BattleRow.front, gear: null);
+      expect(unequipped.attack, equals(explicitNull.attack));
+      expect(unequipped.maxHp, equals(explicitNull.maxHp));
+    });
+
+    test('rarer gear is a strictly bigger bonus at the same enhance level', () {
+      final common = Gear(rarity: GearRarity.common);
+      final rare = Gear(rarity: GearRarity.rare);
+      final epic = Gear(rarity: GearRarity.epic);
+      expect(rare.statMultiplier, greaterThan(common.statMultiplier));
+      expect(epic.statMultiplier, greaterThan(rare.statMultiplier));
+    });
+
+    test('enhancing raises the multiplier and eventually caps', () {
+      final g = Gear(rarity: GearRarity.common);
+      final base = g.statMultiplier;
+      var prevCost = g.enhanceCost;
+      expect(prevCost, greaterThan(0));
+      for (var i = 0; i < Gear.maxEnhance; i++) {
+        final costBefore = g.enhanceCost;
+        g.enhanceLevel++;
+        expect(g.statMultiplier, greaterThan(base));
+        if (i < Gear.maxEnhance - 1) {
+          expect(g.enhanceCost, greaterThan(costBefore),
+              reason: 'each enhance level should cost more than the last');
+        }
+      }
+      expect(g.enhanceCost, equals(-1),
+          reason: 'a maxed piece has nothing left to buy');
+    });
+
+    test('the drop table always returns a valid rarity and favors common', () {
+      final rng = Random(1);
+      final counts = {for (final r in GearRarity.values) r: 0};
+      for (var i = 0; i < 2000; i++) {
+        final rarity = GearDrop.roll(rng).rarity;
+        counts[rarity] = counts[rarity]! + 1;
+      }
+      expect(counts[GearRarity.common]!, greaterThan(counts[GearRarity.rare]!));
+      expect(counts[GearRarity.rare]!, greaterThan(counts[GearRarity.epic]!));
+    });
+
+    test('gear stacks with companion level rather than replacing it', () {
+      final geared = {'kess': Gear(rarity: GearRarity.epic, enhanceLevel: 4)};
+      final baseline = _avgWinSeconds(_kessBack);
+      final withGear = _avgWinSeconds(_kessBack, gear: geared);
+      expect(withGear, lessThan(baseline),
+          reason: 'equipping a strong item on the main striker should '
+              'visibly speed up the same composition');
+    });
+
+    test('a party with no gear at all is still fully viable', () {
+      // Gear is a bonus on top of Mana leveling, never a requirement —
+      // same no-fail-state promise as Progression (step 4) and Elements
+      // (step 3).
+      expect(_winRate(Roster.defaultFormation()), greaterThan(0.85));
     });
   });
 }
