@@ -12,13 +12,21 @@ lock overall style; the rest wait until the combat loop is proven**
 - **Midjourney (niji 6 mode)** for model sheets and portraits. Use
   `--cref` (character reference) against the locked model sheet image to
   keep face/outfit consistent across expressions and later art instead
-  of re-describing the character every time.
-- **LoRA per character** (fal.ai, Civitai training, or local ComfyUI) —
-  worth it once a design is locked and you need to mass-produce
-  expression sets / battle sprites cheaply. Not needed for the
-  exploration phase.
+  of re-describing the character every time. Paid.
+- **Stable Diffusion via ComfyUI, free** — local install, anime-tuned
+  checkpoint (Illustrious or Pony Diffusion XL), unlimited generation,
+  and the same LoRA-per-character path for consistency. See
+  `docs/comfyui-tutorial.md` for setup. Recommended default if you
+  don't want a Midjourney subscription.
+- **LoRA per character** (trained locally in ComfyUI, or via fal.ai /
+  Civitai's training tool) — worth it once a design is locked and you
+  need to mass-produce expression sets / battle sprites cheaply. Not
+  needed for the exploration phase.
 - Keep every locked prompt (below) copy-pasteable so art generation is
-  reproducible across sessions/tools.
+  reproducible across sessions/tools. Note: Midjourney prompts are
+  natural-language; SD/Illustrious/Pony prompts are comma-separated
+  **tags** (danbooru-style) — the two are not interchangeable, keep a
+  version of each locked prompt per tool you actually use.
 
 ## Global style
 
@@ -65,8 +73,23 @@ action; back row = ranged/support stance, more distance/guard).
   armor or gear (not ornate), guarded posture even at rest, muted
   greens/naturals reflecting Verdant. **This is the first character to
   fully render — locks the house style.**
-- Model sheet prompt (draft, refine after first pass):
+- Model sheet prompt (Midjourney, draft, refine after first pass):
   `[fill in after style is chosen]`
+- Model sheet prompt (SD / Illustrious or Pony, tag-based draft):
+  ```
+  masterpiece, best quality, 1girl, solo, elf, pointed ears, ex-warden,
+  long silver-white hair, tied back, pale skin, tired eyes, stoic
+  expression, guarded posture, weathered leather and steel armor,
+  practical, no ornamentation, scuffed armor, worn cloak, cloak clasp
+  shaped like a closing gate, green glowing seams, holding spear wrapped
+  in vine, forest green and brown palette, full body, front view,
+  standing pose, character sheet, simple background, clean lineart,
+  cel shading
+
+  Negative: chibi, deformed, extra limbs, extra fingers, blurry, lowres,
+  watermark, signature, text, bad anatomy, painterly background
+  ```
+  See `docs/comfyui-tutorial.md` for how to run this.
 
 ### Kess — Fox Beastkin, the hustler
 - Role: fast DPS, fragile if caught. Row: front (wants it, but needs
