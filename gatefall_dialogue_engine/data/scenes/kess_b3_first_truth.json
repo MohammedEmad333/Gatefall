@@ -1,0 +1,16 @@
+{
+  "scene_id": "kess_b3_first_truth", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "kess", "text": "Okay, don't judge the food — it's supposed to taste like home. It just... doesn't, quite.", "next": "n2" },
+    "n2": { "speaker": "kess", "text": "The streaming, the gigs — it's not really about the fame.",
+      "choices": [
+        { "choice_id": "ask", "text": "\"What's it really for?\"", "next": "n3_ask",
+          "effects": { "set_flags": { "KESS_SEARCH_KNOWN": true }, "bond_delta": 15 } },
+        { "choice_id": "gentle", "text": "\"You don't have to explain it tonight.\"", "next": "n3_gentle",
+          "effects": { "set_flags": { "KESS_SEARCH_KNOWN": true }, "bond_delta": 10 } }
+      ] },
+    "n3_ask": { "speaker": "kess", "text": "...I'm looking for my family. Every coin goes toward finding them.", "next": "end" },
+    "n3_gentle": { "speaker": "kess", "text": "...Thanks. I'll tell you when I'm ready.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "scene_id": "dana_b3_first_truth", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "dana", "text": "The rulebook isn't cruelty. It's armor. I watched the system fail people on both sides of the gates once. Caring cost me everything that time.",
+      "choices": [
+        { "choice_id": "ask", "text": "\"What happened?\"", "next": "n2_ask",
+          "effects": { "set_flags": { "DANA_ARMOR_KNOWN": true }, "bond_delta": 15 } },
+        { "choice_id": "gentle", "text": "\"You don't have to relive it for my sake.\"", "next": "n2_gentle",
+          "effects": { "set_flags": { "DANA_ARMOR_KNOWN": true }, "bond_delta": 10 } }
+      ] },
+    "n2_ask": { "speaker": "dana", "text": "...Another day. Not tonight.", "next": "end" },
+    "n2_gentle": { "speaker": "dana", "text": "...Thank you.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

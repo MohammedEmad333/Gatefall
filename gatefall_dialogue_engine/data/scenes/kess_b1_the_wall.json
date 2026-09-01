@@ -1,0 +1,17 @@
+{
+  "scene_id": "kess_b1_the_wall", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "kess", "text": "Oh, don't mind me. Just reorganizing my streaming schedule. At 3am. Like a normal person.", "next": "n2" },
+    "n2": { "speaker": "player", "text": "(Her laptop is open to a refugee-registry search, not a schedule.)", "next": "n3" },
+    "n3": { "speaker": "kess", "text": "Don't — it's not a big deal, okay?",
+      "choices": [
+        { "choice_id": "press", "text": "\"It's a big deal if it matters to you.\"", "next": "n4_press",
+          "effects": { "set_flags": { "KESS_APPROACH": "press" }, "bond_delta": 15 } },
+        { "choice_id": "patience", "text": "(Close the laptop gently. Change the subject.)", "next": "n4_patience",
+          "effects": { "set_flags": { "KESS_APPROACH": "patience" }, "bond_delta": 10 } }
+      ] },
+    "n4_press": { "speaker": "kess", "text": "...You're annoyingly perceptive for a landlord.", "next": "end" },
+    "n4_patience": { "speaker": "kess", "text": "...Thanks. Didn't want to get into it tonight.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

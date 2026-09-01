@@ -1,0 +1,163 @@
+{
+  "character_id": "faelen",
+  "display_name": "Faelen",
+  "gift_preferences": {
+    "loved": [
+      "whetstone",
+      "bitter_tea",
+      "star_map",
+      "plain_meal"
+    ],
+    "liked": [
+      "tactics_book",
+      "practical_clothing"
+    ],
+    "disliked": [
+      "luxury_item",
+      "flattery_note",
+      "fragile_decor"
+    ]
+  },
+  "beats": [
+    {
+      "beat_id": "faelen_b0_recruitment",
+      "order": 0,
+      "title": "I Won't Be Staying",
+      "unlock_conditions": {
+        "story_act_min": 1
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/faelen_b0_recruitment.json"
+    },
+    {
+      "beat_id": "faelen_b1_the_wall",
+      "order": 1,
+      "title": "The Wall",
+      "unlock_conditions": {
+        "bond_tier_min": 1,
+        "requires_beats_complete": [
+          "faelen_b0_recruitment"
+        ]
+      },
+      "trigger_context": "home_visit",
+      "scene_ref": "data/scenes/faelen_b1_the_wall.json"
+    },
+    {
+      "beat_id": "faelen_b2_proving_ground",
+      "order": 2,
+      "title": "The Warden's Discipline",
+      "unlock_conditions": {
+        "bond_tier_min": 2,
+        "requires_beats_complete": [
+          "faelen_b1_the_wall"
+        ]
+      },
+      "trigger_context": "post_raid",
+      "scene_ref": "data/scenes/faelen_b2_proving_ground.json"
+    },
+    {
+      "beat_id": "faelen_b3_first_truth",
+      "order": 3,
+      "title": "I Was Never a Refugee",
+      "unlock_conditions": {
+        "bond_tier_min": 3,
+        "requires_beats_complete": [
+          "faelen_b2_proving_ground"
+        ]
+      },
+      "trigger_context": "date",
+      "scene_ref": "data/scenes/faelen_b3_first_truth.json"
+    },
+    {
+      "beat_id": "faelen_b4_the_fracture",
+      "order": 4,
+      "title": "This Is My War",
+      "unlock_conditions": {
+        "bond_tier_min": 4,
+        "story_act_min": 2,
+        "requires_beats_complete": [
+          "faelen_b3_first_truth"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/faelen_b4_the_fracture.json"
+    },
+    {
+      "beat_id": "faelen_b5_full_truth",
+      "order": 5,
+      "title": "I Gave The Order",
+      "unlock_conditions": {
+        "bond_tier_min": 5,
+        "requires_flags": [
+          {
+            "flag": "FAELEN_FRACTURE",
+            "in": [
+              "stop",
+              "join"
+            ]
+          }
+        ],
+        "requires_beats_complete": [
+          "faelen_b4_the_fracture"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/faelen_b5_full_truth.json"
+    },
+    {
+      "beat_id": "faelen_b6_the_choice",
+      "order": 6,
+      "title": "Then I'll Fight As One Of You",
+      "unlock_conditions": {
+        "bond_tier_min": 6,
+        "story_act_min": 3,
+        "requires_beats_complete": [
+          "faelen_b5_full_truth"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/faelen_b6_the_choice.json"
+    }
+  ],
+  "endings": [
+    {
+      "ending_id": "faelen_true",
+      "priority": 1,
+      "conditions": {
+        "bond_tier_min": 6,
+        "requires_flags": [
+          {
+            "flag": "FAELEN_FRACTURE",
+            "in": [
+              "stop",
+              "join"
+            ]
+          },
+          {
+            "flag": "FAELEN_CONFESSED",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "ending_id": "faelen_lost",
+      "priority": 2,
+      "conditions": {
+        "requires_flags": [
+          {
+            "flag": "FAELEN_FRACTURE",
+            "equals": "release"
+          }
+        ]
+      }
+    },
+    {
+      "ending_id": "faelen_bittersweet",
+      "priority": 3,
+      "conditions": {
+        "bond_tier_min": 3
+      }
+    }
+  ]
+}

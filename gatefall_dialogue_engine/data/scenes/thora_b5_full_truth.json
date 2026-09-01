@@ -1,0 +1,13 @@
+{
+  "scene_id": "thora_b5_full_truth", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "thora", "text": "I care for everyone so I never have to be cared for. If I let myself be held, I'd have to admit I'm still here — and they're not.",
+      "choices": [
+        { "choice_id": "hold", "text": "\"Let me hold you up, for once.\"", "next": "end",
+          "effects": { "set_flags": { "THORA_CONFESSED": true }, "bond_delta": 20 } },
+        { "choice_id": "stay", "text": "(Just stay. Let her lean, this once.)", "next": "end",
+          "effects": { "set_flags": { "THORA_CONFESSED": true }, "bond_delta": 15 } }
+      ] },
+    "end": { "end_scene": true }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "scene_id": "dana_b6_the_choice", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "dana", "text": "...I choose the house. Whatever that makes me now.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

@@ -1,0 +1,163 @@
+{
+  "character_id": "dana",
+  "display_name": "Dana",
+  "gift_preferences": {
+    "loved": [
+      "good_coffee",
+      "nice_pen",
+      "mystery_novel",
+      "home_cooked_meal"
+    ],
+    "liked": [
+      "notebook",
+      "office_plant"
+    ],
+    "disliked": [
+      "bribe_item",
+      "overfamiliar_gift",
+      "sob_story_note"
+    ]
+  },
+  "beats": [
+    {
+      "beat_id": "dana_b0_recruitment",
+      "order": 0,
+      "title": "Thirty Days To File",
+      "unlock_conditions": {
+        "story_act_min": 1
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/dana_b0_recruitment.json"
+    },
+    {
+      "beat_id": "dana_b1_the_wall",
+      "order": 1,
+      "title": "Neither Did You",
+      "unlock_conditions": {
+        "bond_tier_min": 1,
+        "requires_beats_complete": [
+          "dana_b0_recruitment"
+        ]
+      },
+      "trigger_context": "home_visit",
+      "scene_ref": "data/scenes/dana_b1_the_wall.json"
+    },
+    {
+      "beat_id": "dana_b2_proving_ground",
+      "order": 2,
+      "title": "Officially / Unofficially",
+      "unlock_conditions": {
+        "bond_tier_min": 2,
+        "requires_beats_complete": [
+          "dana_b1_the_wall"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/dana_b2_proving_ground.json"
+    },
+    {
+      "beat_id": "dana_b3_first_truth",
+      "order": 3,
+      "title": "The Rulebook Isn't Cruelty",
+      "unlock_conditions": {
+        "bond_tier_min": 3,
+        "requires_beats_complete": [
+          "dana_b2_proving_ground"
+        ]
+      },
+      "trigger_context": "after_hours",
+      "scene_ref": "data/scenes/dana_b3_first_truth.json"
+    },
+    {
+      "beat_id": "dana_b4_the_fracture",
+      "order": 4,
+      "title": "Cleaner That Way",
+      "unlock_conditions": {
+        "bond_tier_min": 4,
+        "story_act_min": 2,
+        "requires_beats_complete": [
+          "dana_b3_first_truth"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/dana_b4_the_fracture.json"
+    },
+    {
+      "beat_id": "dana_b5_full_truth",
+      "order": 5,
+      "title": "Hope Terrifies Me More",
+      "unlock_conditions": {
+        "bond_tier_min": 5,
+        "requires_flags": [
+          {
+            "flag": "DANA_FRACTURE",
+            "in": [
+              "stop",
+              "stand"
+            ]
+          }
+        ],
+        "requires_beats_complete": [
+          "dana_b4_the_fracture"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/dana_b5_full_truth.json"
+    },
+    {
+      "beat_id": "dana_b6_the_choice",
+      "order": 6,
+      "title": "I Choose The House",
+      "unlock_conditions": {
+        "bond_tier_min": 6,
+        "story_act_min": 3,
+        "requires_beats_complete": [
+          "dana_b5_full_truth"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/dana_b6_the_choice.json"
+    }
+  ],
+  "endings": [
+    {
+      "ending_id": "dana_true",
+      "priority": 1,
+      "conditions": {
+        "bond_tier_min": 6,
+        "requires_flags": [
+          {
+            "flag": "DANA_FRACTURE",
+            "in": [
+              "stop",
+              "stand"
+            ]
+          },
+          {
+            "flag": "DANA_CONFESSED",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "ending_id": "dana_lost",
+      "priority": 2,
+      "conditions": {
+        "requires_flags": [
+          {
+            "flag": "DANA_FRACTURE",
+            "equals": "release"
+          }
+        ]
+      }
+    },
+    {
+      "ending_id": "dana_bittersweet",
+      "priority": 3,
+      "conditions": {
+        "bond_tier_min": 3
+      }
+    }
+  ]
+}

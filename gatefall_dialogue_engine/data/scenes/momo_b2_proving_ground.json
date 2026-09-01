@@ -1,0 +1,16 @@
+{
+  "scene_id": "momo_b2_proving_ground", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "momo", "text": "It's here because of me. I have to draw it away—", "next": "n2" },
+    "n2": { "speaker": "player", "text": "(She tries to bolt mid-fight. You catch her before she gets herself hurt.)",
+      "choices": [
+        { "choice_id": "hold", "text": "\"Stay in formation. We handle this together.\"", "next": "n3_hold",
+          "effects": { "set_flags": { "MOMO_TRUST": "hold" }, "bond_delta": 10 } },
+        { "choice_id": "trust", "text": "\"I trust your instincts. Do what you need to.\"", "next": "n3_trust",
+          "effects": { "set_flags": { "MOMO_TRUST": "free" }, "bond_delta": 15 } }
+      ] },
+    "n3_hold": { "speaker": "momo", "text": "...Okay. I'll stay.", "next": "end" },
+    "n3_trust": { "speaker": "momo", "text": "...I won't run. I promise.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

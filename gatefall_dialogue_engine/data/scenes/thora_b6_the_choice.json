@@ -1,0 +1,7 @@
+{
+  "scene_id": "thora_b6_the_choice", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "thora", "text": "...Perhaps this can be my home too. Not just one I keep for others.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

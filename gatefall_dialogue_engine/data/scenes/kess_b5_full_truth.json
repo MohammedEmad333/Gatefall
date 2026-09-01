@@ -1,0 +1,13 @@
+{
+  "scene_id": "kess_b5_full_truth", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "kess", "text": "It wasn't them. It's never them. And some part of me is terrified that if I stop looking, I have to admit they're gone — and then what am I?",
+      "choices": [
+        { "choice_id": "reassure", "text": "\"You're still you. And you're not alone here.\"", "next": "end",
+          "effects": { "set_flags": { "KESS_CONFESSED": true }, "bond_delta": 20 } },
+        { "choice_id": "stay_quiet", "text": "(Just sit with her. Don't fill the silence.)", "next": "end",
+          "effects": { "set_flags": { "KESS_CONFESSED": true }, "bond_delta": 15 } }
+      ] },
+    "end": { "end_scene": true }
+  }
+}

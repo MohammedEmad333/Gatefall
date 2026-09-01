@@ -1,0 +1,17 @@
+{
+  "scene_id": "momo_b1_the_wall", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "momo", "text": "The gate two blocks over — it's going to open in an hour. I'm sorry, I should have said sooner.", "next": "n2" },
+    "n2": { "speaker": "player", "text": "(The house evacuates in time. She apologizes for the warning that saved everyone.)", "next": "n3" },
+    "n3": { "speaker": "momo", "text": "I'm sorry. I didn't mean to cause—",
+      "choices": [
+        { "choice_id": "press", "text": "\"That wasn't your fault. You just saved us.\"", "next": "n4_press",
+          "effects": { "set_flags": { "MOMO_APPROACH": "press" }, "bond_delta": 15 } },
+        { "choice_id": "patience", "text": "(Just squeeze her hand. Let it be enough.)", "next": "n4_patience",
+          "effects": { "set_flags": { "MOMO_APPROACH": "patience" }, "bond_delta": 10 } }
+      ] },
+    "n4_press": { "speaker": "momo", "text": "...You really think so?", "next": "end" },
+    "n4_patience": { "speaker": "momo", "text": "...Okay.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "scene_id": "momo_b3_first_truth", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "momo", "text": "I can feel them before they open. Gates. It's why I move so much.", "next": "n2" },
+    "n2": { "speaker": "momo", "text": "I don't know why I'm like this. I just know it's not... normal.",
+      "choices": [
+        { "choice_id": "ask", "text": "\"Do you think it's connected to why the gates started?\"", "next": "n3_ask",
+          "effects": { "set_flags": { "MOMO_SENSE_KNOWN": true }, "bond_delta": 15 } },
+        { "choice_id": "comfort", "text": "\"Whatever it is, it doesn't change anything for me.\"", "next": "n3_comfort",
+          "effects": { "set_flags": { "MOMO_SENSE_KNOWN": true }, "bond_delta": 10 } }
+      ] },
+    "n3_ask": { "speaker": "momo", "text": "...Maybe. I've never said that thought out loud before.", "next": "end" },
+    "n3_comfort": { "speaker": "momo", "text": "...Thank you. I needed to hear that.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}
