@@ -101,7 +101,7 @@ Future gacha: a pull grants the character, then a **character-specific unlock qu
 
 - [x] **Step 1** — one character, auto-battle to a boss
 - [x] **Step 2** — party of 4 + front/back rows, 2× speed unlock
-- [ ] **Step 3** — elements and the matchup wheel
+- [x] **Step 3** — elements and the matchup wheel
 - [ ] Step 4 — Mana rewards → companion leveling
 - [ ] Step 5 — gear drops and upgrades
 - [ ] Step 6 — Bond buffs + `post_raid` story hooks
@@ -126,6 +126,8 @@ Each is a real bug if undone. All are encoded in `test/balance_test.dart`.
 
 6. **Ending priority must run specific → generic.** A bond-threshold "bittersweet" fallback with no flag check will silently outrank a more specific "lost" ending if checked first. Fixed in all 5 route files.
 
+7. **Elements (step 3) landed directly on the enrage cliff from finding #2.** A single disadvantaged character (−30% on one damage source) crashed a viable comp's win rate to ~15-23% at the old enrage rate — a wall, not "slower," which the elements spec explicitly forbids. Lowered `bossEnrage` 0.25 → 0.18: the same disadvantaged comp now clears ~97% of the time but still takes noticeably longer (~302s → ~342s), and every step-2 composition still clears 100% at full neutrality. Re-check this balance whenever ability power, HP, or the ±30% multipliers change.
+
 ### Current tuning (all compositions viable, speed/safety tradeoff)
 | Composition | Win | Avg |
 |---|---|---|
@@ -138,9 +140,8 @@ Each is a real bug if undone. All are encoded in `test/balance_test.dart`.
 
 ## Known caveats
 
-- **No Dart SDK was available in the build environment**, so the Flutter code is carefully written and reviewed but **never compiled**. The balance math was verified by porting the logic to Python and simulating. Expect to fix small compile errors on first `flutter run`.
-- The HTML prototype **has** passed a real JS syntax check and is fully playable.
-- `Row` was renamed to **`BattleRow`** in the Dart code to avoid colliding with Flutter's `Row` widget.
+- A Dart + Flutter SDK is now available in the build environment (as of step 3). `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (17/17). Still never run on a device/emulator — expect to sanity-check the UI on first real `flutter run`.
+- `Row` was renamed to **`BattleRow`** in the Dart code to avoid colliding with Flutter's `Row` widget; the elements enum is likewise **`GateElement`**, not `Element`, to avoid colliding with Flutter's own `Element` (widget tree node) class.
 
 ---
 
@@ -160,7 +161,7 @@ That conversation was left unfinished and is a good place to resume.
 
 ## Suggested next steps
 
-1. **Play the prototype** and answer: does the formation choice feel meaningful?
-2. **Step 3: elements** — 6 elements, ±30% matchups, gate element rotation. Watch the roster-pressure problem (5 characters, one element each: never let a bad matchup be unwinnable, just slower).
+1. **Play the prototype** and answer: does the formation choice feel meaningful, and does an elemental disadvantage read as "slower" rather than "stuck"?
+2. **Step 4: Mana rewards → companion leveling.** Spend the mana the raid already earns on per-companion stat growth; watch that leveling doesn't quietly re-break the enrage-cliff balance from finding #7.
 3. **Art direction** — see open question above.
 4. **Write real dialogue** for a beat, using the existing JSON schema, to lock a character's voice.

@@ -11,8 +11,9 @@ import '../lib/combat/battle.dart';
 import '../lib/data/roster.dart';
 
 ({bool won, double seconds}) _run(Map<String, BattleRow> formation, int seed,
-    {double cap = 2400}) {
-  final b = Battle.fromFormation(formation, rng: Random(seed));
+    {double cap = 2400, GateElement gateElement = GateElement.verdant}) {
+  final b = Battle.fromFormation(formation,
+      gateElement: gateElement, rng: Random(seed));
   b.start();
   const dt = 0.1;
   while (b.status == BattleStatus.fighting && b.elapsed < cap) {
@@ -21,18 +22,20 @@ import '../lib/data/roster.dart';
   return (won: b.status == BattleStatus.won, seconds: b.elapsed);
 }
 
-double _winRate(Map<String, BattleRow> formation, {int trials = 60}) {
+double _winRate(Map<String, BattleRow> formation,
+    {int trials = 60, GateElement gateElement = GateElement.verdant}) {
   var wins = 0;
   for (var i = 0; i < trials; i++) {
-    if (_run(formation, i).won) wins++;
+    if (_run(formation, i, gateElement: gateElement).won) wins++;
   }
   return wins / trials;
 }
 
-double _avgWinSeconds(Map<String, BattleRow> formation, {int trials = 40}) {
+double _avgWinSeconds(Map<String, BattleRow> formation,
+    {int trials = 40, GateElement gateElement = GateElement.verdant}) {
   final times = <double>[];
   for (var i = 0; i < trials; i++) {
-    final r = _run(formation, 500 + i);
+    final r = _run(formation, 500 + i, gateElement: gateElement);
     if (r.won) times.add(r.seconds);
   }
   if (times.isEmpty) return 0;
@@ -41,19 +44,33 @@ double _avgWinSeconds(Map<String, BattleRow> formation, {int trials = 40}) {
 
 // Compositions used across the suite.
 const _kessFront = {
-  'player': BattleRow.front, 'faelen': BattleRow.front, 'kess': BattleRow.front, 'momo': BattleRow.back,
+  'player': BattleRow.front,
+  'faelen': BattleRow.front,
+  'kess': BattleRow.front,
+  'momo': BattleRow.back,
 };
 const _kessBack = {
-  'player': BattleRow.front, 'faelen': BattleRow.front, 'kess': BattleRow.back, 'momo': BattleRow.back,
+  'player': BattleRow.front,
+  'faelen': BattleRow.front,
+  'kess': BattleRow.back,
+  'momo': BattleRow.back,
 };
 const _withHealer = {
-  'player': BattleRow.front, 'faelen': BattleRow.front, 'thora': BattleRow.front, 'momo': BattleRow.back,
+  'player': BattleRow.front,
+  'faelen': BattleRow.front,
+  'thora': BattleRow.front,
+  'momo': BattleRow.back,
 };
 const _noTank = {
-  'player': BattleRow.front, 'kess': BattleRow.front, 'momo': BattleRow.back, 'thora': BattleRow.front,
+  'player': BattleRow.front,
+  'kess': BattleRow.front,
+  'momo': BattleRow.back,
+  'thora': BattleRow.front,
 };
 const _shortParty = {
-  'player': BattleRow.front, 'faelen': BattleRow.front, 'momo': BattleRow.back,
+  'player': BattleRow.front,
+  'faelen': BattleRow.front,
+  'momo': BattleRow.back,
 };
 
 void main() {
@@ -66,7 +83,8 @@ void main() {
         'no tank': _noTank,
       }.entries) {
         expect(_winRate(entry.value), greaterThan(0.85),
-            reason: '${entry.key} should be viable — no composition is mandatory');
+            reason:
+                '${entry.key} should be viable — no composition is mandatory');
       }
     });
 
@@ -146,6 +164,107 @@ void main() {
     test('auto mode is viable alone — manual is optimization, not a gate', () {
       expect(_winRate(_kessBack), greaterThan(0.85),
           reason: 'idle players must never be forced into manual play');
+    });
+  });
+
+  group('elements (step 3)', () {
+    test('the matchup wheel cycles Verdant -> Stone -> Ember -> Gloam -> Tide',
+        () {
+      expect(elementMultiplier(GateElement.verdant, GateElement.stone),
+          equals(advantageMult));
+      expect(elementMultiplier(GateElement.stone, GateElement.ember),
+          equals(advantageMult));
+      expect(elementMultiplier(GateElement.ember, GateElement.gloam),
+          equals(advantageMult));
+      expect(elementMultiplier(GateElement.gloam, GateElement.tide),
+          equals(advantageMult));
+      expect(elementMultiplier(GateElement.tide, GateElement.verdant),
+          equals(advantageMult));
+    });
+
+    test('the disadvantaged side of each matchup takes -30%, not +30%', () {
+      expect(elementMultiplier(GateElement.stone, GateElement.verdant),
+          equals(disadvantageMult));
+      expect(elementMultiplier(GateElement.ember, GateElement.stone),
+          equals(disadvantageMult));
+    });
+
+    test('Sever never gets a bonus or a penalty on either side', () {
+      for (final e in GateElement.values) {
+        expect(elementMultiplier(GateElement.sever, e), equals(1.0),
+            reason: 'human mana is unrefined — Sever sits outside the wheel');
+        expect(elementMultiplier(e, GateElement.sever), equals(1.0));
+      }
+    });
+
+    test('same element on both sides is neutral, not a mirror match bonus', () {
+      for (final e in GateElement.values) {
+        expect(elementMultiplier(e, e), equals(1.0));
+      }
+    });
+
+    test(
+        'with 4 of 5 wheel elements represented, no single gate can '
+        'disadvantage the whole deployed roster at once', () {
+      // Structural property of a 5-element cycle: each element only beats
+      // one other, so a party missing just one element (here: Tide, which
+      // has no character yet) can never be fully walled. This is what makes
+      // "bring one advantaged and one neutral character" a real hedge
+      // rather than a coin flip.
+      final deployed = [
+        GateElement.verdant,
+        GateElement.ember,
+        GateElement.gloam,
+        GateElement.stone
+      ];
+      for (final gateEl in GateElement.values) {
+        final allDisadvantaged = deployed.every(
+            (attacker) => matchupOf(attacker, gateEl) == Matchup.disadvantage);
+        expect(allDisadvantaged, isFalse,
+            reason:
+                '$gateEl must never wall out every deployed element at once');
+      }
+    });
+
+    test('a single disadvantaged character slows a raid, never walls it', () {
+      // Momo (Gloam) is disadvantaged against an Ember gate — the worst
+      // single-character hit available to this roster. It must still be
+      // clearly winnable, just slower than the neutral fight.
+      final disadvantaged =
+          _winRate(_kessFront, gateElement: GateElement.ember, trials: 120);
+      expect(disadvantaged, greaterThan(0.85),
+          reason: 'docs/combat-spec.md §3: disadvantage should mean "takes '
+              'noticeably longer," never "impossible"');
+
+      final neutralTime =
+          _avgWinSeconds(_kessFront, gateElement: GateElement.verdant);
+      final disadvantagedTime = _avgWinSeconds(_kessFront,
+          gateElement: GateElement.ember, trials: 80);
+      expect(disadvantagedTime, greaterThan(neutralTime),
+          reason:
+              'the elemental penalty should be felt as pace, not as a coin flip');
+    });
+
+    test('an advantaged character does not trivially break pacing', () {
+      // Thora (Stone) is advantaged against an Ember gate.
+      final advantaged = _winRate(_withHealer, gateElement: GateElement.ember);
+      expect(advantaged, greaterThan(0.85));
+    });
+
+    test('every step-2 composition still clears at full element neutrality',
+        () {
+      // Elements must not have regressed the pre-step-3 tuning for a gate
+      // that advantages nobody and disadvantages nobody in these comps.
+      for (final entry in {
+        'kess front': _kessFront,
+        'kess back': _kessBack,
+        'with healer': _withHealer,
+        'no tank': _noTank,
+      }.entries) {
+        expect(_winRate(entry.value, gateElement: GateElement.verdant),
+            greaterThan(0.85),
+            reason: '${entry.key} regressed under the default gate element');
+      }
     });
   });
 }
