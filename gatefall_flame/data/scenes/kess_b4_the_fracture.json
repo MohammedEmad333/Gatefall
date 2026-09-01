@@ -1,0 +1,15 @@
+{
+  "scene_id": "kess_b4_the_fracture", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "kess", "text": "There's a lead. Real, maybe. I'm going tonight, alone, whatever it costs.",
+      "choices": [
+        { "choice_id": "stop", "text": "\"I'm not letting you go alone.\"", "next": "end",
+          "effects": { "set_flags": { "KESS_FRACTURE": "stop" }, "bond_delta": 20 } },
+        { "choice_id": "join", "text": "\"Then I'm coming with you.\"", "next": "end",
+          "effects": { "set_flags": { "KESS_FRACTURE": "join" }, "bond_delta": 20 } },
+        { "choice_id": "release", "text": "\"...Go. I hope it's them.\"", "next": "end",
+          "effects": { "set_flags": { "KESS_FRACTURE": "release" }, "bond_delta": -10 } }
+      ] },
+    "end": { "end_scene": true }
+  }
+}

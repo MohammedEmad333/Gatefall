@@ -1,0 +1,15 @@
+{
+  "scene_id": "dana_b4_the_fracture", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "dana", "text": "Order came down. Shut the house or lose my job. I'm resigning first. Cleaner that way.",
+      "choices": [
+        { "choice_id": "stop", "text": "\"Don't run from this. Fight it with us.\"", "next": "end",
+          "effects": { "set_flags": { "DANA_FRACTURE": "stop" }, "bond_delta": 20 } },
+        { "choice_id": "stand", "text": "\"Then we stand against the order together.\"", "next": "end",
+          "effects": { "set_flags": { "DANA_FRACTURE": "stand" }, "bond_delta": 20 } },
+        { "choice_id": "release", "text": "\"...Do what you need to do.\"", "next": "end",
+          "effects": { "set_flags": { "DANA_FRACTURE": "release" }, "bond_delta": -10 } }
+      ] },
+    "end": { "end_scene": true }
+  }
+}

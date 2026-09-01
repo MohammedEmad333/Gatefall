@@ -1,10 +1,16 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:gatefall_dialogue_engine/engine/evaluator.dart';
+import 'package:gatefall_dialogue_engine/models/game_state.dart';
+import 'package:gatefall_dialogue_engine/models/route.dart';
 
 import 'combat/battle.dart';
 import 'data/combat_config.dart';
+import 'data/companion_routes.dart';
 import 'data/gate.dart';
+import 'data/progression.dart';
 import 'data/roster.dart';
 
 /// Step-2 raid screen: formation, then the auto-battle.
@@ -66,8 +72,47 @@ class _RaidScreenState extends State<RaidScreen> {
   final GateGenerator _gates = GateGenerator();
   late Gate gate = _gates.next();
 
+  // Companion combat levels (step 4) — bought with Mana between raids.
+  final Map<String, int> levels = {
+    for (final f in Roster.all) f.id: Progression.minLevel,
+  };
+
+  // Gear (step 5) — one slot per character. A win always drops something;
+  // it's either equipped (if it's an upgrade) or salvaged into Mana.
+  final Map<String, Gear?> gear = {for (final f in Roster.all) f.id: null};
+  final Random _dropRng = Random();
+  String? lastDropMessage;
+
+  // Bond (step 6) — earned through play (raid clears), not bought; feeds a
+  // flat combat buff and unlocks post_raid story beats. docs/combat-spec.md
+  // §5 and the "fourth, softest track" note in §6.
+  static const int _bondPerClear = 12;
+  final GameState gameState = GameState();
+  Map<String, CharacterRoute> routes = {};
+  final Map<String, Beat?> _nextBeat = {};
+  List<String> lastBondMessages = [];
+
+  Map<String, int> get bondTiers => {
+        for (final id in routes.keys)
+          id: Evaluator.tierOf(gameState.bondPointsFor(id)),
+      };
+
   bool get speedUnlocked => clears >= CombatConfig.clearsToUnlockDoubleSpeed;
   int get partyCount => formation.length;
+
+  @override
+  void initState() {
+    super.initState();
+    CompanionRoutes.loadAll().then((r) {
+      if (!mounted) return;
+      setState(() {
+        routes = r;
+        for (final id in routes.keys) {
+          _nextBeat[id] = Evaluator.nextAvailableBeat(routes[id]!, gameState);
+        }
+      });
+    });
+  }
 
   @override
   void dispose() {
@@ -95,8 +140,81 @@ class _RaidScreenState extends State<RaidScreen> {
     });
   }
 
+  void _levelUp(String id) {
+    final cost = Progression.costFor(levels[id] ?? Progression.minLevel);
+    if (cost < 0 || totalMana < cost) return;
+    setState(() {
+      totalMana -= cost;
+      levels[id] = (levels[id] ?? Progression.minLevel) + 1;
+    });
+  }
+
+  void _enhanceGear(String id) {
+    final current = gear[id];
+    if (current == null) return;
+    final cost = current.enhanceCost;
+    if (cost < 0 || totalMana < cost) return;
+    setState(() {
+      totalMana -= cost;
+      current.enhanceLevel++;
+    });
+  }
+
+  /// A win always drops gear (docs/combat-spec.md §2, resolve step). It goes
+  /// to a random deployed character; if it isn't an upgrade over what
+  /// they're already wearing, it's salvaged into Mana instead so the drop
+  /// is never wasted.
+  void _rollGearDrop() {
+    final ownerId =
+        formation.keys.elementAt(_dropRng.nextInt(formation.length));
+    final drop = Gear(rarity: GearDrop.roll(_dropRng).rarity);
+    final current = gear[ownerId];
+    final name = Roster.byId(ownerId).name;
+    if (current == null || drop.statMultiplier > current.statMultiplier) {
+      gear[ownerId] = drop;
+      lastDropMessage =
+          '${drop.rarity.label} gear dropped — equipped on $name.';
+    } else {
+      totalMana += drop.rarity.salvageValue;
+      lastDropMessage =
+          '${drop.rarity.label} gear dropped for $name — salvaged for '
+          '+${drop.rarity.salvageValue} mana (their current gear is better).';
+    }
+  }
+
+  /// Bond is earned through play, not bought — every deployed companion
+  /// with route data gains a flat amount per clear. If that bond crosses a
+  /// tier threshold and unlocks a new beat, surface it: this is the
+  /// `post_raid` story hook (docs/combat-spec.md §2, "banter after clearing
+  /// a gate together") firing off the win, without this raid screen
+  /// rendering the actual scene — see docs/HANDOFF.md for that limitation.
+  void _awardBond() {
+    lastBondMessages = [];
+    for (final id in formation.keys) {
+      final route = routes[id];
+      if (route == null) continue;
+      gameState.addBond(id, _bondPerClear);
+      final before = _nextBeat[id];
+      final after = Evaluator.nextAvailableBeat(route, gameState);
+      _nextBeat[id] = after;
+      if (after != null && after.beatId != before?.beatId) {
+        final name = Roster.byId(id).name;
+        lastBondMessages.add(after.triggerContext == 'post_raid'
+            ? '$name has something to say after this raid — new scene: '
+                '"${after.title}".'
+            : '$name\'s bond deepens — "${after.title}" is now available '
+                '(${after.triggerContext}).');
+      }
+    }
+  }
+
   void _startRaid() {
-    final b = Battle.fromFormation(formation, gateElement: gate.element)
+    lastDropMessage = null;
+    final b = Battle.fromFormation(formation,
+        levels: levels,
+        gear: gear,
+        bondTiers: bondTiers,
+        gateElement: gate.element)
       ..start();
     b.autoCast = autoCast;
     battle = b;
@@ -113,7 +231,11 @@ class _RaidScreenState extends State<RaidScreen> {
           _timer?.cancel();
           _timer = null;
           totalMana += b.manaEarned;
-          if (b.status == BattleStatus.won) clears++;
+          if (b.status == BattleStatus.won) {
+            clears++;
+            _rollGearDrop();
+            _awardBond();
+          }
         }
         setState(() {});
       },
@@ -154,9 +276,15 @@ class _RaidScreenState extends State<RaidScreen> {
                   const SizedBox(height: 14),
                   if (finished)
                     _resultPanel(b)
-                  else if (showFormation || b == null)
-                    _formationPanel()
-                  else ...[
+                  else if (showFormation || b == null) ...[
+                    _formationPanel(),
+                    const SizedBox(height: 12),
+                    _levelsPanel(),
+                    const SizedBox(height: 12),
+                    _gearPanel(),
+                    const SizedBox(height: 12),
+                    _bondPanel(),
+                  ] else ...[
                     _enemyPanel(b),
                     const SizedBox(height: 9),
                     _waveTrack(b),
@@ -359,7 +487,7 @@ class _RaidScreenState extends State<RaidScreen> {
                 style: TextStyle(
                     color: def.locked ? _boneDim : _bone, fontSize: 12)),
             const SizedBox(height: 2),
-            Text(def.role,
+            Text('${def.role} · Lv.${levels[def.id] ?? Progression.minLevel}',
                 style: const TextStyle(
                     color: _boneDim,
                     fontSize: 9.5,
@@ -377,6 +505,235 @@ class _RaidScreenState extends State<RaidScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // ---------------- levels ----------------
+
+  Widget _levelsPanel() {
+    return Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        border: Border.all(color: _riftDim),
+        color: Colors.black.withValues(alpha: .2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('Companion levels',
+                  style: TextStyle(color: _bone, fontSize: 14)),
+              Text('$totalMana mana banked',
+                  style: const TextStyle(
+                      color: _verdant, fontSize: 11, fontFamily: 'monospace')),
+            ],
+          ),
+          const SizedBox(height: 3),
+          const Text(
+            'Mana spent between raids grows a companion\'s attack and max HP '
+            'permanently. Never required to clear a gate — just faster.',
+            style: TextStyle(
+                color: _boneDim,
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+                height: 1.5),
+          ),
+          const SizedBox(height: 8),
+          for (final def in Roster.all) _levelRow(def),
+        ],
+      ),
+    );
+  }
+
+  Widget _levelRow(FighterDef def) {
+    final level = levels[def.id] ?? Progression.minLevel;
+    final cost = Progression.costFor(level);
+    final maxed = cost < 0;
+    final affordable = !maxed && totalMana >= cost;
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('${def.name}  ·  Lv.$level',
+                    style: const TextStyle(color: _bone, fontSize: 12.5)),
+                Text(
+                  maxed
+                      ? 'max level'
+                      : '+4% ATK & HP per level — next: $cost mana',
+                  style: const TextStyle(color: _boneDim, fontSize: 10.5),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            width: 84,
+            child: OutlinedButton(
+              onPressed: (!maxed && affordable) ? () => _levelUp(def.id) : null,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: affordable ? _gold : _boneDim,
+                side: BorderSide(color: affordable ? _gold : _riftDim),
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                shape: const RoundedRectangleBorder(),
+              ),
+              child: Text(maxed ? 'Max' : 'Level up',
+                  style: const TextStyle(fontSize: 11)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ---------------- gear ----------------
+
+  Widget _gearPanel() {
+    return Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        border: Border.all(color: _riftDim),
+        color: Colors.black.withValues(alpha: .2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Gear', style: TextStyle(color: _bone, fontSize: 14)),
+          const SizedBox(height: 3),
+          const Text(
+            'A win always drops one piece of gear. It\'s equipped '
+            'automatically if it beats what that character has, otherwise '
+            'it\'s salvaged into Mana on the spot — nothing is ever wasted.',
+            style: TextStyle(
+                color: _boneDim,
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+                height: 1.5),
+          ),
+          const SizedBox(height: 8),
+          for (final def in Roster.all) _gearRow(def),
+        ],
+      ),
+    );
+  }
+
+  Widget _gearRow(FighterDef def) {
+    final g = gear[def.id];
+    final bonusPct = g == null ? 0 : ((g.statMultiplier - 1) * 100).round();
+    final cost = g?.enhanceCost ?? -1;
+    final maxed = g != null && cost < 0;
+    final affordable = g != null && !maxed && totalMana >= cost;
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  g == null
+                      ? '${def.name}  ·  no gear yet'
+                      : '${def.name}  ·  ${g.rarity.label} +${g.enhanceLevel}',
+                  style: const TextStyle(color: _bone, fontSize: 12.5),
+                ),
+                Text(
+                  g == null
+                      ? 'clear a gate to find a first piece'
+                      : maxed
+                          ? '+$bonusPct% ATK, HP & ability power — max enhance'
+                          : '+$bonusPct% ATK, HP & ability power — enhance: $cost mana',
+                  style: const TextStyle(color: _boneDim, fontSize: 10.5),
+                ),
+              ],
+            ),
+          ),
+          if (g != null)
+            SizedBox(
+              width: 84,
+              child: OutlinedButton(
+                onPressed:
+                    (!maxed && affordable) ? () => _enhanceGear(def.id) : null,
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: affordable ? _gold : _boneDim,
+                  side: BorderSide(color: affordable ? _gold : _riftDim),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  shape: const RoundedRectangleBorder(),
+                ),
+                child: Text(maxed ? 'Max' : 'Enhance',
+                    style: const TextStyle(fontSize: 11)),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  // ---------------- bond ----------------
+
+  Widget _bondPanel() {
+    return Container(
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        border: Border.all(color: _riftDim),
+        color: Colors.black.withValues(alpha: .2),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Bond', style: TextStyle(color: _bone, fontSize: 14)),
+          const SizedBox(height: 3),
+          const Text(
+            'Earned by fighting together, not bought — every clear raises '
+            'bond with whoever you brought. Higher tiers buff them in '
+            'battle and unlock new story beats.',
+            style: TextStyle(
+                color: _boneDim,
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
+                height: 1.5),
+          ),
+          const SizedBox(height: 8),
+          if (routes.isEmpty)
+            const Padding(
+              padding: EdgeInsets.only(top: 4),
+              child: Text('Loading companion routes…',
+                  style: TextStyle(color: _boneDim, fontSize: 11)),
+            )
+          else
+            for (final id in routes.keys) _bondRow(id),
+        ],
+      ),
+    );
+  }
+
+  Widget _bondRow(String id) {
+    final def = Roster.byId(id);
+    final points = gameState.bondPointsFor(id);
+    final tier = Evaluator.tierOf(points);
+    final maxTier = Evaluator.bondTierThresholds.length - 1;
+    final bonusPct = ((BondBuff.statMultiplier(tier) - 1) * 100).round();
+    final next = _nextBeat[id];
+    return Padding(
+      padding: const EdgeInsets.only(top: 6),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+              '${def.name}  ·  Bond tier $tier/$maxTier  ·  +$bonusPct% ATK & HP',
+              style: const TextStyle(color: _bone, fontSize: 12.5)),
+          Text(
+            next == null
+                ? '$points bond points — route complete'
+                : '$points bond points — next: "${next.title}" (${next.triggerContext})',
+            style: const TextStyle(color: _boneDim, fontSize: 10.5),
+          ),
+        ],
       ),
     );
   }
@@ -493,7 +850,7 @@ class _RaidScreenState extends State<RaidScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(f.name,
+                Text('${f.name}  Lv.${f.level}',
                     style: const TextStyle(color: _bone, fontSize: 13)),
                 Text(tag,
                     style: TextStyle(
@@ -564,6 +921,21 @@ class _RaidScreenState extends State<RaidScreen> {
         Text('+${b.manaEarned} mana earned',
             style: const TextStyle(
                 color: _gold, fontSize: 15, fontFamily: 'monospace')),
+        if (won && lastDropMessage != null) ...[
+          const SizedBox(height: 10),
+          Text(lastDropMessage!,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                  color: _verdant, fontSize: 12.5, height: 1.4)),
+        ],
+        if (won)
+          for (final msg in lastBondMessages) ...[
+            const SizedBox(height: 10),
+            Text(msg,
+                textAlign: TextAlign.center,
+                style:
+                    const TextStyle(color: _gold, fontSize: 12.5, height: 1.4)),
+          ],
         if (justUnlocked) ...[
           const SizedBox(height: 14),
           Container(

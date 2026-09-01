@@ -2,9 +2,12 @@ import 'dart:math';
 
 import '../data/combat_config.dart';
 import '../data/element.dart';
+import '../data/gear.dart';
 import '../data/roster.dart';
 
+export '../data/bond.dart';
 export '../data/element.dart';
+export '../data/gear.dart';
 
 /// Pure combat simulation — no Flame, no Flutter, no rendering.
 /// Kept separate so balance can be unit-tested in milliseconds, and so the
@@ -46,6 +49,7 @@ class Fighter {
   final bool melee;
   final GateElement element;
   final BattleRow row;
+  final int level;
 
   double hp;
   double shield = 0;
@@ -62,6 +66,7 @@ class Fighter {
     required this.melee,
     required this.element,
     required this.row,
+    this.level = 1,
   }) : hp = maxHp;
 
   double get hpFraction => (hp / maxHp).clamp(0, 1);
@@ -127,10 +132,16 @@ class Battle {
   }) : _rng = rng ?? Random();
 
   factory Battle.fromFormation(Map<String, BattleRow> formation,
-      {GateElement gateElement = GateElement.verdant, Random? rng}) {
+      {Map<String, int> levels = const {},
+      Map<String, Gear?> gear = const {},
+      Map<String, int> bondTiers = const {},
+      GateElement gateElement = GateElement.verdant,
+      Random? rng}) {
     return Battle(
-      party: Roster.partyFrom(formation),
-      abilities: Roster.abilitiesFor(formation.keys),
+      party: Roster.partyFrom(formation,
+          levels: levels, gear: gear, bondTiers: bondTiers),
+      abilities: Roster.abilitiesFor(formation.keys,
+          levels: levels, gear: gear, bondTiers: bondTiers),
       gateElement: gateElement,
       rng: rng,
     );

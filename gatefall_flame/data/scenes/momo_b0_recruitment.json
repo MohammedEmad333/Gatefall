@@ -1,0 +1,10 @@
+{
+  "scene_id": "momo_b0_recruitment", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "player", "text": "(You find her curled in a doorway three blocks from the nearest gate, flinching at every sound.)", "next": "n2" },
+    "n2": { "speaker": "momo", "text": "Please... don't. It's not safe. Wherever I stay, they come.", "next": "n3" },
+    "n3": { "speaker": "player", "text": "(You offer a room anyway.)", "next": "n4" },
+    "n4": { "speaker": "momo", "text": "...You shouldn't have. But — thank you.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "scene_id": "momo_b4_the_fracture", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "momo", "text": "Something's hunting me specifically. If I leave, it follows me — not the house.",
+      "choices": [
+        { "choice_id": "stop", "text": "\"You're not leaving. We face it together.\"", "next": "end",
+          "effects": { "set_flags": { "MOMO_FRACTURE": "stop" }, "bond_delta": 20 } },
+        { "choice_id": "join", "text": "\"Then I'm coming with you.\"", "next": "end",
+          "effects": { "set_flags": { "MOMO_FRACTURE": "join" }, "bond_delta": 20 } },
+        { "choice_id": "release", "text": "\"...If that's what keeps everyone else safe.\"", "next": "end",
+          "effects": { "set_flags": { "MOMO_FRACTURE": "release" }, "bond_delta": -10 } }
+      ] },
+    "end": { "end_scene": true }
+  }
+}

@@ -3,17 +3,31 @@
 //
 // Run: dart test
 
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
+import 'package:gatefall_dialogue_engine/engine/evaluator.dart';
+import 'package:gatefall_dialogue_engine/models/game_state.dart';
+import 'package:gatefall_dialogue_engine/models/route.dart';
 import 'package:test/test.dart';
 
 import '../lib/combat/battle.dart';
+import '../lib/data/progression.dart';
 import '../lib/data/roster.dart';
 
 ({bool won, double seconds}) _run(Map<String, BattleRow> formation, int seed,
-    {double cap = 2400, GateElement gateElement = GateElement.verdant}) {
+    {double cap = 2400,
+    GateElement gateElement = GateElement.verdant,
+    Map<String, int> levels = const {},
+    Map<String, Gear?> gear = const {},
+    Map<String, int> bondTiers = const {}}) {
   final b = Battle.fromFormation(formation,
-      gateElement: gateElement, rng: Random(seed));
+      gateElement: gateElement,
+      levels: levels,
+      gear: gear,
+      bondTiers: bondTiers,
+      rng: Random(seed));
   b.start();
   const dt = 0.1;
   while (b.status == BattleStatus.fighting && b.elapsed < cap) {
@@ -23,19 +37,38 @@ import '../lib/data/roster.dart';
 }
 
 double _winRate(Map<String, BattleRow> formation,
-    {int trials = 60, GateElement gateElement = GateElement.verdant}) {
+    {int trials = 60,
+    GateElement gateElement = GateElement.verdant,
+    Map<String, int> levels = const {},
+    Map<String, Gear?> gear = const {},
+    Map<String, int> bondTiers = const {}}) {
   var wins = 0;
   for (var i = 0; i < trials; i++) {
-    if (_run(formation, i, gateElement: gateElement).won) wins++;
+    if (_run(formation, i,
+            gateElement: gateElement,
+            levels: levels,
+            gear: gear,
+            bondTiers: bondTiers)
+        .won) {
+      wins++;
+    }
   }
   return wins / trials;
 }
 
 double _avgWinSeconds(Map<String, BattleRow> formation,
-    {int trials = 40, GateElement gateElement = GateElement.verdant}) {
+    {int trials = 40,
+    GateElement gateElement = GateElement.verdant,
+    Map<String, int> levels = const {},
+    Map<String, Gear?> gear = const {},
+    Map<String, int> bondTiers = const {}}) {
   final times = <double>[];
   for (var i = 0; i < trials; i++) {
-    final r = _run(formation, 500 + i, gateElement: gateElement);
+    final r = _run(formation, 500 + i,
+        gateElement: gateElement,
+        levels: levels,
+        gear: gear,
+        bondTiers: bondTiers);
     if (r.won) times.add(r.seconds);
   }
   if (times.isEmpty) return 0;
@@ -265,6 +298,184 @@ void main() {
             greaterThan(0.85),
             reason: '${entry.key} regressed under the default gate element');
       }
+    });
+  });
+
+  group('progression (step 4)', () {
+    test('level 1 has no bonus — the multiplier is neutral at the floor', () {
+      expect(Progression.statMultiplier(Progression.minLevel), equals(1.0));
+    });
+
+    test('leveling is a real Mana sink with rising cost, and eventually caps',
+        () {
+      var prevCost = Progression.costFor(Progression.minLevel);
+      expect(prevCost, greaterThan(0));
+      for (var lvl = Progression.minLevel + 1;
+          lvl < Progression.maxLevel;
+          lvl++) {
+        final cost = Progression.costFor(lvl);
+        expect(cost, greaterThan(prevCost),
+            reason: 'each level should cost more than the last');
+        prevCost = cost;
+      }
+      expect(Progression.costFor(Progression.maxLevel), equals(-1),
+          reason: 'a maxed companion has nothing left to buy');
+    });
+
+    test(
+        'a leveled party clears faster than an unleveled one, not just '
+        'more reliably', () {
+      final maxLevels = {
+        for (final f in ['player', 'faelen', 'kess', 'momo', 'thora']) f: 10,
+      };
+      final baseline = _avgWinSeconds(_kessBack);
+      final leveled = _avgWinSeconds(_kessBack, levels: maxLevels);
+      expect(leveled, lessThan(baseline),
+          reason:
+              'docs/combat-spec.md §6: companion level is "the main Mana sink" '
+              '— it should visibly pay off in pace');
+    });
+
+    test(
+        'an unleveled party is still fully viable — leveling is a speed '
+        'bonus, never a gate requirement', () {
+      expect(_winRate(Roster.defaultFormation()), greaterThan(0.85),
+          reason: 'the default formation at level 1 must clear on its own, '
+              'same as before companion leveling existed');
+    });
+  });
+
+  group('gear (step 5)', () {
+    test('no gear equipped is a neutral multiplier', () {
+      // No Gear instance at all — the common case before a first drop.
+      final unequipped = Roster.byId('kess').instantiate(BattleRow.front);
+      final explicitNull =
+          Roster.byId('kess').instantiate(BattleRow.front, gear: null);
+      expect(unequipped.attack, equals(explicitNull.attack));
+      expect(unequipped.maxHp, equals(explicitNull.maxHp));
+    });
+
+    test('rarer gear is a strictly bigger bonus at the same enhance level', () {
+      final common = Gear(rarity: GearRarity.common);
+      final rare = Gear(rarity: GearRarity.rare);
+      final epic = Gear(rarity: GearRarity.epic);
+      expect(rare.statMultiplier, greaterThan(common.statMultiplier));
+      expect(epic.statMultiplier, greaterThan(rare.statMultiplier));
+    });
+
+    test('enhancing raises the multiplier and eventually caps', () {
+      final g = Gear(rarity: GearRarity.common);
+      final base = g.statMultiplier;
+      var prevCost = g.enhanceCost;
+      expect(prevCost, greaterThan(0));
+      for (var i = 0; i < Gear.maxEnhance; i++) {
+        final costBefore = g.enhanceCost;
+        g.enhanceLevel++;
+        expect(g.statMultiplier, greaterThan(base));
+        if (i < Gear.maxEnhance - 1) {
+          expect(g.enhanceCost, greaterThan(costBefore),
+              reason: 'each enhance level should cost more than the last');
+        }
+      }
+      expect(g.enhanceCost, equals(-1),
+          reason: 'a maxed piece has nothing left to buy');
+    });
+
+    test('the drop table always returns a valid rarity and favors common', () {
+      final rng = Random(1);
+      final counts = {for (final r in GearRarity.values) r: 0};
+      for (var i = 0; i < 2000; i++) {
+        final rarity = GearDrop.roll(rng).rarity;
+        counts[rarity] = counts[rarity]! + 1;
+      }
+      expect(counts[GearRarity.common]!, greaterThan(counts[GearRarity.rare]!));
+      expect(counts[GearRarity.rare]!, greaterThan(counts[GearRarity.epic]!));
+    });
+
+    test('gear stacks with companion level rather than replacing it', () {
+      final geared = {'kess': Gear(rarity: GearRarity.epic, enhanceLevel: 4)};
+      final baseline = _avgWinSeconds(_kessBack);
+      final withGear = _avgWinSeconds(_kessBack, gear: geared);
+      expect(withGear, lessThan(baseline),
+          reason: 'equipping a strong item on the main striker should '
+              'visibly speed up the same composition');
+    });
+
+    test('a party with no gear at all is still fully viable', () {
+      // Gear is a bonus on top of Mana leveling, never a requirement —
+      // same no-fail-state promise as Progression (step 4) and Elements
+      // (step 3).
+      expect(_winRate(Roster.defaultFormation()), greaterThan(0.85));
+    });
+  });
+
+  group('bond (step 6)', () {
+    test('the combat buff matches docs/combat-spec.md §5 exactly', () {
+      // Bond tier | Combat bonus: 0 -, 1 +5%, 2 +10%, 3 +15%, 4 +20%,
+      // 5 +25%, 6 +30%.
+      const expected = [0.0, .05, .10, .15, .20, .25, .30];
+      for (var tier = 0; tier < expected.length; tier++) {
+        expect(
+            BondBuff.statMultiplier(tier), closeTo(1.0 + expected[tier], 1e-9));
+      }
+    });
+
+    test('bond tier is derived from the shared evaluator, not reimplemented',
+        () {
+      // BondBuff must track Evaluator.bondTierThresholds, not a private
+      // copy — otherwise retuning pacing there silently desyncs combat.
+      expect(Evaluator.tierOf(0), equals(0));
+      expect(Evaluator.tierOf(59), equals(0));
+      expect(Evaluator.tierOf(60), equals(1));
+      expect(Evaluator.tierOf(900), equals(6));
+      expect(BondBuff.statMultiplierForPoints(150),
+          equals(BondBuff.statMultiplier(2)));
+    });
+
+    test('no bond data (e.g. the player) is a neutral multiplier', () {
+      expect(BondBuff.statMultiplier(0), equals(1.0));
+    });
+
+    test('a bonded party clears faster than an unbonded one', () {
+      final bonded = {
+        'kess': 6,
+        'faelen': 6
+      }; // max tier on the two front-liners
+      final baseline = _avgWinSeconds(_kessBack);
+      final withBond = _avgWinSeconds(_kessBack, bondTiers: bonded);
+      expect(withBond, lessThan(baseline),
+          reason: 'the "meaningful boost" from §5 should show up in pace, '
+              'same as level and gear');
+    });
+
+    test('a party with no bond at all is still fully viable', () {
+      // Same no-fail-state promise as every other power track: Bond is
+      // earned through play and buffs, never gates, a raid.
+      expect(_winRate(Roster.defaultFormation()), greaterThan(0.85));
+    });
+
+    test(
+        'nextAvailableBeat surfaces a real post_raid beat once earlier beats '
+        'and bond are satisfied', () {
+      // Exercises the exact path main.dart's _awardBond() drives: load a
+      // real route, advance state the same way play would, and confirm the
+      // evaluator hands back a post_raid-triggered beat — the mechanism
+      // behind the step 6 story hook, independent of any UI.
+      final json = jsonDecode(File('data/faelen_route.json').readAsStringSync())
+          as Map<String, dynamic>;
+      final route = CharacterRoute.fromJson(json);
+      final state = GameState();
+
+      // faelen_b0_recruitment (story) and faelen_b1_the_wall (home_visit)
+      // are prerequisites for the post_raid beat but aren't raid-triggered
+      // themselves — simulate them having already resolved.
+      state.completedBeats.add('faelen_b0_recruitment');
+      state.completedBeats.add('faelen_b1_the_wall');
+      state.addBond('faelen', 150); // tier 2, faelen_b2_proving_ground's floor
+
+      final next = Evaluator.nextAvailableBeat(route, state);
+      expect(next?.beatId, equals('faelen_b2_proving_ground'));
+      expect(next?.triggerContext, equals('post_raid'));
     });
   });
 }

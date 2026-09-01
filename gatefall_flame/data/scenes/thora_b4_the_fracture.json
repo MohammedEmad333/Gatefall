@@ -1,0 +1,15 @@
+{
+  "scene_id": "thora_b4_the_fracture", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "thora", "text": "There's a chance to save others like mine. It will cost me. That's an acceptable price.",
+      "choices": [
+        { "choice_id": "stop", "text": "\"Your life isn't a price to pay. Stand down.\"", "next": "end",
+          "effects": { "set_flags": { "THORA_FRACTURE": "stop" }, "bond_delta": 20 } },
+        { "choice_id": "join", "text": "\"Then we go together, and you come back too.\"", "next": "end",
+          "effects": { "set_flags": { "THORA_FRACTURE": "join" }, "bond_delta": 20 } },
+        { "choice_id": "release", "text": "\"...If that's the choice you need to make.\"", "next": "end",
+          "effects": { "set_flags": { "THORA_FRACTURE": "release" }, "bond_delta": -10 } }
+      ] },
+    "end": { "end_scene": true }
+  }
+}

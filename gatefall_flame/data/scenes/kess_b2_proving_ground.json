@@ -1,0 +1,16 @@
+{
+  "scene_id": "kess_b2_proving_ground", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "kess", "text": "I got this—", "next": "n2" },
+    "n2": { "speaker": "player", "text": "(She overextends chasing one more kill and gets swarmed. You pull her out with seconds to spare.)",
+      "choices": [
+        { "choice_id": "bench_her", "text": "\"You're benched next raid.\"", "next": "n3_bench",
+          "effects": { "set_flags": { "KESS_LEASH": "bench" }, "bond_delta": 10 } },
+        { "choice_id": "let_run", "text": "\"Run it your way. Just don't die.\"", "next": "n3_free",
+          "effects": { "set_flags": { "KESS_LEASH": "free" }, "bond_delta": 15 } }
+      ] },
+    "n3_bench": { "speaker": "kess", "text": "...Fine. FINE. I'll sit out. Once.", "next": "end" },
+    "n3_free": { "speaker": "kess", "text": "See? Told you I had it.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

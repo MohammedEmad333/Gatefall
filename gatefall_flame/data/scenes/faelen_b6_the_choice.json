@@ -1,0 +1,12 @@
+{
+  "scene_id": "faelen_b6_the_choice",
+  "start_node": "n1",
+  "nodes": {
+    "n1": {
+      "speaker": "faelen",
+      "text": "Then I'll fight as one of you.",
+      "next": "end"
+    },
+    "end": { "end_scene": true }
+  }
+}

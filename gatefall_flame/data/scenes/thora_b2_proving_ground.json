@@ -1,0 +1,16 @@
+{
+  "scene_id": "thora_b2_proving_ground", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "thora", "text": "Stay behind me, all of you—", "next": "n2" },
+    "n2": { "speaker": "player", "text": "(She shields the whole party through the fight and collapses the moment it's over, having healed everyone but herself.)",
+      "choices": [
+        { "choice_id": "force", "text": "\"Heal yourself first next time. That's an order.\"", "next": "n3_force",
+          "effects": { "set_flags": { "THORA_TRIAGE": "force" }, "bond_delta": 10 } },
+        { "choice_id": "trust", "text": "\"I trust your judgment out there.\"", "next": "n3_trust",
+          "effects": { "set_flags": { "THORA_TRIAGE": "trust" }, "bond_delta": 15 } }
+      ] },
+    "n3_force": { "speaker": "thora", "text": "...As you say.", "next": "end" },
+    "n3_trust": { "speaker": "thora", "text": "...Careful. I might start believing that.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

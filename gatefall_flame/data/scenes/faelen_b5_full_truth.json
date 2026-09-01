@@ -1,0 +1,25 @@
+{
+  "scene_id": "faelen_b5_full_truth",
+  "start_node": "n1",
+  "nodes": {
+    "n1": {
+      "speaker": "faelen",
+      "text": "I gave the order. They followed it. They died. I let you close anyway. It terrifies me.",
+      "choices": [
+        {
+          "choice_id": "not_disqualified",
+          "text": "\"The past doesn't disqualify you from being loved.\"",
+          "next": "end",
+          "effects": { "set_flags": { "FAELEN_CONFESSED": true }, "bond_delta": 20 }
+        },
+        {
+          "choice_id": "stay_silent",
+          "text": "(Stay. Say nothing. Just don't leave.)",
+          "next": "end",
+          "effects": { "set_flags": { "FAELEN_CONFESSED": true }, "bond_delta": 15 }
+        }
+      ]
+    },
+    "end": { "end_scene": true }
+  }
+}

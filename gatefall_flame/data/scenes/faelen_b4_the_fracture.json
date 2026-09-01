@@ -1,0 +1,31 @@
+{
+  "scene_id": "faelen_b4_the_fracture",
+  "start_node": "n1",
+  "nodes": {
+    "n1": {
+      "speaker": "faelen",
+      "text": "This is my war. Not the house's. I'm ending it tonight, alone.",
+      "choices": [
+        {
+          "choice_id": "stop",
+          "text": "\"I won't let you go alone.\"",
+          "next": "end",
+          "effects": { "set_flags": { "FAELEN_FRACTURE": "stop" }, "bond_delta": 20 }
+        },
+        {
+          "choice_id": "join",
+          "text": "\"Then we go together.\"",
+          "next": "end",
+          "effects": { "set_flags": { "FAELEN_FRACTURE": "join" }, "bond_delta": 20 }
+        },
+        {
+          "choice_id": "release",
+          "text": "\"...Go. It's your call.\"",
+          "next": "end",
+          "effects": { "set_flags": { "FAELEN_FRACTURE": "release" }, "bond_delta": -10 }
+        }
+      ]
+    },
+    "end": { "end_scene": true }
+  }
+}

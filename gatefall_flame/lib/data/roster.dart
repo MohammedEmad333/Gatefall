@@ -1,4 +1,5 @@
 import '../combat/battle.dart';
+import 'progression.dart';
 
 enum BattleRow { front, back }
 
@@ -117,14 +118,33 @@ class Roster {
         cooldown: 7.0),
   ];
 
-  /// Only abilities whose owner is actually deployed.
-  static List<Ability> abilitiesFor(Iterable<String> deployedIds) => abilities
-      .where((a) => deployedIds.contains(a.ownerId))
-      .map((d) => d.instantiate())
-      .toList();
+  /// Only abilities whose owner is actually deployed. [levels] scales each
+  /// ability's power with its owner's companion level (step 4); [gear]
+  /// stacks a further multiplier from their equipped item (step 5);
+  /// [bondTiers] stacks the Bond combat buff (step 6, docs/combat-spec.md
+  /// §5) — 0 (no bond data, e.g. the player) is neutral.
+  static List<Ability> abilitiesFor(Iterable<String> deployedIds,
+          {Map<String, int> levels = const {},
+          Map<String, Gear?> gear = const {},
+          Map<String, int> bondTiers = const {}}) =>
+      abilities
+          .where((a) => deployedIds.contains(a.ownerId))
+          .map((d) => d.instantiate(
+              level: levels[d.ownerId] ?? Progression.minLevel,
+              gear: gear[d.ownerId],
+              bondTier: bondTiers[d.ownerId] ?? 0))
+          .toList();
 
-  static List<Fighter> partyFrom(Map<String, BattleRow> formation) =>
-      formation.entries.map((e) => byId(e.key).instantiate(e.value)).toList();
+  static List<Fighter> partyFrom(Map<String, BattleRow> formation,
+          {Map<String, int> levels = const {},
+          Map<String, Gear?> gear = const {},
+          Map<String, int> bondTiers = const {}}) =>
+      formation.entries
+          .map((e) => byId(e.key).instantiate(e.value,
+              level: levels[e.key] ?? Progression.minLevel,
+              gear: gear[e.key],
+              bondTier: bondTiers[e.key] ?? 0))
+          .toList();
 }
 
 class FighterDef {
@@ -145,17 +165,24 @@ class FighterDef {
     this.locked = false,
   });
 
-  Fighter instantiate(BattleRow row) => Fighter(
-        id: id,
-        name: name,
-        role: role,
-        maxHp: maxHp,
-        attack: attack,
-        attackSpeed: attackSpeed,
-        melee: melee,
-        element: element,
-        row: row,
-      );
+  Fighter instantiate(BattleRow row,
+      {int level = Progression.minLevel, Gear? gear, int bondTier = 0}) {
+    final mult = Progression.statMultiplier(level) *
+        (gear?.statMultiplier ?? 1.0) *
+        BondBuff.statMultiplier(bondTier);
+    return Fighter(
+      id: id,
+      name: name,
+      role: role,
+      maxHp: maxHp * mult,
+      attack: attack * mult,
+      attackSpeed: attackSpeed,
+      melee: melee,
+      element: element,
+      row: row,
+      level: level,
+    );
+  }
 }
 
 class AbilityDef {
@@ -173,12 +200,17 @@ class AbilityDef {
     this.duration = 0,
   });
 
-  Ability instantiate() => Ability(
+  Ability instantiate(
+          {int level = Progression.minLevel, Gear? gear, int bondTier = 0}) =>
+      Ability(
         id: id,
         name: name,
         ownerId: ownerId,
         kind: kind,
-        power: power,
+        power: power *
+            Progression.statMultiplier(level) *
+            (gear?.statMultiplier ?? 1.0) *
+            BondBuff.statMultiplier(bondTier),
         cooldown: cooldown,
         duration: duration,
       );
