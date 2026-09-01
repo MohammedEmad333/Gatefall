@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   flame: ^1.18.0
+  gatefall_dialogue_engine:
+    path: ../gatefall_dialogue_engine
 
 dev_dependencies:
   flutter_test:

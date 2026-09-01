@@ -1,0 +1,16 @@
+{
+  "scene_id": "dana_b2_proving_ground", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "dana", "text": "My superiors want this house shut down. Officially, I'm here to enforce that.", "next": "n2" },
+    "n2": { "speaker": "player", "text": "(Unofficially, she's stalled the paperwork for weeks, risking her job to buy you time.)",
+      "choices": [
+        { "choice_id": "thank", "text": "\"Thank you. Openly. I mean it.\"", "next": "n3_thank",
+          "effects": { "set_flags": { "DANA_COVER": "thanked" }, "bond_delta": 15 } },
+        { "choice_id": "deniability", "text": "\"I never saw any of this. You're clean.\"", "next": "n3_deniability",
+          "effects": { "set_flags": { "DANA_COVER": "deniable" }, "bond_delta": 10 } }
+      ] },
+    "n3_thank": { "speaker": "dana", "text": "...Don't. Someone might hear you.", "next": "end" },
+    "n3_deniability": { "speaker": "dana", "text": "...Smart. Keep it that way.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

@@ -92,8 +92,8 @@ Future gacha: a pull grants the character, then a **character-specific unlock qu
 ### Code
 | File | Contents |
 |---|---|
-| `gatefall_dialogue_engine/` | Pure-Dart dialogue engine + **all 5 characters' routes as real JSON** (40 files) |
-| `gatefall_flame/` | Flutter/Flame scaffold mirroring the prototype + balance tests |
+| `gatefall_dialogue_engine/` | Pure-Dart dialogue engine + **all 5 characters' routes as real JSON** (40 files) — the canonical copy |
+| `gatefall_flame/` | Flutter/Flame scaffold mirroring the prototype + balance tests; depends on `gatefall_dialogue_engine` (path dependency, step 6) for Bond/beat logic, with its own mirrored copy of the route JSON under `data/` since Flutter can't bundle assets from a pure-Dart path dependency |
 
 ---
 
@@ -104,7 +104,7 @@ Future gacha: a pull grants the character, then a **character-specific unlock qu
 - [x] **Step 3** — elements and the matchup wheel
 - [x] **Step 4** — Mana rewards → companion leveling
 - [x] **Step 5** — gear drops and upgrades
-- [ ] Step 6 — Bond buffs + `post_raid` story hooks
+- [x] **Step 6** — Bond buffs + `post_raid` story hooks (buff and hook *detection* are real and tested; the raid screen still doesn't render a dialogue scene — see finding #10 and caveats)
 - [ ] Step 7 — offline accrual
 
 ---
@@ -132,6 +132,10 @@ Each is a real bug if undone. All are encoded in `test/balance_test.dart`.
 
 9. **Gear (step 5) stacks *with* level rather than replacing it, and every win pays out.** Combat spec §2's resolve step says a win always drops gear (only losing withholds it) — so `_rollGearDrop()` isn't RNG-gated on top of the win, it always fires, only the *rarity* (common/rare/epic, weighted 65/28/7) is random. One slot per character, no inventory screen: a drop auto-equips only if it beats what's already worn (comparing `Gear.statMultiplier`, which folds in any enhance investment), otherwise it's salvaged into Mana on the spot — a "bad" drop is never a dead click. `Gear.statMultiplier` combines multiplicatively with `Progression.statMultiplier`, so a well-geared low-level character and a well-leveled ungeared one both feel the payoff. Same guardrail as leveling: a fully ungeared party still clears at the same rate as before gear existed.
 
+10. **Bond (step 6) is real integration with the dialogue engine, not a reimplementation of its tier math.** `gatefall_flame` now depends on `gatefall_dialogue_engine` via a `path:` pubspec dependency and calls its actual `Evaluator.tierOf` / `Evaluator.nextAvailableBeat` — `BondBuff` only adds the combat-facing multiplier from combat-spec.md §5 (flat +5%/tier) on top of that one shared source of truth. Because the dialogue engine is a **pure-Dart package**, Flutter can't auto-bundle its `data/` assets from the path dependency; the route JSON is mirrored into `gatefall_flame/data/` (matching the asset paths the scaffold's `pubspec.yaml` had already declared, unused, since step 1) and loaded via `rootBundle`. That mirroring is a real duplication tradeoff — see caveats.
+    - Bond is earned through play (a flat amount per raid clear, per companion deployed), never bought — the fourth, softest track per §6.
+    - The `post_raid` story hook is *detection*, not playback: after a bond gain, `_awardBond()` calls the shared `nextAvailableBeat` and, if a newly-unlocked beat's `trigger_context` is `post_raid`, surfaces a one-line notification on the raid result screen. It does **not** render the beat's actual dialogue scene (no in-app scene renderer exists yet) or apply any of that scene's own choice-driven bond deltas/flags — see caveats for what that means for a companion's route staying stuck on an earlier `home_visit`/`gift`/`date` beat in this raid-only build.
+
 ### Current tuning (all compositions viable, speed/safety tradeoff)
 | Composition | Win | Avg |
 |---|---|---|
@@ -144,9 +148,10 @@ Each is a real bug if undone. All are encoded in `test/balance_test.dart`.
 
 ## Known caveats
 
-- A Dart + Flutter SDK is now available in the build environment (as of step 3). `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (27/27 as of step 5). Still never run on a device/emulator — expect to sanity-check the UI on first real `flutter run`.
-- Gear (step 5) is in-memory only, same as everything else — no save/load layer exists yet for any of Mana, levels, or gear. That's a pre-existing gap, not new to this step.
+- A Dart + Flutter SDK is now available in the build environment (as of step 3). `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (33/33 as of step 6). Still never run on a device/emulator — expect to sanity-check the UI on first real `flutter run`.
+- Gear (step 5) and Bond (step 6) are in-memory only, same as everything else — no save/load layer exists yet for any of Mana, levels, gear, or bond/completed-beats state. That's a pre-existing gap, not new to either step.
 - `Row` was renamed to **`BattleRow`** in the Dart code to avoid colliding with Flutter's `Row` widget; the elements enum is likewise **`GateElement`**, not `Element`, to avoid colliding with Flutter's own `Element` (widget tree node) class.
+- **Bond's `post_raid` hook realistically won't fire yet in a fresh playthrough.** Every companion's post_raid beat (e.g. `faelen_b2_proving_ground`) requires an earlier `home_visit` beat (e.g. `faelen_b1_the_wall`) to be completed first, and this raid-only screen has no way to trigger `home_visit`/`gift`/`date` beats — there's no house UI yet. So in practice a companion's `nextAvailableBeat` gets stuck on that earlier beat indefinitely here. The wiring is real and covered by a test that manually completes the prerequisite beats (see `balance_test.dart`'s bond group), but seeing it actually fire in the running app needs the house/dialogue UI this step didn't build. `gatefall_flame/data/` is a **manual mirror** of `gatefall_dialogue_engine/data/` — if a route JSON changes, copy it again; nothing keeps the two in sync automatically.
 
 ---
 
@@ -167,7 +172,9 @@ That conversation was left unfinished and is a good place to resume.
 ## Suggested next steps
 
 1. **Play the prototype** and answer: does the formation choice feel meaningful, does an elemental disadvantage read as "slower" rather than "stuck," does spending Mana on a level-up or gear enhance feel like a real choice against the temptation to just re-raid, and does the single-slot auto-equip-or-salvage gear model feel satisfying without an inventory screen — or does it need one?
-2. **Step 6: Bond buffs + `post_raid` story hooks.** Wire the dialogue engine's Bond tier (0–6, combat-spec.md §5) into a flat ATK/HP bonus, and fire `post_raid` dialogue hooks from a won raid. This is the "the two halves of the game resolve in the same moment" keystone from the bible — worth prioritizing over step 7.
-3. **Art direction** — see open question above.
-4. **Write real dialogue** for a beat, using the existing JSON schema, to lock a character's voice.
-5. **Persistence** — Mana, companion levels, and gear are all in-memory only (see caveats). Worth a save/load layer before this goes much further, so playtesting progress survives a restart.
+2. **A minimal house/dialogue screen.** This is the real gap left by step 6: Bond math and the `post_raid` hook are wired and tested, but there's nowhere in the app to trigger a `home_visit`/`gift`/`date` beat, so no companion's post_raid banter can actually fire in a live playthrough yet (see caveats). Even a bare-bones screen that walks a `DialogueEngine` through one beat's nodes would close the loop and let step 6 actually be felt, not just verified by test.
+3. **Step 7: offline accrual.** Cleared gates yielding ~50% Mana while away, capped 8–12h (combat-spec.md §7).
+4. **Art direction** — see open question above.
+5. **Write real dialogue** for a beat, using the existing JSON schema, to lock a character's voice — now double as the first real content the house/dialogue screen above would render.
+6. **Persistence** — Mana, companion levels, gear, and now bond/completed-beats are all in-memory only (see caveats). Worth a save/load layer before this goes much further, so playtesting progress survives a restart.
+7. **De-duplicate `gatefall_flame/data/`** — it's a manual, one-time mirror of `gatefall_dialogue_engine/data/` (see caveats). Fine for now; worth a sync script or a real Flutter-package conversion of the dialogue engine before route JSON changes often.

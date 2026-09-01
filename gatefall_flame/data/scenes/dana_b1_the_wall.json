@@ -1,0 +1,16 @@
+{
+  "scene_id": "dana_b1_the_wall", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "player", "text": "(You catch her quietly burying a relocation order that would have split up two of your tenants.)", "next": "n2" },
+    "n2": { "speaker": "dana", "text": "I didn't see anything. Neither did you.",
+      "choices": [
+        { "choice_id": "press", "text": "\"You care more than you let on.\"", "next": "n3_press",
+          "effects": { "set_flags": { "DANA_APPROACH": "press" }, "bond_delta": 15 } },
+        { "choice_id": "patience", "text": "(Let it go unremarked. File the paperwork.)", "next": "n3_patience",
+          "effects": { "set_flags": { "DANA_APPROACH": "patience" }, "bond_delta": 10 } }
+      ] },
+    "n3_press": { "speaker": "dana", "text": "...Don't make this a habit, landlord.", "next": "end" },
+    "n3_patience": { "speaker": "dana", "text": "...Appreciated.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

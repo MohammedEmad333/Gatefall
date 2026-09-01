@@ -5,6 +5,7 @@ import '../data/element.dart';
 import '../data/gear.dart';
 import '../data/roster.dart';
 
+export '../data/bond.dart';
 export '../data/element.dart';
 export '../data/gear.dart';
 
@@ -133,12 +134,14 @@ class Battle {
   factory Battle.fromFormation(Map<String, BattleRow> formation,
       {Map<String, int> levels = const {},
       Map<String, Gear?> gear = const {},
+      Map<String, int> bondTiers = const {},
       GateElement gateElement = GateElement.verdant,
       Random? rng}) {
     return Battle(
-      party: Roster.partyFrom(formation, levels: levels, gear: gear),
-      abilities:
-          Roster.abilitiesFor(formation.keys, levels: levels, gear: gear),
+      party: Roster.partyFrom(formation,
+          levels: levels, gear: gear, bondTiers: bondTiers),
+      abilities: Roster.abilitiesFor(formation.keys,
+          levels: levels, gear: gear, bondTiers: bondTiers),
       gateElement: gateElement,
       rng: rng,
     );

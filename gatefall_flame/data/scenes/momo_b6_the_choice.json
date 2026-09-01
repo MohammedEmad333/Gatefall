@@ -1,0 +1,7 @@
+{
+  "scene_id": "momo_b6_the_choice", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "momo", "text": "I see it before it happens now. I'm not the danger anymore. I'm the warning.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

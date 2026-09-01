@@ -1,0 +1,9 @@
+{
+  "scene_id": "thora_b0_recruitment", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "player", "text": "(She's already rearranging your kitchen before you've agreed to anything.)", "next": "n2" },
+    "n2": { "speaker": "thora", "text": "This pantry is a disgrace. Sit. Eat. We'll discuss rent after.", "next": "n3" },
+    "n3": { "speaker": "player", "text": "(Somehow you're the one being taken in.)", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

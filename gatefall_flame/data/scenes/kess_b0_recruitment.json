@@ -1,0 +1,9 @@
+{
+  "scene_id": "kess_b0_recruitment", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "player", "text": "(A fox-eared streamer corners you outside a fresh gate line, camera already rolling.)", "next": "n2" },
+    "n2": { "speaker": "kess", "text": "You're the landlord who took in a Warden? Perfect. I need content, you need rent. Let's talk.", "next": "n3" },
+    "n3": { "speaker": "player", "text": "(Somehow, by the end of the conversation, she has a room.)", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

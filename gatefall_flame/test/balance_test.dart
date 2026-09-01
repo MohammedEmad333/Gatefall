@@ -3,8 +3,13 @@
 //
 // Run: dart test
 
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
+import 'package:gatefall_dialogue_engine/engine/evaluator.dart';
+import 'package:gatefall_dialogue_engine/models/game_state.dart';
+import 'package:gatefall_dialogue_engine/models/route.dart';
 import 'package:test/test.dart';
 
 import '../lib/combat/battle.dart';
@@ -15,9 +20,14 @@ import '../lib/data/roster.dart';
     {double cap = 2400,
     GateElement gateElement = GateElement.verdant,
     Map<String, int> levels = const {},
-    Map<String, Gear?> gear = const {}}) {
+    Map<String, Gear?> gear = const {},
+    Map<String, int> bondTiers = const {}}) {
   final b = Battle.fromFormation(formation,
-      gateElement: gateElement, levels: levels, gear: gear, rng: Random(seed));
+      gateElement: gateElement,
+      levels: levels,
+      gear: gear,
+      bondTiers: bondTiers,
+      rng: Random(seed));
   b.start();
   const dt = 0.1;
   while (b.status == BattleStatus.fighting && b.elapsed < cap) {
@@ -30,10 +40,15 @@ double _winRate(Map<String, BattleRow> formation,
     {int trials = 60,
     GateElement gateElement = GateElement.verdant,
     Map<String, int> levels = const {},
-    Map<String, Gear?> gear = const {}}) {
+    Map<String, Gear?> gear = const {},
+    Map<String, int> bondTiers = const {}}) {
   var wins = 0;
   for (var i = 0; i < trials; i++) {
-    if (_run(formation, i, gateElement: gateElement, levels: levels, gear: gear)
+    if (_run(formation, i,
+            gateElement: gateElement,
+            levels: levels,
+            gear: gear,
+            bondTiers: bondTiers)
         .won) {
       wins++;
     }
@@ -45,11 +60,15 @@ double _avgWinSeconds(Map<String, BattleRow> formation,
     {int trials = 40,
     GateElement gateElement = GateElement.verdant,
     Map<String, int> levels = const {},
-    Map<String, Gear?> gear = const {}}) {
+    Map<String, Gear?> gear = const {},
+    Map<String, int> bondTiers = const {}}) {
   final times = <double>[];
   for (var i = 0; i < trials; i++) {
     final r = _run(formation, 500 + i,
-        gateElement: gateElement, levels: levels, gear: gear);
+        gateElement: gateElement,
+        levels: levels,
+        gear: gear,
+        bondTiers: bondTiers);
     if (r.won) times.add(r.seconds);
   }
   if (times.isEmpty) return 0;
@@ -387,6 +406,76 @@ void main() {
       // same no-fail-state promise as Progression (step 4) and Elements
       // (step 3).
       expect(_winRate(Roster.defaultFormation()), greaterThan(0.85));
+    });
+  });
+
+  group('bond (step 6)', () {
+    test('the combat buff matches docs/combat-spec.md §5 exactly', () {
+      // Bond tier | Combat bonus: 0 -, 1 +5%, 2 +10%, 3 +15%, 4 +20%,
+      // 5 +25%, 6 +30%.
+      const expected = [0.0, .05, .10, .15, .20, .25, .30];
+      for (var tier = 0; tier < expected.length; tier++) {
+        expect(
+            BondBuff.statMultiplier(tier), closeTo(1.0 + expected[tier], 1e-9));
+      }
+    });
+
+    test('bond tier is derived from the shared evaluator, not reimplemented',
+        () {
+      // BondBuff must track Evaluator.bondTierThresholds, not a private
+      // copy — otherwise retuning pacing there silently desyncs combat.
+      expect(Evaluator.tierOf(0), equals(0));
+      expect(Evaluator.tierOf(59), equals(0));
+      expect(Evaluator.tierOf(60), equals(1));
+      expect(Evaluator.tierOf(900), equals(6));
+      expect(BondBuff.statMultiplierForPoints(150),
+          equals(BondBuff.statMultiplier(2)));
+    });
+
+    test('no bond data (e.g. the player) is a neutral multiplier', () {
+      expect(BondBuff.statMultiplier(0), equals(1.0));
+    });
+
+    test('a bonded party clears faster than an unbonded one', () {
+      final bonded = {
+        'kess': 6,
+        'faelen': 6
+      }; // max tier on the two front-liners
+      final baseline = _avgWinSeconds(_kessBack);
+      final withBond = _avgWinSeconds(_kessBack, bondTiers: bonded);
+      expect(withBond, lessThan(baseline),
+          reason: 'the "meaningful boost" from §5 should show up in pace, '
+              'same as level and gear');
+    });
+
+    test('a party with no bond at all is still fully viable', () {
+      // Same no-fail-state promise as every other power track: Bond is
+      // earned through play and buffs, never gates, a raid.
+      expect(_winRate(Roster.defaultFormation()), greaterThan(0.85));
+    });
+
+    test(
+        'nextAvailableBeat surfaces a real post_raid beat once earlier beats '
+        'and bond are satisfied', () {
+      // Exercises the exact path main.dart's _awardBond() drives: load a
+      // real route, advance state the same way play would, and confirm the
+      // evaluator hands back a post_raid-triggered beat — the mechanism
+      // behind the step 6 story hook, independent of any UI.
+      final json = jsonDecode(File('data/faelen_route.json').readAsStringSync())
+          as Map<String, dynamic>;
+      final route = CharacterRoute.fromJson(json);
+      final state = GameState();
+
+      // faelen_b0_recruitment (story) and faelen_b1_the_wall (home_visit)
+      // are prerequisites for the post_raid beat but aren't raid-triggered
+      // themselves — simulate them having already resolved.
+      state.completedBeats.add('faelen_b0_recruitment');
+      state.completedBeats.add('faelen_b1_the_wall');
+      state.addBond('faelen', 150); // tier 2, faelen_b2_proving_ground's floor
+
+      final next = Evaluator.nextAvailableBeat(route, state);
+      expect(next?.beatId, equals('faelen_b2_proving_ground'));
+      expect(next?.triggerContext, equals('post_raid'));
     });
   });
 }

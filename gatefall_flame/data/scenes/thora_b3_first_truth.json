@@ -1,0 +1,16 @@
+{
+  "scene_id": "thora_b3_first_truth", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "thora", "text": "I led a clan, once. A healer, a mother to all of them.", "next": "n2" },
+    "n2": { "speaker": "thora", "text": "I couldn't save them all when we crossed. I still don't know why I lived and they didn't.",
+      "choices": [
+        { "choice_id": "listen", "text": "\"That wasn't a failure. You did everything you could.\"", "next": "n3_listen",
+          "effects": { "set_flags": { "THORA_GRIEF_KNOWN": true }, "bond_delta": 15 } },
+        { "choice_id": "gentle", "text": "\"You don't owe anyone an explanation for surviving.\"", "next": "n3_gentle",
+          "effects": { "set_flags": { "THORA_GRIEF_KNOWN": true }, "bond_delta": 10 } }
+      ] },
+    "n3_listen": { "speaker": "thora", "text": "...You're kind to say so.", "next": "end" },
+    "n3_gentle": { "speaker": "thora", "text": "...I've never let myself think that.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}

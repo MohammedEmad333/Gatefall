@@ -1,0 +1,13 @@
+{
+  "scene_id": "momo_b5_full_truth", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "momo", "text": "I never believed I could be wanted. Only tolerated, or feared. Being needed felt... impossible.",
+      "choices": [
+        { "choice_id": "value", "text": "\"You're not a hazard to me. You're just you.\"", "next": "end",
+          "effects": { "set_flags": { "MOMO_CONFESSED": true }, "bond_delta": 20 } },
+        { "choice_id": "quiet", "text": "(Stay close. Let the silence say it.)", "next": "end",
+          "effects": { "set_flags": { "MOMO_CONFESSED": true }, "bond_delta": 15 } }
+      ] },
+    "end": { "end_scene": true }
+  }
+}

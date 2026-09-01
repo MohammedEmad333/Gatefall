@@ -1,0 +1,163 @@
+{
+  "character_id": "thora",
+  "display_name": "Thora",
+  "gift_preferences": {
+    "loved": [
+      "homeworld_spice",
+      "cooking_knife",
+      "garden_seeds",
+      "family_recipe_book"
+    ],
+    "liked": [
+      "cooking_pot",
+      "apron"
+    ],
+    "disliked": [
+      "service_gift",
+      "luxury_item",
+      "guest_treatment_note"
+    ]
+  },
+  "beats": [
+    {
+      "beat_id": "thora_b0_recruitment",
+      "order": 0,
+      "title": "This Pantry Is A Disgrace",
+      "unlock_conditions": {
+        "story_act_min": 1
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/thora_b0_recruitment.json"
+    },
+    {
+      "beat_id": "thora_b1_the_wall",
+      "order": 1,
+      "title": "It's Nothing",
+      "unlock_conditions": {
+        "bond_tier_min": 1,
+        "requires_beats_complete": [
+          "thora_b0_recruitment"
+        ]
+      },
+      "trigger_context": "home_visit",
+      "scene_ref": "data/scenes/thora_b1_the_wall.json"
+    },
+    {
+      "beat_id": "thora_b2_proving_ground",
+      "order": 2,
+      "title": "Stay Behind Me",
+      "unlock_conditions": {
+        "bond_tier_min": 2,
+        "requires_beats_complete": [
+          "thora_b1_the_wall"
+        ]
+      },
+      "trigger_context": "post_raid",
+      "scene_ref": "data/scenes/thora_b2_proving_ground.json"
+    },
+    {
+      "beat_id": "thora_b3_first_truth",
+      "order": 3,
+      "title": "A Healer, A Mother To All Of Them",
+      "unlock_conditions": {
+        "bond_tier_min": 3,
+        "requires_beats_complete": [
+          "thora_b2_proving_ground"
+        ]
+      },
+      "trigger_context": "date",
+      "scene_ref": "data/scenes/thora_b3_first_truth.json"
+    },
+    {
+      "beat_id": "thora_b4_the_fracture",
+      "order": 4,
+      "title": "An Acceptable Price",
+      "unlock_conditions": {
+        "bond_tier_min": 4,
+        "story_act_min": 2,
+        "requires_beats_complete": [
+          "thora_b3_first_truth"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/thora_b4_the_fracture.json"
+    },
+    {
+      "beat_id": "thora_b5_full_truth",
+      "order": 5,
+      "title": "Still Here, And They're Not",
+      "unlock_conditions": {
+        "bond_tier_min": 5,
+        "requires_flags": [
+          {
+            "flag": "THORA_FRACTURE",
+            "in": [
+              "stop",
+              "join"
+            ]
+          }
+        ],
+        "requires_beats_complete": [
+          "thora_b4_the_fracture"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/thora_b5_full_truth.json"
+    },
+    {
+      "beat_id": "thora_b6_the_choice",
+      "order": 6,
+      "title": "My Home Too",
+      "unlock_conditions": {
+        "bond_tier_min": 6,
+        "story_act_min": 3,
+        "requires_beats_complete": [
+          "thora_b5_full_truth"
+        ]
+      },
+      "trigger_context": "story",
+      "scene_ref": "data/scenes/thora_b6_the_choice.json"
+    }
+  ],
+  "endings": [
+    {
+      "ending_id": "thora_true",
+      "priority": 1,
+      "conditions": {
+        "bond_tier_min": 6,
+        "requires_flags": [
+          {
+            "flag": "THORA_FRACTURE",
+            "in": [
+              "stop",
+              "join"
+            ]
+          },
+          {
+            "flag": "THORA_CONFESSED",
+            "equals": true
+          }
+        ]
+      }
+    },
+    {
+      "ending_id": "thora_lost",
+      "priority": 2,
+      "conditions": {
+        "requires_flags": [
+          {
+            "flag": "THORA_FRACTURE",
+            "equals": "release"
+          }
+        ]
+      }
+    },
+    {
+      "ending_id": "thora_bittersweet",
+      "priority": 3,
+      "conditions": {
+        "bond_tier_min": 3
+      }
+    }
+  ]
+}

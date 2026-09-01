@@ -1,0 +1,7 @@
+{
+  "scene_id": "kess_b6_the_choice", "start_node": "n1",
+  "nodes": {
+    "n1": { "speaker": "kess", "text": "...Maybe the house was what I was looking for the whole time.", "next": "end" },
+    "end": { "end_scene": true }
+  }
+}
