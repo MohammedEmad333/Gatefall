@@ -42,17 +42,16 @@ gacha splash art than to cel-shaded anime.
   dark vignette backgrounds (often a blurred fantasy-city backdrop).
 - Outfit language: practical fantasy armor/gear per character's
   element and role; **moderate coverage, not skimpy** — Pony leans
-  toward deep cutouts/cleavage-forward armor by default (see Kess-era
-  test renders), so every prompt should nudge back toward practical
-  gear with tags like `high collar, closed neckline, full coverage
-  armor, modest clothing, covered torso` plus matching negatives
-  (`cleavage, exposed midriff, bare stomach, underboob, cutout armor,
-  low-cut`). The target isn't zero skin shown — Faelen's locked look
-  (below) keeps a soft neckline — just armor that reads as
+  toward deep cutouts/cleavage-forward armor by default (seen across
+  early test renders), so every prompt should nudge back toward
+  practical gear with tags like `high collar, closed neckline, full
+  coverage armor, modest clothing, covered torso` plus matching
+  negatives (`cleavage, exposed midriff, bare stomach, underboob,
+  cutout armor, low-cut`). The target isn't zero skin shown — Faelen's
+  locked look (below) keeps a soft neckline — just armor that reads as
   battle-practical rather than decorative/fanservice-cut.
-- Crop: portrait/upper-body "hero card" framing for the locked style,
-  not the earlier full-body model-sheet framing — see Faelen's
-  locked prompt below.
+- Crop: full-body "hero card" framing (not a tight bust/portrait crop)
+  — see Faelen's locked prompt below.
 - Resolution: 832x1216 (SDXL portrait) worked well for this framing.
 
 ## Asset checklist (per character)
@@ -93,11 +92,11 @@ action; back row = ranged/support stance, more distance/guard).
   three, closest fit to her "guarded, not decorative" character notes.
 - Model sheet prompt (Midjourney, draft, not yet run):
   `[fill in — SD/Pony is the primary tool in use, this can wait]`
-- Locked prompt (SD / Pony Diffusion V6 XL, portrait "hero card"
+- Locked prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
   framing):
   ```
   score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
-  detailed, 1girl, solo, elf, pointed ears, portrait, upper body, long
+  detailed, 1girl, solo, elf, pointed ears, full body, long
   silver-white hair, tied back, pale skin, detailed skin texture,
   tired eyes, stoic expression, weathered leather and steel armor,
   high collar, closed neckline, full coverage armor, modest clothing,
