@@ -18,29 +18,47 @@ lock overall style; the rest wait until the combat loop is proven**
   and the same LoRA-per-character path for consistency. See
   `docs/comfyui-tutorial.md` for setup. Recommended default if you
   don't want a Midjourney subscription.
-- **LoRA per character** (trained locally in ComfyUI, or via fal.ai /
-  Civitai's training tool) — worth it once a design is locked and you
-  need to mass-produce expression sets / battle sprites cheaply. Not
-  needed for the exploration phase.
+- **LoRA per character** — worth it once a design is locked (Faelen's
+  is) and you need pose/crop/expression to stay consistent, since a
+  bare fixed seed drifts once the prompt's composition tokens change.
+  Free path: `docs/colab/gatefall_lora_training.ipynb`, a Colab
+  notebook using kohya-ss/sd-scripts. Needs a 15-20 image training set
+  first — generate those via img2img at low denoise (~0.3-0.5) off
+  the locked reference in the ComfyUI notebook, not fresh txt2img
+  rerolls, so the identity stays close enough across the set to train
+  on. See that notebook for the full workflow, including captioning
+  and how to load the trained LoRA back into ComfyUI.
 - Keep every locked prompt (below) copy-pasteable so art generation is
   reproducible across sessions/tools. Note: Midjourney prompts are
   natural-language; SD/Illustrious/Pony prompts are comma-separated
   **tags** (danbooru-style) — the two are not interchangeable, keep a
   version of each locked prompt per tool you actually use.
 
-## Global style
+## Global style — LOCKED
 
-*(Fill in once the first Faelen exploration pass lands. Suggested
-starting point given the tone — modern-world urban fantasy, dating-sim
-warmth colliding with rift-monster stakes — is a clean anime/semi-realistic
-illustration style, not chibi, not painterly-realistic. Note the winner
-here once decided.)*
+Decided from Faelen's exploration pass (Pony Diffusion V6 XL). Not a
+flat cel-shaded anime look — a **semi-realistic, mobile-gacha "hero
+card" render style**: polished skin/hair rendering, dramatic rim
+lighting, glossy highlights, cinematic vignette backgrounds. Closer to
+gacha splash art than to cel-shaded anime.
 
-- Line/render style:
-- Palette/lighting mood:
-- Outfit language (how "Earth" vs "otherworldly" reads in clothing):
-- Resolution / aspect ratios needed: portrait bust (e.g. 1:1 or 3:4),
-  battle sprite (small, square-ish, silhouette-readable)
+- Line/render style: semi-realistic/photoreal-leaning shading, glossy
+  highlights, sharp focus, ultra detailed — not flat cel shading.
+- Palette/lighting mood: dramatic rim lighting, cinematic lighting,
+  dark vignette backgrounds (often a blurred fantasy-city backdrop).
+- Outfit language: practical fantasy armor/gear per character's
+  element and role; **moderate coverage, not skimpy** — Pony leans
+  toward deep cutouts/cleavage-forward armor by default (seen across
+  early test renders), so every prompt should nudge back toward
+  practical gear with tags like `high collar, closed neckline, full
+  coverage armor, modest clothing, covered torso` plus matching
+  negatives (`cleavage, exposed midriff, bare stomach, underboob,
+  cutout armor, low-cut`). The target isn't zero skin shown — Faelen's
+  locked look (below) keeps a soft neckline — just armor that reads as
+  battle-practical rather than decorative/fanservice-cut.
+- Crop: full-body "hero card" framing (not a tight bust/portrait crop)
+  — see Faelen's locked prompt below.
+- Resolution: 832x1216 (SDXL portrait) worked well for this framing.
 
 ## Asset checklist (per character)
 
@@ -64,31 +82,42 @@ Combat role and element are locked in `docs/combat-spec.md`; front/back
 row affects battle-sprite pose (front row = melee stance close to the
 action; back row = ranged/support stance, more distance/guard).
 
-### Faelen — Elf, ex-Warden
+### Faelen — Elf, ex-Warden — LOCKED
 - Role: frontline melee anchor. Row: front. Element: **Verdant**
   (life/growth/binding — elven Warden magic).
 - Character notes: stoic, watchful, fights like penance. Ex-Warden who
   failed to protect her world.
 - Visual starting point: elf ears, weathered/practical Warden-style
   armor or gear (not ornate), guarded posture even at rest, muted
-  greens/naturals reflecting Verdant. **This is the first character to
-  fully render — locks the house style.**
-- Model sheet prompt (Midjourney, draft, refine after first pass):
-  `[fill in after style is chosen]`
-- Model sheet prompt (SD / Illustrious or Pony, tag-based draft):
+  greens/naturals reflecting Verdant. **First character rendered —
+  locked the house style** (see "Global style" above).
+- Locked reference: `docs/art-direction/faelen-locked-v1.png` —
+  green-cloaked leather/steel corset armor over a high-ish neckline,
+  long silver-white hair, city-balcony backdrop. Chosen over two other
+  finalist renders as the most restrained/practical-reading of the
+  three, closest fit to her "guarded, not decorative" character notes.
+- Model sheet prompt (Midjourney, draft, not yet run):
+  `[fill in — SD/Pony is the primary tool in use, this can wait]`
+- Locked prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
+  framing):
   ```
-  masterpiece, best quality, 1girl, solo, elf, pointed ears, ex-warden,
-  long silver-white hair, tied back, pale skin, tired eyes, stoic
-  expression, guarded posture, weathered leather and steel armor,
-  practical, no ornamentation, scuffed armor, worn cloak, cloak clasp
-  shaped like a closing gate, green glowing seams, holding spear wrapped
-  in vine, forest green and brown palette, full body, front view,
-  standing pose, character sheet, simple background, clean lineart,
-  cel shading
+  score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
+  detailed, 1girl, solo, elf, pointed ears, full body, long
+  silver-white hair, tied back, pale skin, detailed skin texture,
+  tired eyes, stoic expression, weathered leather and steel armor,
+  high collar, closed neckline, full coverage armor, modest clothing,
+  practical armor, covered torso, worn cloak, cloak clasp shaped like
+  a closing gate, green glowing seams, photorealistic shading, glossy
+  highlights, dramatic rim lighting, cinematic lighting, dark vignette
+  background, blurred cityscape background, game character splash art,
+  sharp focus
 
   Negative: chibi, deformed, extra limbs, extra fingers, blurry, lowres,
-  watermark, signature, text, bad anatomy, painterly background
+  watermark, signature, text, bad anatomy, flat lighting, cartoon, cel
+  shading, cleavage, exposed midriff, bare stomach, underboob, cutout
+  armor, revealing clothing, low-cut, bare shoulders
   ```
+  Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
   See `docs/comfyui-tutorial.md` for how to run this.
 
 ### Kess — Fox Beastkin, the hustler
@@ -143,5 +172,7 @@ action; back row = ranged/support stance, more distance/guard).
   choice before her model sheet.
 - Confirm Thora's natural row against `docs/combat-spec.md`'s table
   before finalizing her battle-sprite pose.
-- House style itself is undecided — resolve via Faelen's first pass,
-  then backfill the "Global style" section above.
+- House style is locked (see "Global style" above); Faelen's full
+  asset set (dialogue portraits, battle sprite) still needs to be
+  generated from the locked prompt, then the same style applied to
+  Kess, Momo, Thora, and Dana.

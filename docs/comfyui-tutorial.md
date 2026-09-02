@@ -104,9 +104,14 @@ run ComfyUI + an SDXL checkpoint.
      Diffusion XL download URL from Civitai (see the notebook's own
      instructions for where to find it; some models need a free
      Civitai API key too).
-   - Cell 4 launches ComfyUI and prints a public
-     `https://....trycloudflare.com` link — open that, it's the same
-     ComfyUI web UI described in step 4 of this doc.
+   - Cell 4 launches ComfyUI and prints a public link (Colab's own
+     proxy by default, a `trycloudflare.com` link as fallback) — the
+     same ComfyUI web UI described in step 4 of this doc. **Copy the
+     link and paste it into a new tab's address bar rather than
+     clicking it** — ComfyUI's own CSRF protection returns `403 —
+     Access denied` for cross-site navigations, which clicking the
+     link from inside the Colab page counts as; pasting into the
+     address bar doesn't.
    - Paste prompts from `docs/art-direction.md` and generate as usual.
    - Last cell zips and downloads everything in `output/` before you
      close the session — **Colab wipes its disk when the session
