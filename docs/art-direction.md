@@ -18,10 +18,16 @@ lock overall style; the rest wait until the combat loop is proven**
   and the same LoRA-per-character path for consistency. See
   `docs/comfyui-tutorial.md` for setup. Recommended default if you
   don't want a Midjourney subscription.
-- **LoRA per character** (trained locally in ComfyUI, or via fal.ai /
-  Civitai's training tool) — worth it once a design is locked and you
-  need to mass-produce expression sets / battle sprites cheaply. Not
-  needed for the exploration phase.
+- **LoRA per character** — worth it once a design is locked (Faelen's
+  is) and you need pose/crop/expression to stay consistent, since a
+  bare fixed seed drifts once the prompt's composition tokens change.
+  Free path: `docs/colab/gatefall_lora_training.ipynb`, a Colab
+  notebook using kohya-ss/sd-scripts. Needs a 15-20 image training set
+  first — generate those via img2img at low denoise (~0.3-0.5) off
+  the locked reference in the ComfyUI notebook, not fresh txt2img
+  rerolls, so the identity stays close enough across the set to train
+  on. See that notebook for the full workflow, including captioning
+  and how to load the trained LoRA back into ComfyUI.
 - Keep every locked prompt (below) copy-pasteable so art generation is
   reproducible across sessions/tools. Note: Midjourney prompts are
   natural-language; SD/Illustrious/Pony prompts are comma-separated
