@@ -29,8 +29,9 @@ GateElement? beats(GateElement e) {
 /// Damage multiplier for an attacker with [attacker]'s element hitting a
 /// target with [defender]'s element. Sever on either side is always neutral.
 double elementMultiplier(GateElement attacker, GateElement defender) {
-  if (attacker == GateElement.sever || defender == GateElement.sever)
+  if (attacker == GateElement.sever || defender == GateElement.sever) {
     return 1.0;
+  }
   if (beats(attacker) == defender) return advantageMult;
   if (beats(defender) == attacker) return disadvantageMult;
   return 1.0;

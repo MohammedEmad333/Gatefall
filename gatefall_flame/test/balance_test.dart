@@ -12,21 +12,26 @@ import 'package:gatefall_dialogue_engine/models/game_state.dart';
 import 'package:gatefall_dialogue_engine/models/route.dart';
 import 'package:test/test.dart';
 
-import '../lib/combat/battle.dart';
-import '../lib/data/progression.dart';
-import '../lib/data/roster.dart';
+import 'package:gatefall/combat/battle.dart';
+import 'package:gatefall/data/gate.dart';
+import 'package:gatefall/data/progression.dart';
+import 'package:gatefall/data/roster.dart';
 
 ({bool won, double seconds}) _run(Map<String, BattleRow> formation, int seed,
     {double cap = 2400,
     GateElement gateElement = GateElement.verdant,
     Map<String, int> levels = const {},
     Map<String, Gear?> gear = const {},
-    Map<String, int> bondTiers = const {}}) {
+    Map<String, int> bondTiers = const {},
+    GateTier? tier}) {
   final b = Battle.fromFormation(formation,
       gateElement: gateElement,
       levels: levels,
       gear: gear,
       bondTiers: bondTiers,
+      hpMult: tier?.hpMult ?? 1.0,
+      dpsMult: tier?.dpsMult ?? 1.0,
+      manaMult: tier?.manaMult ?? 1.0,
       rng: Random(seed));
   b.start();
   const dt = 0.1;
@@ -41,14 +46,16 @@ double _winRate(Map<String, BattleRow> formation,
     GateElement gateElement = GateElement.verdant,
     Map<String, int> levels = const {},
     Map<String, Gear?> gear = const {},
-    Map<String, int> bondTiers = const {}}) {
+    Map<String, int> bondTiers = const {},
+    GateTier? tier}) {
   var wins = 0;
   for (var i = 0; i < trials; i++) {
     if (_run(formation, i,
             gateElement: gateElement,
             levels: levels,
             gear: gear,
-            bondTiers: bondTiers)
+            bondTiers: bondTiers,
+            tier: tier)
         .won) {
       wins++;
     }
@@ -61,18 +68,33 @@ double _avgWinSeconds(Map<String, BattleRow> formation,
     GateElement gateElement = GateElement.verdant,
     Map<String, int> levels = const {},
     Map<String, Gear?> gear = const {},
-    Map<String, int> bondTiers = const {}}) {
+    Map<String, int> bondTiers = const {},
+    GateTier? tier}) {
   final times = <double>[];
   for (var i = 0; i < trials; i++) {
     final r = _run(formation, 500 + i,
         gateElement: gateElement,
         levels: levels,
         gear: gear,
-        bondTiers: bondTiers);
+        bondTiers: bondTiers,
+        tier: tier);
     if (r.won) times.add(r.seconds);
   }
   if (times.isEmpty) return 0;
   return times.reduce((a, b) => a + b) / times.length;
+}
+
+int _runMana(Map<String, BattleRow> formation, GateTier tier) {
+  final b = Battle.fromFormation(formation,
+      hpMult: tier.hpMult,
+      dpsMult: tier.dpsMult,
+      manaMult: tier.manaMult,
+      rng: Random(7));
+  b.start();
+  while (b.status == BattleStatus.fighting && b.elapsed < 2400) {
+    b.tick(0.1);
+  }
+  return b.manaEarned;
 }
 
 // Compositions used across the suite.
@@ -478,4 +500,121 @@ void main() {
       expect(next?.triggerContext, equals('post_raid'));
     });
   });
+
+  // ---------------------------------------------------------------------
+  // Gate tiers. The acquisition ramp hands the player a party of two before
+  // it hands them a party of four, and finding #4 says a party under four
+  // loses ~100% at the single fixed difficulty everything above is tuned
+  // for. Tiers are how that is squared with the no-fail-state promise:
+  // scale the gate, not the party.
+  // ---------------------------------------------------------------------
+  group('gate tiers', () {
+    Map<String, BattleRow> partyOf(int n) => {
+          for (final e in [
+            const MapEntry('player', BattleRow.front),
+            const MapEntry('faelen', BattleRow.front),
+            const MapEntry('kess', BattleRow.back),
+            const MapEntry('momo', BattleRow.back),
+          ].take(n))
+            e.key: e.value
+        };
+
+    test('the standard Rift tier is exactly the old fixed difficulty', () {
+      // Every balance test above this group runs with no tier at all and
+      // must keep passing, so tier 2 has to be a true no-op. If this drifts,
+      // findings #2, #3, #7, #8 and #9 are all silently retuned.
+      final rift = GateTier.byIndex(2);
+      expect(rift.hpMult, 1.0);
+      expect(rift.dpsMult, 1.0);
+      expect(rift.manaMult, 1.0);
+    });
+
+    test('each tier is clearable by the party size it is built for', () {
+      for (final tier in GateTier.all) {
+        // Level 1, no gear, no bond — the floor, not a progressed player.
+        // The top tier is the exception: it unlocks at 14 clears, by which
+        // point the player necessarily has levels and gear, so it is tested
+        // against that state below rather than against a bare party.
+        if (tier.index >= 3) continue;
+        final rate = _winRate(partyOf(tier.recommendedParty), tier: tier);
+        expect(rate, greaterThan(0.9),
+            reason: '${tier.name} is advertised as built for a party of '
+                '${tier.recommendedParty} and must actually be clearable by '
+                'one at level 1 — got ${(rate * 100).round()}%');
+      }
+    });
+
+    test('the top tier is clearable by the party that has actually reached it',
+        () {
+      // Maw unlocks at 14 clears. A player with 14 clears has been paid
+      // roughly 6,000 mana; "level 4 with a common drop and one bond tier"
+      // is a deliberately under-invested version of that player.
+      final maw = GateTier.byIndex(3);
+      final ids = Roster.defaultFormation().keys;
+      final rate = _winRate(
+        Roster.defaultFormation(),
+        tier: maw,
+        levels: {for (final i in ids) i: 4},
+        gear: {for (final i in ids) i: Gear(rarity: GearRarity.common)},
+        bondTiers: {for (final i in ids) i: 1},
+      );
+      expect(rate, greaterThan(0.9),
+          reason: 'the hardest gate must still be a race, not a wall, for '
+              'the least-invested player who could be standing in front of it');
+    });
+
+    test('a bigger party makes a low tier faster, never trivial', () {
+      final tier = GateTier.byIndex(0);
+      final two = _avgWinSeconds(partyOf(2), tier: tier);
+      final four = _avgWinSeconds(partyOf(4), tier: tier);
+      expect(four, lessThan(two),
+          reason: 'bringing more people should visibly pay off');
+      expect(four, greaterThan(30),
+          reason: 'a raid is a 5-10 minute loop at the top end and should '
+              'still take real time at the bottom — an instant clear is not '
+              'a gate, it is a button');
+    });
+
+    test('tiers get monotonically harder and pay monotonically better', () {
+      for (var i = 1; i < GateTier.all.length; i++) {
+        final prev = GateTier.all[i - 1];
+        final tier = GateTier.all[i];
+        expect(tier.hpMult, greaterThan(prev.hpMult));
+        expect(tier.dpsMult, greaterThan(prev.dpsMult));
+        expect(tier.manaMult, greaterThan(prev.manaMult));
+        expect(tier.goldReward, greaterThan(prev.goldReward));
+        expect(tier.clearsToUnlock, greaterThan(prev.clearsToUnlock));
+      }
+    });
+
+    test('there is always at least one gate available, from the first frame',
+        () {
+      // The no-fail-state promise includes "there is something you can do".
+      expect(GateTier.unlockedAt(0), isNotEmpty);
+      expect(GateTier.unlockedAt(0).first.index, 0);
+      expect(GateTier.unlockedAt(999).length, GateTier.all.length);
+    });
+
+    test('a harder tier pays more mana per clear than an easier one', () {
+      final easy = _runMana(partyOf(4), GateTier.byIndex(0));
+      final hard = _runMana(partyOf(4), GateTier.byIndex(2));
+      expect(hard, greaterThan(easy));
+    });
+
+    test('an elemental disadvantage stays "slower", not "stuck", at every tier',
+        () {
+      // Finding #7: elements landed on the enrage cliff once before. Tiers
+      // move that cliff, so the check has to be re-run per tier.
+      for (final tier in GateTier.all) {
+        final levels = {for (final i in _kessBack.keys) i: 6};
+        final rate = _winRate(_kessBack,
+            gateElement: GateElement.gloam, tier: tier, levels: levels);
+        expect(rate, greaterThan(0.85),
+            reason: 'a disadvantaged comp at ${tier.name} dropped to '
+                '${(rate * 100).round()}% — that is a wall, which '
+                'docs/combat-spec.md §3 rules out');
+      }
+    });
+  });
+
 }
