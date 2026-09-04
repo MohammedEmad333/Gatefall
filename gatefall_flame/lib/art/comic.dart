@@ -104,8 +104,150 @@ class InkedText extends StatelessWidget {
       );
 }
 
+/// A deterministic wobble in [-1, 1] from an integer step. Used for the
+/// hand-inked border and the paper grain — anything that should look drawn
+/// by a hand rather than a compass, and must land in the same place on
+/// every repaint so it does not flicker.
+double _wobble(int n) {
+  final s = sin(n * 12.9898 + 78.233) * 43758.5453;
+  return (s - s.floorToDouble()) * 2 - 1;
+}
+
+/// The four edges of a panel, sampled and nudged perpendicular by a few
+/// pixels so the box reads as inked with a brush rather than ruled with a
+/// pen. Corners are left crisp — a brush eases off at a corner, it does not
+/// round it — so the four edges still meet cleanly.
+///
+/// The same [seed] gives the same path, which is why the clip, the fill and
+/// the border all agree: the art is masked to exactly the shape the ink is
+/// drawn around.
+Path comicFramePath(Size size, int seed, {double amp = 1.7}) {
+  final path = Path();
+  var k = seed * 131 + 7;
+  double wob() => _wobble(k++) * amp;
+
+  const tl = Offset(1.5, 1.5);
+  final tr = Offset(size.width - 1.5, 1.5);
+  final br = Offset(size.width - 1.5, size.height - 1.5);
+  final bl = Offset(1.5, size.height - 1.5);
+
+  void edge(Offset a, Offset b, Offset normal) {
+    final steps = max(3, (a - b).distance ~/ 26);
+    for (var i = 1; i <= steps; i++) {
+      final t = i / steps;
+      final base = Offset.lerp(a, b, t)!;
+      // Ends of an edge stay put; the middle is where the brush wanders.
+      final w = i == steps ? 0.0 : wob();
+      final p = base + normal * w;
+      path.lineTo(p.dx, p.dy);
+    }
+  }
+
+  path.moveTo(tl.dx, tl.dy);
+  edge(tl, tr, const Offset(0, 1));
+  edge(tr, br, const Offset(1, 0));
+  edge(br, bl, const Offset(0, 1));
+  edge(bl, tl, const Offset(1, 0));
+  return path..close();
+}
+
+/// Masks a panel's art to its inked shape, so nothing bleeds past the brush.
+class _FrameClipper extends CustomClipper<Path> {
+  final int seed;
+  const _FrameClipper(this.seed);
+
+  @override
+  Path getClip(Size size) => comicFramePath(size, seed);
+
+  @override
+  bool shouldReclip(_FrameClipper old) => old.seed != seed;
+}
+
+/// The panel's hard offset shadow and its paper fill, both drawn to the
+/// inked outline rather than to a rectangle — the shadow a real panel casts
+/// carries the same wobble as its border.
+class _FrameGroundPainter extends CustomPainter {
+  final int seed;
+  const _FrameGroundPainter(this.seed);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    final path = comicFramePath(size, seed);
+    canvas.save();
+    canvas.translate(4, 5);
+    // Hard, unblurred, offset: ink on paper, not elevation.
+    canvas.drawPath(path, Paint()..color = inkBlack);
+    canvas.restore();
+    canvas.drawPath(path, Paint()..color = night);
+  }
+
+  @override
+  bool shouldRepaint(_FrameGroundPainter old) => old.seed != seed;
+}
+
+/// The panel border, drawn over the art so the art tucks under it. The page
+/// it sits on is night, so the border is drawn light — a lit paper edge that
+/// separates the panel from the dark around it, the job [bone] did when the
+/// border was a ruled rectangle.
+///
+/// What is new is the hand in it. A dark core is laid down first and the
+/// bone edge over it, so the line reads as ink caught by light rather than a
+/// flat rule; and a second, lighter bone pass is nudged off the first, so no
+/// stretch of the edge is quite the same weight as the next — the giveaway
+/// of a brush over a pen.
+class _FrameInkPainter extends CustomPainter {
+  final int seed;
+  const _FrameInkPainter(this.seed);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    final path = comicFramePath(size, seed);
+    // The ink core, a touch wider, so a dark rim shows either side of the
+    // bright edge.
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = inkBlack
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 3.6
+        ..strokeJoin = StrokeJoin.round
+        ..strokeCap = StrokeCap.round,
+    );
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = bone
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2.4
+        ..strokeJoin = StrokeJoin.round
+        ..strokeCap = StrokeCap.round,
+    );
+    canvas.save();
+    canvas.translate(.8, .8);
+    canvas.drawPath(
+      path,
+      Paint()
+        ..color = bone.withValues(alpha: .45)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.2
+        ..strokeJoin = StrokeJoin.round,
+    );
+    canvas.restore();
+  }
+
+  @override
+  bool shouldRepaint(_FrameInkPainter old) => old.seed != seed;
+}
+
 /// One panel of a page: an inked box with a hard shadow, a hair of tilt,
 /// and a screen tone over whatever is drawn inside it.
+///
+/// The border is brush-inked rather than ruled — [comicFramePath] gives it
+/// a hand's wobble, and the same path masks the art and casts the shadow so
+/// the three never disagree. A [seed] taken from the panel's tilt keeps each
+/// panel's wobble its own, and stable across repaints.
 ///
 /// [shown] is the whole reveal animation. A panel that is not shown yet
 /// still takes up its space — a comic page is laid out all at once and read
@@ -140,26 +282,26 @@ class ComicPanel extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => AnimatedOpacity(
-        opacity: shown ? 1 : 0,
-        duration: Motion.quick(const Duration(milliseconds: 170)),
-        child: AnimatedScale(
-          // Panels land, they do not fade up: the overshoot is the snap.
-          scale: shown ? 1 : .93,
-          duration: Motion.quick(const Duration(milliseconds: 260)),
-          curve: Curves.easeOutBack,
-          child: Transform.rotate(
-            angle: tilt,
-            child: Container(
-              decoration: BoxDecoration(
-                color: night,
-                border: Border.all(color: bone, width: 2.5),
-                boxShadow: const [
-                  // Hard, unblurred, offset: ink on paper, not elevation.
-                  BoxShadow(color: inkBlack, offset: Offset(4, 5)),
-                ],
-              ),
-              child: ClipRect(
+  Widget build(BuildContext context) {
+    // The tilt is unique per panel and constant, so it makes a stable seed
+    // without threading a new field through every caller.
+    final seed = (tilt * 100000).round();
+    return AnimatedOpacity(
+      opacity: shown ? 1 : 0,
+      duration: Motion.quick(const Duration(milliseconds: 170)),
+      child: AnimatedScale(
+        // Panels land, they do not fade up: the overshoot is the snap.
+        scale: shown ? 1 : .93,
+        duration: Motion.quick(const Duration(milliseconds: 260)),
+        curve: Curves.easeOutBack,
+        child: Transform.rotate(
+          angle: tilt,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              CustomPaint(painter: _FrameGroundPainter(seed)),
+              ClipPath(
+                clipper: _FrameClipper(seed),
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
@@ -174,13 +316,22 @@ class ComicPanel extends StatelessWidget {
                           ),
                         ),
                       ),
+                    // The printed-paper grain sits over everything inside
+                    // the panel: it is the tooth of the page, not of any one
+                    // thing drawn on it.
+                    IgnorePointer(
+                      child: CustomPaint(painter: NewsprintPainter(seed: seed)),
+                    ),
                   ],
                 ),
               ),
-            ),
+              IgnorePointer(child: CustomPaint(painter: _FrameInkPainter(seed))),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 }
 
 /// Screen tone: a dot grid that thins out with distance from [origin].
@@ -202,6 +353,10 @@ class HalftonePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (size.isEmpty) return;
     final dot = Paint()..color = color.withValues(alpha: .5 * density);
+    // The plate never quite lands where the ink plate did. A faint dark
+    // ghost a hair up-left of each colour dot is that misregistration — the
+    // single thing that most says "printed" rather than "rendered".
+    final ghost = Paint()..color = inkBlack.withValues(alpha: .18 * density);
     final o = origin.alongSize(size);
     final reach = size.longestSide;
     for (double y = spacing / 2; y < size.height; y += spacing) {
@@ -209,7 +364,10 @@ class HalftonePainter extends CustomPainter {
         final falloff =
             min(1.0, max(0.0, 1 - (Offset(x, y) - o).distance / reach));
         final r = spacing * .5 * density * falloff;
-        if (r > .18) canvas.drawCircle(Offset(x, y), r, dot);
+        if (r > .18) {
+          canvas.drawCircle(Offset(x - .8, y - .8), r, ghost);
+          canvas.drawCircle(Offset(x, y), r, dot);
+        }
       }
     }
   }
@@ -220,6 +378,39 @@ class HalftonePainter extends CustomPainter {
       old.density != density ||
       old.spacing != spacing ||
       old.origin != origin;
+}
+
+/// The tooth of cheap paper: a sparse, even scatter of ink flecks and a few
+/// bright pinholes where the press missed. Deterministic from [seed] so it
+/// holds still — paper does not crawl — and kept faint, because grain you
+/// can *read* is dirt, not print.
+class NewsprintPainter extends CustomPainter {
+  final int seed;
+  const NewsprintPainter({this.seed = 0});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    final dark = Paint()..color = inkBlack.withValues(alpha: .05);
+    final light = Paint()..color = bone.withValues(alpha: .04);
+    var k = seed * 2003 + 11;
+    const step = 6.0;
+    for (double y = 0; y < size.height; y += step) {
+      for (double x = 0; x < size.width; x += step) {
+        final r = _wobble(k++);
+        // Roughly a fifth of the cells get a fleck; a rarer few get a
+        // pinhole. Everything else is clean paper.
+        if (r > .6) {
+          final jx = x + _wobble(k++) * step * .5;
+          final jy = y + _wobble(k++) * step * .5;
+          canvas.drawCircle(Offset(jx, jy), .6, r > .88 ? light : dark);
+        }
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(NewsprintPainter old) => old.seed != seed;
 }
 
 /// Which edge a balloon's tail leaves from, and therefore who is speaking.
@@ -296,6 +487,14 @@ class _BalloonPainter extends CustomPainter {
 
     final body = shout ? _spiked(size) : _rounded(size);
     canvas.drawPath(body, fill);
+
+    // The same tooth the paper of a caption box has, kept inside the
+    // balloon's outline so the flecks never spill past the ink.
+    canvas.save();
+    canvas.clipPath(body);
+    PaperTexturePainter(seed: size.width.round()).paint(canvas, size);
+    canvas.restore();
+
     canvas.drawPath(body, ink);
 
     if (tail != Tail.none) {
@@ -367,8 +566,39 @@ class _BalloonPainter extends CustomPainter {
       old.tail != tail || old.shout != shout;
 }
 
+/// Ink flecks on the cream of a caption box or a balloon — the same tooth
+/// the panels have, tuned for paper the reader is meant to read text off,
+/// so it stays under the words rather than in them.
+class PaperTexturePainter extends CustomPainter {
+  final int seed;
+  const PaperTexturePainter({this.seed = 0});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    if (size.isEmpty) return;
+    final fleck = Paint()..color = inkBlack.withValues(alpha: .045);
+    var k = seed * 911 + 5;
+    const step = 5.0;
+    for (double y = step / 2; y < size.height; y += step) {
+      for (double x = step / 2; x < size.width; x += step) {
+        if (_wobble(k++) > .72) {
+          canvas.drawCircle(
+            Offset(x + _wobble(k++) * 2, y + _wobble(k++) * 2),
+            .55,
+            fleck,
+          );
+        }
+      }
+    }
+  }
+
+  @override
+  bool shouldRepaint(PaperTexturePainter old) => old.seed != seed;
+}
+
 /// The narrator's box. Square corners, hard shadow, one ink rule down the
-/// side in the colour of whatever the page is about.
+/// side in the colour of whatever the page is about, on stock with a hint of
+/// tooth to it.
 class CaptionBox extends StatelessWidget {
   final String text;
   final Color accent;
@@ -385,7 +615,6 @@ class CaptionBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
         decoration: BoxDecoration(
           color: paper,
           border: Border(
@@ -396,7 +625,21 @@ class CaptionBox extends StatelessWidget {
           ),
           boxShadow: const [BoxShadow(color: inkBlack, offset: Offset(3, 3))],
         ),
-        child: typing ?? Text(text, style: textStyle),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: IgnorePointer(
+                child: CustomPaint(
+                  painter: PaperTexturePainter(seed: text.length),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
+              child: typing ?? Text(text, style: textStyle),
+            ),
+          ],
+        ),
       );
 }
 
