@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import '../art/character_art.dart';
+import '../art/effects.dart';
+import '../art/gate_art.dart';
+import '../data/element.dart';
 import '../data/house.dart';
 import '../data/story.dart';
 import '../state/game_controller.dart';
@@ -21,6 +25,12 @@ class EndingScreen extends StatelessWidget {
     final answer = game.gateAnswer;
     final endings = game.resolveEndings();
 
+    var step = 0;
+    // The epilogue arrives one panel at a time. It is the last thing the
+    // game says; it should not all land in a single frame.
+    Widget staged(Widget child) =>
+        Reveal(delay: Duration(milliseconds: 140 * step++), child: child);
+
     return Scaffold(
       backgroundColor: night,
       appBar: AppBar(
@@ -33,8 +43,17 @@ class EndingScreen extends StatelessWidget {
       body: SafeArea(
         child: ScreenBody(
           children: [
+            staged(const Center(
+              child: RiftView(
+                element: GateElement.gloam,
+                size: 110,
+                // Whatever was decided, this one is not pulling any more.
+                intensity: .45,
+              ),
+            )),
+            const SizedBox(height: 18),
             if (answer != null) ...[
-              Panel(
+              staged(Panel(
                 borderColor: rift,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -51,7 +70,7 @@ class EndingScreen extends StatelessWidget {
                             color: boneDim, fontSize: 13.5, height: 1.7)),
                   ],
                 ),
-              ),
+              )),
               const SizedBox(height: 16),
             ],
             const Padding(
@@ -63,7 +82,7 @@ class EndingScreen extends StatelessWidget {
             for (final id in House.residents
                 .map((r) => r.id)
                 .where(game.settled.contains)) ...[
-              _routeEnding(id, endings[id]?.endingId),
+              staged(_routeEnding(id, endings[id]?.endingId)),
               const SizedBox(height: 12),
             ],
             const SizedBox(height: 6),
@@ -99,6 +118,12 @@ class EndingScreen extends StatelessWidget {
         children: [
           Row(
             children: [
+              CharacterPortrait(id,
+                  size: 52,
+                  // A route that ended well ends lit.
+                  glow: label == 'True' ? 1 : (label == 'Lost' ? .15 : .55),
+                  dimmed: label == 'Lost'),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(r.name,
                     style: const TextStyle(color: bone, fontSize: 15)),

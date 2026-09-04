@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:gatefall_dialogue_engine/engine/evaluator.dart';
 import 'package:gatefall_dialogue_engine/models/route.dart';
 
+import '../art/character_art.dart';
+import '../art/effects.dart';
+import '../audio/sfx.dart';
 import '../data/ascension.dart';
 import '../data/barks.dart';
 import '../data/gifts.dart';
@@ -14,6 +17,12 @@ import 'theme.dart';
 
 /// The house — the Gold half of the game, and the only place a
 /// `home_visit`, `gift` or `date` beat can fire.
+///
+/// Version 3: everyone who lives here now has a face on their panel, a
+/// scene that is ready to play glows instead of merely being gold, and the
+/// two sound switches live at the bottom next to "start over" — the one
+/// place in the game that is already about settings rather than about the
+/// house.
 class HomeScreen extends StatefulWidget {
   final GameController game;
   const HomeScreen({super.key, required this.game});
@@ -38,7 +47,12 @@ class _HomeScreenState extends State<HomeScreen> {
     _tell('While you were out', msg);
   }
 
-  Future<void> _tell(String title, String body) => showDialog<void>(
+  Future<void> _tell(String title, String body, {Sfx? sound}) {
+    if (sound != null) Audio.instance.play(sound);
+    return _dialog(title, body);
+  }
+
+  Future<void> _dialog(String title, String body) => showDialog<void>(
         context: context,
         builder: (_) => AlertDialog(
           backgroundColor: night2,
@@ -96,6 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
           _arrivalsPanel(arrivals),
           const SizedBox(height: 12),
         ],
+        _soundPanel(),
+        const SizedBox(height: 10),
         _startOver(),
       ],
     );
@@ -129,32 +145,41 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ---------------- story ----------------
 
-  Widget _storyCard(String characterId, Beat beat) => InkWell(
-        onTap: () => _play(characterId, beat),
-        child: Container(
-          padding: const EdgeInsets.all(13),
-          decoration: BoxDecoration(
-            border: Border.all(color: gold),
-            color: gold.withValues(alpha: .07),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Something is happening',
-                        style: TextStyle(
-                            color: gold.withValues(alpha: .85), fontSize: 10.5,
-                            letterSpacing: 1.3)),
-                    const SizedBox(height: 5),
-                    Text('${House.byId(characterId).name} — "${beat.title}"',
-                        style: const TextStyle(color: bone, fontSize: 14.5)),
-                  ],
+  Widget _storyCard(String characterId, Beat beat) => Beacon(
+        color: gold,
+        child: InkWell(
+          onTap: () {
+            Audio.instance.play(Sfx.page);
+            _play(characterId, beat);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(13),
+            decoration: BoxDecoration(
+              border: Border.all(color: gold),
+              color: gold.withValues(alpha: .07),
+            ),
+            child: Row(
+              children: [
+                CharacterPortrait(characterId, size: 46, glow: .9),
+                const SizedBox(width: 11),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Something is happening',
+                          style: TextStyle(
+                              color: gold.withValues(alpha: .85),
+                              fontSize: 10.5,
+                              letterSpacing: 1.3)),
+                      const SizedBox(height: 5),
+                      Text('${House.byId(characterId).name} — "${beat.title}"',
+                          style: const TextStyle(color: bone, fontSize: 14.5)),
+                    ],
+                  ),
                 ),
-              ),
-              const Icon(Icons.play_arrow, color: gold),
-            ],
+                const Icon(Icons.play_arrow, color: gold),
+              ],
+            ),
           ),
         ),
       );
@@ -251,7 +276,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           final got = game.collectRent();
                           setState(() {});
                           _tell('Rent collected',
-                              '+$got gold. Everyone paid, more or less on time.');
+                              '+$got gold. Everyone paid, more or less on time.',
+                              sound: Sfx.reward);
                         }
                       : null,
                 ),
@@ -269,7 +295,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           setState(() {});
                           _tell('A few hours\' work',
                               '+$got gold. Somebody\'s cellar had something in '
-                              'it that was not, technically, a monster.');
+                              'it that was not, technically, a monster.',
+                              sound: Sfx.reward);
                         }
                       : null,
                 ),
@@ -305,8 +332,13 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Bond lights them: tier 0 is a silhouette in the dark, a
+              // finished route is somebody standing in their own colour.
+              CharacterPortrait(id,
+                  size: 54, glow: (.25 + tier * .18).clamp(0.0, 1.0)),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,7 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           const SizedBox(height: 8),
-          Bar(_tierFraction(points), rose, height: 5),
+          AnimatedBar(_tierFraction(points), rose, height: 5, ghost: false),
           const SizedBox(height: 6),
           Text(
             upcoming == null
@@ -415,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final line = game.goOnDate(id);
     if (line == null) return;
     setState(() {});
-    await _tell('An evening out', line);
+    await _tell('An evening out', line, sound: Sfx.bond);
     if (!mounted) return;
     // A date is exactly where a `date`-context beat belongs. Re-check after
     // the bond gain, since that gain may be what unlocked it.
@@ -495,7 +527,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final bark = game.giveGift(id, chosen);
     if (bark == null) return;
     setState(() {});
-    await _tell(chosen.name, bark);
+    await _tell(chosen.name, bark, sound: Sfx.gift);
     if (!mounted) return;
     final beat = game.beatFor(id, 'gift');
     if (beat != null) await _play(id, beat);
@@ -524,6 +556,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Row(
                         children: [
+                          CharacterPortrait(r.id, size: 40, glow: .2, calm: true),
+                          const SizedBox(width: 9),
                           Expanded(
                             child: Text('${r.name} · ${r.species}',
                                 overflow: TextOverflow.ellipsis,
@@ -572,6 +606,45 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
 
+  /// Version 3's one settings panel. Two switches, both saved: sound
+  /// effects, and the ambient bed. Separate because they are separate
+  /// annoyances — a player on a bus wants the music off and the taps left
+  /// alone, and a player at a desk often wants the opposite.
+  Widget _soundPanel() => Panel(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const PanelTitle('Sound',
+                subtitle:
+                    'Everything you hear was synthesised for this game — see '
+                    'tool/make_sounds.py. Both switches are saved.'),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Expanded(
+                  child: SlabButton(
+                    game.sfxOn ? 'Effects · on' : 'Effects · off',
+                    tone: game.sfxOn ? verdant : boneDim,
+                    sound: Sfx.uiTap,
+                    onPressed: () => setState(() => game.setSfxOn(!game.sfxOn)),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: SlabButton(
+                    game.musicOn ? 'Ambience · on' : 'Ambience · off',
+                    tone: game.musicOn ? rift : boneDim,
+                    sound: Sfx.uiTap,
+                    onPressed: () =>
+                        setState(() => game.setMusicOn(!game.musicOn)),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
   Widget _startOver() => Align(
         alignment: Alignment.center,
         child: TextButton(
@@ -595,7 +668,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: const Text('Keep playing',
                           style: TextStyle(color: verdant))),
                   TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
+                      onPressed: () {
+                        Audio.instance.play(Sfx.defeat);
+                        Navigator.of(context).pop(true);
+                      },
                       child: const Text('Erase it',
                           style: TextStyle(color: blood))),
                 ],

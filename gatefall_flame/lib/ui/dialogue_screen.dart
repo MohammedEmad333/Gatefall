@@ -4,6 +4,9 @@ import 'package:gatefall_dialogue_engine/models/dialogue_node.dart';
 import 'package:gatefall_dialogue_engine/models/route.dart';
 import 'package:gatefall_dialogue_engine/models/scene.dart';
 
+import '../art/character_art.dart';
+import '../art/effects.dart';
+import '../audio/sfx.dart';
 import '../data/companion_routes.dart';
 import '../data/house.dart';
 import '../state/game_controller.dart';
@@ -18,6 +21,12 @@ import 'theme.dart';
 /// conditional insert, every flag write and bond delta is the engine's
 /// decision applied to the controller's own [GameState]; this widget only
 /// decides what a line looks like and when the player taps.
+///
+/// Version 3 gave it the two things a visual novel cannot do without: the
+/// person you are talking to, drawn and lit while they speak, and text that
+/// arrives a character at a time instead of appearing whole. A tap while a
+/// line is still typing finishes that line rather than skipping it — the
+/// impatient tap must never cost you a sentence.
 class DialogueScreen extends StatefulWidget {
   final GameController game;
   final String characterId;
@@ -55,6 +64,9 @@ class DialogueScreen extends StatefulWidget {
 class _DialogueScreenState extends State<DialogueScreen> {
   DialogueEngine? _engine;
   String? _error;
+
+  /// The line currently typing. Held so a tap can complete it.
+  final GlobalKey<TypewriterState> _typing = GlobalKey<TypewriterState>();
 
   /// Lines already played, so a scene reads as a transcript rather than one
   /// line at a time with no memory of what was just said.
@@ -112,11 +124,18 @@ class _DialogueScreenState extends State<DialogueScreen> {
   void _advance() {
     final engine = _engine;
     if (engine == null) return;
+    // First tap finishes the line, second tap moves on.
+    final typing = _typing.currentState;
+    if (typing != null && !typing.done) {
+      setState(typing.finish);
+      return;
+    }
     if (engine.isEnd) {
       _finish();
       return;
     }
     if (engine.currentNode.isBranch) return;
+    Audio.instance.play(Sfx.uiTap);
     setState(() {
       engine.advance();
       _pushCurrent(engine);
@@ -129,6 +148,7 @@ class _DialogueScreenState extends State<DialogueScreen> {
   void _choose(Choice choice) {
     final engine = _engine;
     if (engine == null) return;
+    Audio.instance.play(Sfx.uiSelect);
     setState(() {
       _history.add(_Line(speaker: null, text: choice.text, isChoice: true));
       engine.choose(choice.choiceId);
@@ -147,6 +167,7 @@ class _DialogueScreenState extends State<DialogueScreen> {
     final ascension = widget.game.ascensionMessage;
     if (ascension != null) {
       widget.game.ascensionMessage = null;
+      Audio.instance.play(Sfx.ascend);
       if (mounted) await _tellAscension(ascension);
     }
     if (mounted) Navigator.of(context).pop();
@@ -223,28 +244,48 @@ class _DialogueScreenState extends State<DialogueScreen> {
     );
   }
 
-  Widget _header() => Padding(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 10),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(widget.beat.title,
-                      style: const TextStyle(color: bone, fontSize: 17)),
-                  const SizedBox(height: 2),
-                  Text(
-                    '${_speakerName(widget.characterId)} · beat '
-                    '${widget.beat.order} · ${widget.beat.triggerContext}',
-                    style: const TextStyle(color: boneDim, fontSize: 11),
-                  ),
-                ],
-              ),
+  /// Who spoke last, so the portrait can react to it.
+  String? get _lastSpeaker {
+    for (final line in _history.reversed) {
+      if (!line.isChoice) return line.speaker;
+    }
+    return null;
+  }
+
+  Widget _header() {
+    final theirs = _lastSpeaker != 'player';
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+      child: Row(
+        children: [
+          CharacterPortrait(
+            widget.characterId,
+            size: 66,
+            // Their portrait brightens on their own lines and settles back
+            // while the player is talking. It is the cheapest possible
+            // "who is speaking" cue and it costs no layout.
+            glow: theirs ? 1 : .35,
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(widget.beat.title,
+                    style: const TextStyle(color: bone, fontSize: 17)),
+                const SizedBox(height: 2),
+                Text(
+                  '${_speakerName(widget.characterId)} · beat '
+                  '${widget.beat.order} · ${widget.beat.triggerContext}',
+                  style: const TextStyle(color: boneDim, fontSize: 11),
+                ),
+              ],
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _transcript() => ListView.builder(
         padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),
@@ -277,16 +318,26 @@ class _DialogueScreenState extends State<DialogueScreen> {
                 ],
                 Opacity(
                   opacity: isLatest ? 1 : .55,
-                  child: Text(
-                    line.text,
-                    style: TextStyle(
+                  child: Builder(builder: (_) {
+                    final style = TextStyle(
                       color: isNarration ? boneDim : bone,
                       fontSize: isNarration ? 13 : 15,
                       height: 1.65,
                       fontStyle:
                           isNarration ? FontStyle.italic : FontStyle.normal,
-                    ),
-                  ),
+                    );
+                    // Only the newest line types. Everything above it has
+                    // already been read and must not move again.
+                    if (!isLatest) return Text(line.text, style: style);
+                    return Typewriter(
+                      line.text,
+                      key: _typing,
+                      style: style,
+                      // Narration is a beat slower than speech, which is
+                      // roughly how people read it.
+                      perChar: isNarration ? .024 : .016,
+                    );
+                  }),
                 ),
               ],
             ),
@@ -312,22 +363,25 @@ class _DialogueScreenState extends State<DialogueScreen> {
                       fontSize: 11,
                       fontStyle: FontStyle.italic)),
             ),
-            for (final c in choices)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 7),
-                child: InkWell(
-                  onTap: () => _choose(c),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 12),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: rose.withValues(alpha: .55)),
-                      color: rose.withValues(alpha: .06),
+            for (final (i, c) in choices.indexed)
+              Reveal(
+                delay: Duration(milliseconds: 70 * i),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 7),
+                  child: InkWell(
+                    onTap: () => _choose(c),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: rose.withValues(alpha: .55)),
+                        color: rose.withValues(alpha: .06),
+                      ),
+                      child: Text(c.text,
+                          style: const TextStyle(
+                              color: bone, fontSize: 13.5, height: 1.45)),
                     ),
-                    child: Text(c.text,
-                        style: const TextStyle(
-                            color: bone, fontSize: 13.5, height: 1.45)),
                   ),
                 ),
               ),
