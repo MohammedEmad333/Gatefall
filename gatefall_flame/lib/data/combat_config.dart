@@ -68,8 +68,31 @@ class CombatConfig {
   static const double abilityCritMult = 1.8;
 
   // Speed
-  static const List<int> speedOptions = [1, 2];
+  static const List<int> speedOptions = [1, 2, 4];
 
   /// 2x speed is unlocked by clearing the gate once — a reward, not a default.
   static const int clearsToUnlockDoubleSpeed = 1;
+
+  /// 4x follows at ten clears. Not in the original locked decisions (which
+  /// name 2x only), but an idle game whose raids run 5-10 minutes needs a
+  /// second speed step once the player has cleared the same gate a dozen
+  /// times. Purely a presentation rate — the simulation still runs at
+  /// [tickSeconds], so balance is untouched.
+  static const int clearsToUnlockFastSpeed = 10;
+
+  // Bond earned per clear, per deployed companion. Scales with gate tier:
+  // fighting something worse together is worth more than farming the
+  // easiest gate on the board (docs/combat-spec.md §5, bond as the fourth
+  // and softest progression track).
+  static const int bondPerClearBase = 10;
+  static const int bondPerClearPerTier = 5;
+
+  // Offline accrual (docs/combat-spec.md §7). "Cleared gates yield ~50%
+  // Mana, capped 8-12h. New gates/bosses require you present." Modelled as
+  // a slow drip of already-solved clears rather than a share of the active
+  // rate: active play at 2x earns several times this per hour, so coming
+  // back is a head start and never a substitute for playing.
+  static const double offlineClearsPerHour = 4;
+  static const double offlineManaRate = 0.5;
+  static const int offlineCapHours = 10;
 }

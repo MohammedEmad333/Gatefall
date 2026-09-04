@@ -1,7 +1,7 @@
 name: gatefall
-description: Gatefall — step-1 raid prototype (Flutter + Flame).
+description: Gatefall — idle action-RPG x romance simulation.
 publish_to: 'none'
-version: 0.1.0
+version: 1.0.0
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -12,6 +12,7 @@ dependencies:
   flame: ^1.18.0
   gatefall_dialogue_engine:
     path: ../gatefall_dialogue_engine
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:

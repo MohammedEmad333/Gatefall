@@ -93,7 +93,7 @@ Future gacha: a pull grants the character, then a **character-specific unlock qu
 | File | Contents |
 |---|---|
 | `gatefall_dialogue_engine/` | Pure-Dart dialogue engine + **all 5 characters' routes as real JSON** (40 files) — the canonical copy |
-| `gatefall_flame/` | Flutter/Flame scaffold mirroring the prototype + balance tests; depends on `gatefall_dialogue_engine` (path dependency, step 6) for Bond/beat logic, with its own mirrored copy of the route JSON under `data/` since Flutter can't bundle assets from a pure-Dart path dependency |
+| `gatefall_flame/` | **The game.** House, gates, party, dialogue and ending screens over the pure combat sim; depends on `gatefall_dialogue_engine` (path dependency) for all route/beat/ending logic, with its own mirrored copy of the route JSON under `data/` since Flutter can't bundle assets from a pure-Dart path dependency. See its README for the tier table and the tuning. |
 
 ---
 
@@ -104,8 +104,35 @@ Future gacha: a pull grants the character, then a **character-specific unlock qu
 - [x] **Step 3** — elements and the matchup wheel
 - [x] **Step 4** — Mana rewards → companion leveling
 - [x] **Step 5** — gear drops and upgrades
-- [x] **Step 6** — Bond buffs + `post_raid` story hooks (buff and hook *detection* are real and tested; the raid screen still doesn't render a dialogue scene — see finding #10 and caveats)
-- [ ] Step 7 — offline accrual
+- [x] **Step 6** — Bond buffs + `post_raid` story hooks
+- [x] **Step 7** — offline accrual
+- [x] **Step 8 — the playable first version.** The raid prototype became a
+  game: a house, a working dialogue renderer, the Gold economy, gate tiers,
+  acts, endings, and persistence. Details below.
+
+### What step 8 added
+
+| Piece | What it is |
+|---|---|
+| **The house** (`ui/home_screen.dart`, `data/house.dart`) | Rooms bought with Gold settle a resident and fire their Beat 0. Rent accrues per resident per hour (12h cap); odd jobs give Gold on a 2-minute cooldown. Talk / Gift / Date per resident. |
+| **The dialogue renderer** (`ui/dialogue_screen.dart`) | The gap step 6 left. Drives the real `DialogueEngine` over one shared `GameState`: branches, conditional inserts, flags, bond deltas, and marking the beat complete. Scenes render as a transcript, not one line at a time. |
+| **The gift shop** (`data/gifts.dart`, `data/barks.dart`) | 15 items priced in Gold. Reactions come from each route's own `gift_preferences` via `reactionTierFor`, and pay the exact bond deltas in the data model (loved +20, liked +10, neutral +2, disliked −5). Barks are new written content, one pool per character per tier. |
+| **Gate tiers** (`data/gate.dart`) | Four difficulties on a board you choose from. This is what makes the acquisition ramp shippable — see finding #11. |
+| **Acts and endings** (`data/story.dart`, `ui/ending_screen.dart`) | Acts advance on both halves of the game at once, gating Beats 4 and 6. Act III asks the second ending dial (what you do about the gates), then the epilogue resolves every route through the shared `Evaluator.resolveEnding` and prints written prose for all 15 route endings plus 3 gate answers. |
+| **Persistence** (`state/save_store.dart`) | One JSON blob via `shared_preferences`, so it works unchanged on web, mobile and desktop. Mana, Gold, clears, levels, gear, formation, settled residents, bond, flags, completed beats and act all survive a restart. |
+| **Offline accrual** (step 7) | Four clears an hour at 50% value, capped at 10h, scaled by best clear so far. |
+| **One state object** (`state/game_controller.dart`) | Every screen reads from and calls into a single `ChangeNotifier` that holds the dialogue engine's own `GameState`. |
+| **A web build that just opens** | `flutter build web --release --no-web-resources-cdn` produces a `build/web/` that runs off any static file server with no outbound network. |
+
+### Verification
+
+`flutter analyze` is clean and **90 tests pass** (`flutter test`) — the
+original 33 unchanged, plus gate tiers, save/load round trips, offline
+accrual, the house economy, gifts, acts, endings, scene-graph integrity, and
+widget tests that drive the real screens the way a player does. The web build
+was then loaded in Chromium and played: opening scene to completion, a gate
+cleared, mana spent, a gift given, and the save surviving a reload, with no
+console errors.
 
 ---
 
@@ -120,7 +147,7 @@ Each is a real bug if undone. All are encoded in `test/balance_test.dart`.
 
 3. **Between-wave recovery + revive prevent a death spiral.** Otherwise one early death drops damage → longer fight → more deaths. They keep a bad formation *slower*, not unwinnable — which is what the no-fail-state promise requires.
 
-4. **A party under 4 loses ~100%.** Fine as a visible choice (UI warns), never as a default. An early build shipped an unwinnable 3-member default.
+4. **A party under 4 loses ~100%** *at the Rift tier*. Fine as a visible choice (every gate card states the party size it is built for), never as a default. An early build shipped an unwinnable 3-member default. Step 8's gate tiers are the general answer — see finding #11.
 
 5. **A multi-minute fight is impossible without sustain.** Fixed party HP + long fight = guaranteed death. First tuning pass was 0% for exactly this.
 
@@ -133,10 +160,19 @@ Each is a real bug if undone. All are encoded in `test/balance_test.dart`.
 9. **Gear (step 5) stacks *with* level rather than replacing it, and every win pays out.** Combat spec §2's resolve step says a win always drops gear (only losing withholds it) — so `_rollGearDrop()` isn't RNG-gated on top of the win, it always fires, only the *rarity* (common/rare/epic, weighted 65/28/7) is random. One slot per character, no inventory screen: a drop auto-equips only if it beats what's already worn (comparing `Gear.statMultiplier`, which folds in any enhance investment), otherwise it's salvaged into Mana on the spot — a "bad" drop is never a dead click. `Gear.statMultiplier` combines multiplicatively with `Progression.statMultiplier`, so a well-geared low-level character and a well-leveled ungeared one both feel the payoff. Same guardrail as leveling: a fully ungeared party still clears at the same rate as before gear existed.
 
 10. **Bond (step 6) is real integration with the dialogue engine, not a reimplementation of its tier math.** `gatefall_flame` now depends on `gatefall_dialogue_engine` via a `path:` pubspec dependency and calls its actual `Evaluator.tierOf` / `Evaluator.nextAvailableBeat` — `BondBuff` only adds the combat-facing multiplier from combat-spec.md §5 (flat +5%/tier) on top of that one shared source of truth. Because the dialogue engine is a **pure-Dart package**, Flutter can't auto-bundle its `data/` assets from the path dependency; the route JSON is mirrored into `gatefall_flame/data/` (matching the asset paths the scaffold's `pubspec.yaml` had already declared, unused, since step 1) and loaded via `rootBundle`. That mirroring is a real duplication tradeoff — see caveats.
-    - Bond is earned through play (a flat amount per raid clear, per companion deployed), never bought — the fourth, softest track per §6.
-    - The `post_raid` story hook is *detection*, not playback: after a bond gain, `_awardBond()` calls the shared `nextAvailableBeat` and, if a newly-unlocked beat's `trigger_context` is `post_raid`, surfaces a one-line notification on the raid result screen. It does **not** render the beat's actual dialogue scene (no in-app scene renderer exists yet) or apply any of that scene's own choice-driven bond deltas/flags — see caveats for what that means for a companion's route staying stuck on an earlier `home_visit`/`gift`/`date` beat in this raid-only build.
+    - Bond is earned through play (per raid clear, per companion deployed), never bought — the fourth, softest track per §6. Step 8 scaled the per-clear amount by gate tier (`10 + 5 × tier`), so fighting something worse together is worth more than farming the easiest gate on the board.
+    - The `post_raid` story hook was *detection* only in step 6. Step 8 made it playback: the raid result screen offers the beat and the scene renderer plays it.
+
+11. **Gate tiers are what make the acquisition ramp shippable.** The house fills one person at a time (Encounter → Settle → Unlock), so a real playthrough starts with a party of two — and finding #4 says a party under four loses ~100% at the one fixed difficulty everything was tuned for. Scaling the *gate* rather than the party squares that with the no-fail-state promise. Four tiers, simulation-tuned per party size, with the standard "Rift" tier left at exactly ×1.0 across HP, damage and Mana so **every balance test written before tiers existed still passes unchanged**. Tier 0 is always on the board: there is never a state with nothing you can clear. Re-check finding #7's element margin per tier whenever a multiplier moves — `balance_test.dart` does this automatically now.
+
+12. **Acts must gate on both halves of the game, not one.** Beat 4 needs Act 2 and Beat 6 needs Act 3, so the act is what controls the timing of the emotional peaks. Gating it on raid progress alone would walk a player into a Fracture for someone they have no relationship with; gating it on beats alone would let an empty house reach Act 3. It takes residents settled *and* scenes played (plus, for Act 3, someone actually at bond tier 4). The UI always states what the next act is waiting for.
+
+13. **A save must never restore into an unwinnable or unopenable state.** Two failures worth guarding, both now tested: a save whose JSON parses but whose *fields* are the wrong types must start a new game rather than throw on every launch; and a save with nobody settled must repair itself to Faelen-on-the-doorstep rather than hand the player a party of one (finding #4 again, arriving through the save file instead of the UI).
 
 ### Current tuning (all compositions viable, speed/safety tradeoff)
+
+At the Rift tier, level 1, no gear — i.e. exactly the pre-tier numbers:
+
 | Composition | Win | Avg |
 |---|---|---|
 | Kess front, no healer | 96% | 316s |
@@ -144,37 +180,82 @@ Each is a real bug if undone. All are encoded in `test/balance_test.dart`.
 | With Thora healer | 100% | 418s |
 | No tank | 100% | 336s |
 
+Across tiers, against the progression a player actually has when each opens:
+
+| | Fracture | Breach | Rift | Maw |
+|---|---|---|---|---|
+| Party of 2, level 1 | 100% / 236s | — | — | — |
+| Party of 4, level 1 | 100% / 111s | 100% / 202s | 100% / 340s | — |
+| Party of 4, Lv8 + rare gear + bond 2 | 100% / 65s | 100% / 121s | 100% / 197s | 100% / 306s |
+
 ---
 
 ## Known caveats
 
-- A Dart + Flutter SDK is now available in the build environment (as of step 3). `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (33/33 as of step 6). Still never run on a device/emulator — expect to sanity-check the UI on first real `flutter run`.
-- Gear (step 5) and Bond (step 6) are in-memory only, same as everything else — no save/load layer exists yet for any of Mana, levels, gear, or bond/completed-beats state. That's a pre-existing gap, not new to either step.
+- Dart + Flutter (3.47.2 / Dart 3.13.2) are available in the build environment. `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (90/90). The game has been played end to end in Chromium against a real `flutter build web` with no console errors, but **still never run on a phone or emulator** — expect to sanity-check touch targets and safe areas on a first real device run.
+- **There is no art.** Every screen is type, rule lines and colour. That is a deliberate placeholder, not a style decision — see the open question below.
+- **The scenes are stubs.** Every beat's dialogue exists and plays, but most scenes are 2-6 nodes: enough to prove the schema and the renderer, nowhere near enough to carry a route emotionally. Writing real scenes is now the highest-value content work, and it needs no code changes.
 - `Row` was renamed to **`BattleRow`** in the Dart code to avoid colliding with Flutter's `Row` widget; the elements enum is likewise **`GateElement`**, not `Element`, to avoid colliding with Flutter's own `Element` (widget tree node) class.
-- **Bond's `post_raid` hook realistically won't fire yet in a fresh playthrough.** Every companion's post_raid beat (e.g. `faelen_b2_proving_ground`) requires an earlier `home_visit` beat (e.g. `faelen_b1_the_wall`) to be completed first, and this raid-only screen has no way to trigger `home_visit`/`gift`/`date` beats — there's no house UI yet. So in practice a companion's `nextAvailableBeat` gets stuck on that earlier beat indefinitely here. The wiring is real and covered by a test that manually completes the prerequisite beats (see `balance_test.dart`'s bond group), but seeing it actually fire in the running app needs the house/dialogue UI this step didn't build. `gatefall_flame/data/` is a **manual mirror** of `gatefall_dialogue_engine/data/` — if a route JSON changes, copy it again; nothing keeps the two in sync automatically.
+- **`gatefall_flame/data/` is a manual mirror** of `gatefall_dialogue_engine/data/` — Flutter can't bundle assets from a pure-Dart path dependency. Nothing copies it automatically, but `game_test.dart` now **fails if the two ever drift**, so at least the mirror can't go stale silently.
+- **4× speed is an addition, not a locked decision.** The locked list names 2× only. 4× unlocks at ten clears because a 5-10 minute raid loop needs a second speed step once a player has cleared the same gate a dozen times. It is a presentation rate — the simulation still steps at `tickSeconds` — so it cannot affect balance. Easy to remove if unwanted.
+- **Dana lives in the house but cannot be deployed.** That is faithful to her route ("starts entirely outside the fight" until she awakens in Beat 6), but it means her bond can only be raised by gifts, dates and scenes, never by raiding. Her Beat 6 payoff — the wildcard kit — is written but has no combat implementation, so awakening her currently changes the story and not the party.
+- **Ascended kits are not implemented.** Every route's Beat 6 promises a transformed ability set (Kess links off allies, Momo's oracle kit, Thora's reciprocal kit, Dana's wildcard). The routes deliver those beats and their endings; the combat kit does not change. That is the largest gap between what the story says and what the fight does.
+- **Widget tests must boot inside `tester.runAsync`.** Loading routes and scenes is real file I/O, which never completes inside the FakeAsync zone a widget test body runs in. Without it the second test in a file hangs forever on a Future the fake clock will never advance — a genuinely confusing failure, so the helper in `widget_test.dart` carries the explanation.
 
 ---
 
 ## Open question for the user
 
-**Visual design / art direction has not started.** The user asked when to begin.
-The recommendation given: **art direction exploration can start now in parallel**
-(it has the longest lead time and character art is this genre's main selling
-point), but **final asset production should wait until the loop is proven** —
-roughly after step 3-4, when the systems that determine what art is *needed*
-(how many characters, what poses, what UI states) are settled. Placeholder art
-until then.
+**Visual design / art direction is still the open question.** The
+recommendation stands and is now overdue rather than early: the loop is
+proven, so the systems that decide what art is *needed* — how many characters,
+what poses, what UI states — are settled. Every screen currently runs on type
+and rule lines, which reads as deliberate and austere but is not what this
+genre sells on.
 
-That conversation was left unfinished and is a good place to resume.
+Concretely, what the game now asks for: a portrait per companion with the five
+expression variants already generated for Faelen (`docs/art-direction/`), a
+room illustration or background per resident for the house, and a gate
+backdrop per element. Nothing else is blocking.
 
 ---
 
 ## Suggested next steps
 
-1. **Play the prototype** and answer: does the formation choice feel meaningful, does an elemental disadvantage read as "slower" rather than "stuck," does spending Mana on a level-up or gear enhance feel like a real choice against the temptation to just re-raid, and does the single-slot auto-equip-or-salvage gear model feel satisfying without an inventory screen — or does it need one?
-2. **A minimal house/dialogue screen.** This is the real gap left by step 6: Bond math and the `post_raid` hook are wired and tested, but there's nowhere in the app to trigger a `home_visit`/`gift`/`date` beat, so no companion's post_raid banter can actually fire in a live playthrough yet (see caveats). Even a bare-bones screen that walks a `DialogueEngine` through one beat's nodes would close the loop and let step 6 actually be felt, not just verified by test.
-3. **Step 7: offline accrual.** Cleared gates yielding ~50% Mana while away, capped 8–12h (combat-spec.md §7).
-4. **Art direction** — see open question above.
-5. **Write real dialogue** for a beat, using the existing JSON schema, to lock a character's voice — now double as the first real content the house/dialogue screen above would render.
-6. **Persistence** — Mana, companion levels, gear, and now bond/completed-beats are all in-memory only (see caveats). Worth a save/load layer before this goes much further, so playtesting progress survives a restart.
-7. **De-duplicate `gatefall_flame/data/`** — it's a manual, one-time mirror of `gatefall_dialogue_engine/data/` (see caveats). Fine for now; worth a sync script or a real Flutter-package conversion of the dialogue engine before route JSON changes often.
+In the order that adds the most to the game as it now stands.
+
+1. **Play it, then tune the pacing.** The whole loop is playable, so the
+   questions are finally answerable by playing rather than by simulating: does
+   choosing a gate off the board feel like a decision or a chore? Does bond
+   climb too slowly between scenes? Is the Gold economy too tight early (one
+   resident, 20 gold/hour, a 260-gold room) or too loose later? Every one of
+   those is a constant in `data/house.dart`, `data/gate.dart` or
+   `data/combat_config.dart`.
+
+2. **Write real scenes.** This is now the highest-value work in the project
+   and it needs no code. The renderer, the schema, the flags, the branching
+   and the endings all work; most scenes are 2-6 nodes of placeholder. Start
+   with one complete route — Faelen's, since her art exists — and let it set
+   the length and voice standard for the rest.
+
+3. **Ascended kits.** Every Beat 6 promises a transformed ability set and none
+   of them changes combat. Kess linking off ally actions is the cleanest first
+   one to build, and it would prove the "combat kit mirrors the flaw, ascended
+   kit mirrors the cure" keystone actually lands mechanically rather than only
+   on paper.
+
+4. **Dana in combat.** She lives in the house and has a full route but cannot
+   be deployed, so her Beat 6 awakening changes the story and not the party.
+   Needs a `FighterDef`, an ability set, and a gate on her recruitment.
+
+5. **Art direction** — see the open question above.
+
+6. **Sprites, once there is art.** `battle.dart` is a pure simulation with no
+   rendering in it, so swapping the raid screen for a `FlameGame` is a
+   presentation change only: call `battle.tick(dt)` from Flame's `update()`
+   instead of the `Timer`.
+
+7. **De-duplicate `gatefall_flame/data/`.** Still a manual mirror of the
+   canonical route JSON, though `game_test.dart` now fails loudly if the two
+   drift. A sync script or converting the dialogue engine into a real Flutter
+   package would close it properly.

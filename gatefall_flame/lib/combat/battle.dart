@@ -109,6 +109,13 @@ class Battle {
   /// it (see docs/combat-spec.md §3: "each [gate] shows its element").
   final GateElement gateElement;
 
+  /// Gate tier scaling (see GateTier in data/gate.dart). Defaults to 1.0
+  /// across the board, which is exactly the step-3 tuning every existing
+  /// balance test was written against — a tier-2 "Rift" is the old gate.
+  final double hpMult;
+  final double dpsMult;
+  final double manaMult;
+
   /// When true, abilities fire off cooldown automatically. Auto must stay
   /// fully viable — manual is an optimization, never a requirement.
   bool autoCast;
@@ -127,6 +134,9 @@ class Battle {
     required this.party,
     required this.abilities,
     this.gateElement = GateElement.verdant,
+    this.hpMult = 1.0,
+    this.dpsMult = 1.0,
+    this.manaMult = 1.0,
     this.autoCast = true,
     Random? rng,
   }) : _rng = rng ?? Random();
@@ -136,6 +146,9 @@ class Battle {
       Map<String, Gear?> gear = const {},
       Map<String, int> bondTiers = const {},
       GateElement gateElement = GateElement.verdant,
+      double hpMult = 1.0,
+      double dpsMult = 1.0,
+      double manaMult = 1.0,
       Random? rng}) {
     return Battle(
       party: Roster.partyFrom(formation,
@@ -143,6 +156,9 @@ class Battle {
       abilities: Roster.abilitiesFor(formation.keys,
           levels: levels, gear: gear, bondTiers: bondTiers),
       gateElement: gateElement,
+      hpMult: hpMult,
+      dpsMult: dpsMult,
+      manaMult: manaMult,
       rng: rng,
     );
   }
@@ -181,20 +197,22 @@ class Battle {
       bossElapsed = 0;
       enemy = Enemy(
         name: 'The Root That Walks',
-        maxHp: CombatConfig.bossHp,
-        baseDps: CombatConfig.bossDps,
+        maxHp: CombatConfig.bossHp * hpMult,
+        baseDps: CombatConfig.bossDps * dpsMult,
         element: gateElement,
         isBoss: true,
       );
       _emit('The gate guardian stirs.', 'hurt');
     } else {
-      final hp =
-          CombatConfig.waveEnemyHp + CombatConfig.waveEnemyHpGrowth * waveIndex;
+      final hp = (CombatConfig.waveEnemyHp +
+              CombatConfig.waveEnemyHpGrowth * waveIndex) *
+          hpMult;
       enemy = Enemy(
         name: _waveNames[waveIndex % _waveNames.length],
         maxHp: hp,
         baseDps:
-            CombatConfig.enemyDps + CombatConfig.enemyDpsGrowth * waveIndex,
+            (CombatConfig.enemyDps + CombatConfig.enemyDpsGrowth * waveIndex) *
+                dpsMult,
         element: gateElement,
       );
     }
@@ -208,7 +226,7 @@ class Battle {
   /// Current incoming damage per second, including the boss enrage ramp.
   double get incomingDps {
     if (!onBoss) return enemy.baseDps;
-    return enemy.baseDps + CombatConfig.bossEnrage * bossElapsed;
+    return enemy.baseDps + CombatConfig.bossEnrage * dpsMult * bossElapsed;
   }
 
   /// Enrage shown to the player, so escalating danger reads as a mechanic
@@ -326,8 +344,9 @@ class Battle {
             elementMultiplier(p.element, enemy.element) *
             _jitter(0.85, 1.15);
         enemy.hp -= dmg;
-        if (crit)
+        if (crit) {
           _emit('${p.name} strikes for ${dmg.round()} (critical)', 'crit');
+        }
       }
     }
 
@@ -353,9 +372,12 @@ class Battle {
 
     if (enemy.hp <= 0) {
       enemy.hp = 0;
-      final gain = enemy.isBoss
-          ? CombatConfig.bossMana
-          : CombatConfig.waveManaBase + CombatConfig.waveManaGrowth * waveIndex;
+      final gain = ((enemy.isBoss
+                  ? CombatConfig.bossMana
+                  : CombatConfig.waveManaBase +
+                      CombatConfig.waveManaGrowth * waveIndex) *
+              manaMult)
+          .round();
       manaEarned += gain;
 
       if (enemy.isBoss) {
