@@ -1,7 +1,11 @@
 name: gatefall
 description: Gatefall — idle action-RPG x romance simulation.
 publish_to: 'none'
-version: 1.0.0
+# 2.0.0 — "Ascension". Every route's Beat 6 now grants the transformed
+# ability it always promised, and Dana awakens into the party. The build
+# number is what Android orders installs by, so it goes up with every
+# release: 1.0.0 shipped as +1.
+version: 2.0.0+2
 
 environment:
   sdk: '>=3.0.0 <4.0.0'

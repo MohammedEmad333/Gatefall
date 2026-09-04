@@ -5,6 +5,10 @@ name: Build APK
 # The repo only scaffolds the `web` platform (see gatefall_flame/.metadata),
 # so this workflow generates the Android platform files in CI with
 # `flutter create` before building. Nothing Android-specific is committed.
+#
+# On a push to main the built APK is also published as a GitHub Release,
+# tagged with the version in gatefall_flame/pubspec.yaml — so "the current
+# build of the game" is a link rather than a workflow artifact that expires.
 
 on:
   push:
@@ -30,6 +34,11 @@ jobs:
     name: Build Android APK
     runs-on: ubuntu-latest
 
+    # Publishing a release needs write access to the repo contents. Only the
+    # main-branch run uses it; everything else runs read-only.
+    permissions:
+      contents: write
+
     defaults:
       run:
         working-directory: gatefall_flame
@@ -53,6 +62,24 @@ jobs:
       - name: Show Flutter version
         run: flutter --version
 
+      - name: Read app version
+        id: version
+        # The single source of truth is pubspec.yaml. `2.0.0+2` -> name
+        # 2.0.0, build 2; the tag is v2.0.0.
+        run: |
+          full="$(grep -m1 '^version:' pubspec.yaml | awk '{print $2}')"
+          name="${full%%+*}"
+          build="${full##*+}"
+          # A version with no "+build" suffix leaves build == full. Written
+          # as an if rather than `[ ] && x=1` because GitHub runs steps under
+          # `bash -e`, where a false test as a bare command ends the step.
+          if [ "$build" = "$full" ]; then build=1; fi
+          echo "full=$full"        >> "$GITHUB_OUTPUT"
+          echo "name=$name"        >> "$GITHUB_OUTPUT"
+          echo "build=$build"      >> "$GITHUB_OUTPUT"
+          echo "tag=v$name"        >> "$GITHUB_OUTPUT"
+          echo "Building Gatefall $name (build $build)"
+
       - name: Generate Android platform files
         # The Android platform is not committed; regenerate it here. This only
         # adds the android/ scaffolding and never touches lib/ or assets.
@@ -66,12 +93,58 @@ jobs:
         continue-on-error: true
         run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
+      - name: Test
+        # The balance and save-state suites are fast and catch exactly the
+        # things that are miserable to find on a phone. Informational for the
+        # same reason analyze is: a red test must not stop someone getting a
+        # build to play.
+        continue-on-error: true
+        run: flutter test
+
       - name: Build release APK
         run: flutter build apk --release
+
+      - name: Name the APK after the version
+        run: |
+          cp build/app/outputs/flutter-apk/app-release.apk \
+             "build/app/outputs/flutter-apk/gatefall-${{ steps.version.outputs.name }}.apk"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: gatefall-release-apk
-          path: gatefall_flame/build/app/outputs/flutter-apk/app-release.apk
+          name: gatefall-${{ steps.version.outputs.name }}-apk
+          path: gatefall_flame/build/app/outputs/flutter-apk/gatefall-${{ steps.version.outputs.name }}.apk
           if-no-file-found: error
+
+      - name: Publish release
+        # Only main publishes. Uses the `gh` CLI that ships on the runner
+        # rather than a third-party action, and re-uploads over an existing
+        # release of the same version so a workflow fix never needs a
+        # version bump to be re-run.
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+          NAME: ${{ steps.version.outputs.name }}
+          BUILD: ${{ steps.version.outputs.build }}
+        run: |
+          set -euo pipefail
+          apk="build/app/outputs/flutter-apk/gatefall-${NAME}.apk"
+          notes="$(mktemp)"
+          cat > "$notes" <<EOF
+          Gatefall ${NAME} (build ${BUILD}).
+
+          Install \`gatefall-${NAME}.apk\` on an Android device. It is a
+          release build signed with the default debug key, so Android will
+          ask you to allow installation from an unknown source.
+
+          Built from ${GITHUB_SHA}.
+          EOF
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$apk" --clobber
+            gh release edit "$TAG" --notes-file "$notes"
+          else
+            gh release create "$TAG" "$apk" \
+              --title "Gatefall ${NAME}" \
+              --notes-file "$notes"
+          fi

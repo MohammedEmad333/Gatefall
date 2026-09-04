@@ -13,7 +13,33 @@ export '../data/gear.dart';
 /// Kept separate so balance can be unit-tested in milliseconds, and so the
 /// same model can later drive offline-progress calculations.
 
-enum AbilityKind { damage, ultimate, taunt, heal }
+/// Base kits use the first four. The last five are the **ascended** kinds
+/// (version 2, see data/ascension.dart) — each one is the mechanical shape
+/// of a companion's route resolving, so they are written as new kinds
+/// rather than as bigger numbers on the old ones.
+enum AbilityKind {
+  damage,
+  ultimate,
+  taunt,
+  heal,
+
+  /// Faelen — shields and empowers the whole party instead of only herself.
+  rally,
+
+  /// Kess — damage scales off what the rest of the party did since her last
+  /// cast.
+  link,
+
+  /// Momo — reads the gate ahead: party-wide damage reduction, plus a hit.
+  foresight,
+
+  /// Thora — returns, with interest, the healing and shielding the party
+  /// put into her.
+  reciprocal,
+
+  /// Dana — an off-role wildcard that resolves differently every cast.
+  wildcard,
+}
 
 class Ability {
   final String id;
@@ -56,6 +82,16 @@ class Fighter {
   double taunt = 0; // seconds remaining of drawing fire
   bool alive = true;
 
+  /// Attack multiplier granted by an ascended rally, and how long it lasts.
+  /// Kept off [attack] itself so the base stat stays the tuned constant.
+  double attackBuff = 1.0;
+  double attackBuffRemaining = 0;
+
+  /// Healing and shielding this fighter has *received* since it was last
+  /// spent. Thora's Reciprocity is the only thing that reads it, and it is
+  /// what turns "she is held up" into damage.
+  double careReceived = 0;
+
   Fighter({
     required this.id,
     required this.name,
@@ -71,6 +107,27 @@ class Fighter {
 
   double get hpFraction => (hp / maxHp).clamp(0, 1);
   bool get isTaunting => alive && taunt > 0;
+  bool get isRallied => alive && attackBuffRemaining > 0;
+
+  /// Attack after any active rally. Everything that deals damage reads this.
+  double get effectiveAttack => attack * (isRallied ? attackBuff : 1.0);
+
+  /// Take healing, capped at max HP, and remember it was given. Returns the
+  /// amount that actually landed.
+  double receiveHealing(double amount) {
+    if (!alive || amount <= 0) return 0;
+    final before = hp;
+    hp = min(maxHp, hp + amount);
+    final landed = hp - before;
+    careReceived += landed;
+    return landed;
+  }
+
+  void receiveShield(double amount) {
+    if (!alive || amount <= 0) return;
+    shield += amount;
+    careReceived += amount;
+  }
 }
 
 class Enemy {
@@ -130,6 +187,34 @@ class Battle {
   late Enemy enemy;
   final List<BattleEvent> events = [];
 
+  /// Ally actions — ability casts and critical hits — since the last
+  /// [AbilityKind.link] cast. Kess's Chainbreak spends them; nothing else
+  /// reads them, and they only accumulate while she is deployed.
+  int linkStacks = 0;
+
+  /// Seconds of Momo's Foresight left. While it is up the whole party takes
+  /// [foresightReduction] less damage — the reason her ascension is a
+  /// defensive cooldown and not just a bigger Bolt.
+  double wardRemaining = 0;
+
+  static const int maxLinkStacks = 10;
+  static const double linkPerStack = 0.22;
+  static const double foresightReduction = 0.42;
+  static const double reciprocalReturn = 1.35;
+  static const double rallyAttackBonus = 0.30;
+
+  bool get warded => wardRemaining > 0;
+
+  /// One ally action, for Chainbreak. Only counts while someone can spend
+  /// them, so an un-ascended party pays nothing for the bookkeeping.
+  void _noteAllyAction(String actorId) {
+    if (!abilities.any((a) => a.kind == AbilityKind.link)) return;
+    if (abilities.any((a) => a.kind == AbilityKind.link && a.ownerId == actorId)) {
+      return;
+    }
+    if (linkStacks < maxLinkStacks) linkStacks++;
+  }
+
   Battle({
     required this.party,
     required this.abilities,
@@ -145,6 +230,7 @@ class Battle {
       {Map<String, int> levels = const {},
       Map<String, Gear?> gear = const {},
       Map<String, int> bondTiers = const {},
+      Set<String> ascended = const {},
       GateElement gateElement = GateElement.verdant,
       double hpMult = 1.0,
       double dpsMult = 1.0,
@@ -154,7 +240,10 @@ class Battle {
       party: Roster.partyFrom(formation,
           levels: levels, gear: gear, bondTiers: bondTiers),
       abilities: Roster.abilitiesFor(formation.keys,
-          levels: levels, gear: gear, bondTiers: bondTiers),
+          levels: levels,
+          gear: gear,
+          bondTiers: bondTiers,
+          ascended: ascended),
       gateElement: gateElement,
       hpMult: hpMult,
       dpsMult: dpsMult,
@@ -175,7 +264,12 @@ class Battle {
       f.shield = 0;
       f.taunt = 0;
       f.alive = true;
+      f.attackBuff = 1.0;
+      f.attackBuffRemaining = 0;
+      f.careReceived = 0;
     }
+    linkStacks = 0;
+    wardRemaining = 0;
     for (final a in abilities) {
       a.remaining = 0;
     }
@@ -225,8 +319,10 @@ class Battle {
 
   /// Current incoming damage per second, including the boss enrage ramp.
   double get incomingDps {
-    if (!onBoss) return enemy.baseDps;
-    return enemy.baseDps + CombatConfig.bossEnrage * dpsMult * bossElapsed;
+    final raw = onBoss
+        ? enemy.baseDps + CombatConfig.bossEnrage * dpsMult * bossElapsed
+        : enemy.baseDps;
+    return warded ? raw * (1 - foresightReduction) : raw;
   }
 
   /// Enrage shown to the player, so escalating danger reads as a mechanic
@@ -243,6 +339,8 @@ class Battle {
     if (owner == null || !owner.alive) return false;
 
     a.remaining = a.cooldown;
+
+    _noteAllyAction(owner.id);
 
     switch (a.kind) {
       case AbilityKind.damage:
@@ -264,7 +362,7 @@ class Battle {
         break;
 
       case AbilityKind.taunt:
-        owner.shield += a.power;
+        owner.receiveShield(a.power);
         owner.taunt = a.duration;
         _emit(
             '${owner.name}: "Get behind me." '
@@ -276,12 +374,129 @@ class Battle {
         var healed = 0.0;
         for (final p in party) {
           if (!p.alive) continue;
-          final before = p.hp;
-          p.hp = min(p.maxHp, p.hp + a.power);
-          healed += p.hp - before;
+          healed += p.receiveHealing(a.power);
         }
         _emit('${owner.name} mends the party (${healed.round()} healed)',
             'ultimate');
+        break;
+
+      // ---- ascended kits (version 2, see data/ascension.dart) ----
+
+      // Faelen's cure: the oath stops being a wall she stands behind alone.
+      // Everyone is shielded and everyone hits harder, which is the whole
+      // "together is the stronger thing" argument, stated as a cooldown.
+      case AbilityKind.rally:
+        const bonus = 1 + rallyAttackBonus;
+        for (final p in party) {
+          if (!p.alive) continue;
+          p.receiveShield(a.power);
+          p.attackBuff = bonus;
+          p.attackBuffRemaining = a.duration;
+        }
+        _emit(
+            '${owner.name}: "On me — all of you." '
+            '(party +${a.power.round()} shield, '
+            '+${(rallyAttackBonus * 100).round()}% attack for '
+            '${a.duration.round()}s)',
+            'ultimate');
+        break;
+
+      // Kess's cure: the hit is loaded by everything the party did while she
+      // waited. Alone it is a weak Dash; in a working party it is the
+      // biggest single number in the fight.
+      case AbilityKind.link:
+        final stacks = linkStacks;
+        linkStacks = 0;
+        final crit = _rng.nextDouble() < CombatConfig.abilityCritChance;
+        final dmg = a.power *
+            (1 + linkPerStack * stacks) *
+            (crit ? CombatConfig.abilityCritMult : 1.0) *
+            elementMultiplier(owner.element, enemy.element) *
+            _jitter(0.9, 1.1);
+        enemy.hp -= dmg;
+        _emit(
+            '${owner.name} — Chainbreak off $stacks link'
+            '${stacks == 1 ? "" : "s"}: ${dmg.round()}'
+            '${crit ? " (critical)" : ""}',
+            'ultimate');
+        break;
+
+      // Momo's cure: the sense that dragged danger to the party now reads it
+      // early. A flat cut to incoming damage for the whole party, plus the
+      // pre-empting hit itself.
+      case AbilityKind.foresight:
+        wardRemaining = max(wardRemaining, a.duration);
+        final dmg = a.power *
+            elementMultiplier(owner.element, enemy.element) *
+            _jitter(0.9, 1.1);
+        enemy.hp -= dmg;
+        _emit(
+            '${owner.name} reads it coming — party takes '
+            '${(foresightReduction * 100).round()}% less for '
+            '${a.duration.round()}s (${dmg.round()} damage)',
+            'ultimate');
+        break;
+
+      // Thora's cure: everything the party put back into her is returned
+      // with interest. She still heals, but what she was *given* is what
+      // arms the strike.
+      case AbilityKind.reciprocal:
+        final held = owner.careReceived;
+        owner.careReceived = 0;
+        var healed = 0.0;
+        for (final p in party) {
+          if (!p.alive || p.id == owner.id) continue;
+          healed += p.receiveHealing(a.power);
+        }
+        final dmg = (a.power + held * reciprocalReturn) *
+            elementMultiplier(owner.element, enemy.element) *
+            _jitter(0.9, 1.1);
+        enemy.hp -= dmg;
+        _emit(
+            '${owner.name} gives it back — ${dmg.round()} damage off '
+            '${held.round()} taken care of, ${healed.round()} healed',
+            'ultimate');
+        break;
+
+      // Dana's cure: she was never supposed to be in the fight, so what she
+      // does in it is never quite the same twice. One of three, rolled at
+      // cast.
+      case AbilityKind.wildcard:
+        switch (_rng.nextInt(3)) {
+          case 0:
+            final dmg = a.power *
+                2.1 *
+                elementMultiplier(owner.element, enemy.element) *
+                _jitter(0.9, 1.1);
+            enemy.hp -= dmg;
+            _emit(
+                '${owner.name} files an emergency order: ${dmg.round()} damage',
+                'ultimate');
+            break;
+          case 1:
+            var healed = 0.0;
+            for (final p in party) {
+              if (!p.alive) continue;
+              healed += p.receiveHealing(a.power * 1.1);
+            }
+            _emit(
+                '${owner.name} calls in a favour — ${healed.round()} healed '
+                'across the party',
+                'ultimate');
+            break;
+          default:
+            for (final p in party) {
+              if (!p.alive) continue;
+              p.receiveShield(a.power * 0.9);
+              p.attackBuff = 1 + rallyAttackBonus * 0.6;
+              p.attackBuffRemaining = a.duration;
+            }
+            _emit(
+                '${owner.name} reads the regulations aloud — party shielded '
+                'and steadied for ${a.duration.round()}s',
+                'ultimate');
+            break;
+        }
         break;
     }
     return true;
@@ -316,7 +531,12 @@ class Battle {
 
     for (final p in party) {
       if (p.taunt > 0) p.taunt = max(0, p.taunt - dt);
+      if (p.attackBuffRemaining > 0) {
+        p.attackBuffRemaining = max(0, p.attackBuffRemaining - dt);
+        if (p.attackBuffRemaining == 0) p.attackBuff = 1.0;
+      }
     }
+    if (wardRemaining > 0) wardRemaining = max(0, wardRemaining - dt);
     for (final a in abilities) {
       if (a.remaining > 0) a.remaining = max(0, a.remaining - dt);
     }
@@ -338,13 +558,16 @@ class Battle {
         final rowMult = (p.melee && p.row == BattleRow.back)
             ? CombatConfig.backMeleePenalty
             : 1.0;
-        final dmg = p.attack *
+        final dmg = p.effectiveAttack *
             rowMult *
             (crit ? CombatConfig.allyCritMult : 1.0) *
             elementMultiplier(p.element, enemy.element) *
             _jitter(0.85, 1.15);
         enemy.hp -= dmg;
         if (crit) {
+          // A critical is an ally action Chainbreak can load off, same as a
+          // cast — "the party did something while she waited".
+          _noteAllyAction(p.id);
           _emit('${p.name} strikes for ${dmg.round()} (critical)', 'crit');
         }
       }
@@ -366,6 +589,8 @@ class Battle {
         target.hp = 0;
         target.alive = false;
         target.taunt = 0;
+        target.attackBuffRemaining = 0;
+        target.attackBuff = 1.0;
         _emit('${target.name} goes down', 'hurt');
       }
     }

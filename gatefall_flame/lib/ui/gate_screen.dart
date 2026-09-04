@@ -520,17 +520,31 @@ class _GateScreenState extends State<GateScreen> {
         : frac < .55
             ? const Color(0xFFE8A04B)
             : verdant;
-    final tag = !f.alive ? 'down' : (f.isTaunting ? 'drawing fire' : f.role);
+    final tag = !f.alive
+        ? 'down'
+        : f.isTaunting
+            ? 'drawing fire'
+            : f.isRallied
+                ? 'oathbound'
+                : f.role;
     return Opacity(
       opacity: f.alive ? 1 : .42,
       child: Container(
         margin: const EdgeInsets.only(bottom: 5),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
         decoration: BoxDecoration(
-          color: f.isTaunting ? const Color(0xFF1C1734) : night2,
+          color: f.isTaunting || f.isRallied
+              ? const Color(0xFF1C1734)
+              : night2,
           border: Border(
             left: BorderSide(
-              color: !f.alive ? boneDim : (f.isTaunting ? gold : verdant),
+              color: !f.alive
+                  ? boneDim
+                  : f.isTaunting
+                      ? gold
+                      : f.isRallied
+                          ? rose
+                          : verdant,
               width: 2,
             ),
           ),
@@ -549,7 +563,11 @@ class _GateScreenState extends State<GateScreen> {
                 const SizedBox(width: 8),
                 Text(tag,
                     style: TextStyle(
-                        color: f.isTaunting ? gold : boneDim,
+                        color: f.isTaunting
+                            ? gold
+                            : f.isRallied
+                                ? rose
+                                : boneDim,
                         fontSize: 10.5,
                         fontStyle: FontStyle.italic)),
               ],
@@ -562,26 +580,70 @@ class _GateScreenState extends State<GateScreen> {
     );
   }
 
-  Widget _abilityRow(Battle b) => Wrap(
-        spacing: 5,
-        runSpacing: 5,
-        children: b.abilities.map((a) {
-          final owner = b.party.where((p) => p.id == a.ownerId).firstOrNull;
-          final ready = a.ready &&
-              b.status == BattleStatus.fighting &&
-              owner != null &&
-              owner.alive;
-          return SizedBox(
-            width: 104,
-            child: _AbilityButton(
-              ability: a,
-              enabled: ready,
-              isUltimate: a.kind == AbilityKind.ultimate,
-              onTap: () => setState(() => b.castAbility(a.id)),
+  /// Version 2: an ascended ability is drawn apart from the base kit — it is
+  /// the thing a finished route bought, so it should not look like one more
+  /// button on the same shelf.
+  static const _ascendedKinds = {
+    AbilityKind.rally,
+    AbilityKind.link,
+    AbilityKind.foresight,
+    AbilityKind.reciprocal,
+    AbilityKind.wildcard,
+  };
+
+  Widget _abilityRow(Battle b) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Wrap(
+            spacing: 5,
+            runSpacing: 5,
+            children: b.abilities.map((a) {
+              final owner = b.party.where((p) => p.id == a.ownerId).firstOrNull;
+              final ready = a.ready &&
+                  b.status == BattleStatus.fighting &&
+                  owner != null &&
+                  owner.alive;
+              final ascended = _ascendedKinds.contains(a.kind);
+              return SizedBox(
+                width: 104,
+                child: _AbilityButton(
+                  ability: a,
+                  enabled: ready,
+                  isUltimate: a.kind == AbilityKind.ultimate,
+                  isAscended: ascended,
+                  badge: ascended ? _ascendedBadge(b, a) : null,
+                  onTap: () => setState(() => b.castAbility(a.id)),
+                ),
+              );
+            }).toList(),
+          ),
+          if (b.warded) ...[
+            const SizedBox(height: 7),
+            Text(
+              'Foresight is up — the party is taking '
+              '${(Battle.foresightReduction * 100).round()}% less '
+              '(${b.wardRemaining.toStringAsFixed(1)}s)',
+              style: const TextStyle(color: rose, fontSize: 10.5),
             ),
-          );
-        }).toList(),
+          ],
+        ],
       );
+
+  /// The live number an ascended ability is worth right now, for the two
+  /// that pay out off what the rest of the party has been doing.
+  String? _ascendedBadge(Battle b, Ability a) {
+    switch (a.kind) {
+      case AbilityKind.link:
+        return '×${(1 + Battle.linkPerStack * b.linkStacks).toStringAsFixed(1)}';
+      case AbilityKind.reciprocal:
+        final held = b.party
+            .where((p) => p.id == a.ownerId)
+            .fold<double>(0, (acc, p) => acc + p.careReceived);
+        return held >= 1 ? '+${held.round()}' : null;
+      default:
+        return null;
+    }
+  }
 
   // ---------------- result ----------------
 
@@ -689,6 +751,12 @@ class _AbilityButton extends StatelessWidget {
   final Ability ability;
   final bool enabled;
   final bool isUltimate;
+  final bool isAscended;
+
+  /// Live value for the abilities that scale off the party — the Chainbreak
+  /// multiplier, the care Thora is holding. Null when there is nothing
+  /// worth saying.
+  final String? badge;
   final VoidCallback onTap;
 
   const _AbilityButton({
@@ -696,20 +764,24 @@ class _AbilityButton extends StatelessWidget {
     required this.enabled,
     required this.isUltimate,
     required this.onTap,
+    this.isAscended = false,
+    this.badge,
   });
 
   @override
   Widget build(BuildContext context) {
     final pctLeft =
         ability.remaining > 0 ? ability.remaining / ability.cooldown : 0.0;
-    final borderColor = enabled ? (isUltimate ? gold : verdant) : riftDim;
+    final accent = isAscended ? rose : (isUltimate ? gold : verdant);
+    final borderColor = enabled ? accent : riftDim;
     return GestureDetector(
       onTap: enabled ? onTap : null,
       child: Container(
         height: 40,
         decoration: BoxDecoration(
           color: night2,
-          border: Border.all(color: borderColor),
+          border: Border.all(
+              color: borderColor, width: isAscended && enabled ? 1.6 : 1.0),
         ),
         child: Stack(
           children: [
@@ -721,11 +793,21 @@ class _AbilityButton extends StatelessWidget {
               child: Text(
                 ability.name,
                 style: TextStyle(
-                  color: enabled ? (isUltimate ? gold : bone) : boneDim,
+                  color: enabled ? (isUltimate || isAscended ? accent : bone) : boneDim,
                   fontSize: 12,
                 ),
               ),
             ),
+            if (badge != null)
+              Positioned(
+                right: 3,
+                top: 2,
+                child: Text(badge!,
+                    style: TextStyle(
+                        color: enabled ? accent : boneDim,
+                        fontSize: 9,
+                        fontFamily: 'monospace')),
+              ),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import '../combat/battle.dart';
+import 'ascension.dart';
 import 'progression.dart';
 
 enum BattleRow { front, back }
@@ -56,6 +57,21 @@ class Roster {
         attackSpeed: 0.70,
         melee: true,
         element: GateElement.stone),
+    // Version 2: Dana finally fights. She is the only member of the roster
+    // who cannot be deployed on arrival — her Beat 6 awakens her, and the
+    // house gates her on that (see GameController.roster). Human, so Sever,
+    // same as the player: neutral on the wheel by identity, not by tuning.
+    // Statistically she is a back-row generalist — nobody's best at
+    // anything, which is the point of a wildcard.
+    FighterDef(
+        id: 'dana',
+        name: 'Dana',
+        role: 'Wildcard',
+        maxHp: 1050,
+        attack: 15,
+        attackSpeed: 0.95,
+        melee: false,
+        element: GateElement.sever),
   ];
 
   static FighterDef byId(String id) => all.firstWhere((f) => f.id == id);
@@ -124,16 +140,28 @@ class Roster {
   /// [bondTiers] stacks the Bond combat buff (step 6, docs/combat-spec.md
   /// §5) — 0 (no bond data, e.g. the player) is neutral.
   static List<Ability> abilitiesFor(Iterable<String> deployedIds,
-          {Map<String, int> levels = const {},
-          Map<String, Gear?> gear = const {},
-          Map<String, int> bondTiers = const {}}) =>
-      abilities
-          .where((a) => deployedIds.contains(a.ownerId))
-          .map((d) => d.instantiate(
-              level: levels[d.ownerId] ?? Progression.minLevel,
-              gear: gear[d.ownerId],
-              bondTier: bondTiers[d.ownerId] ?? 0))
-          .toList();
+      {Map<String, int> levels = const {},
+      Map<String, Gear?> gear = const {},
+      Map<String, int> bondTiers = const {},
+      Set<String> ascended = const {}}) {
+    final deployed = deployedIds.toSet();
+    final defs = <AbilityDef>[
+      ...abilities.where((a) => deployed.contains(a.ownerId)),
+      // Version 2: an ascended companion brings one more ability, on top of
+      // the kit they already had. Adding rather than replacing keeps every
+      // pre-ascension balance number meaningful and makes finishing a route
+      // read as a gain and never as a swap the player has to relearn.
+      for (final id in deployed)
+        if (ascended.contains(id))
+          if (Ascension.abilities[id] case final a?) a,
+    ];
+    return defs
+        .map((d) => d.instantiate(
+            level: levels[d.ownerId] ?? Progression.minLevel,
+            gear: gear[d.ownerId],
+            bondTier: bondTiers[d.ownerId] ?? 0))
+        .toList();
+  }
 
   static List<Fighter> partyFrom(Map<String, BattleRow> formation,
           {Map<String, int> levels = const {},

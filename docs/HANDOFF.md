@@ -192,14 +192,14 @@ Across tiers, against the progression a player actually has when each opens:
 
 ## Known caveats
 
-- Dart + Flutter (3.47.2 / Dart 3.13.2) are available in the build environment. `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (90/90). The game has been played end to end in Chromium against a real `flutter build web` with no console errors, but **still never run on a phone or emulator** — expect to sanity-check touch targets and safe areas on a first real device run.
+- Dart + Flutter (3.47.2 / Dart 3.13.2) are available in the build environment. `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (116/116 as of v2.0.0). The game has been played end to end in Chromium against a real `flutter build web` with no console errors, but **still never run on a phone or emulator** — expect to sanity-check touch targets and safe areas on a first real device run.
 - **There is no art.** Every screen is type, rule lines and colour. That is a deliberate placeholder, not a style decision — see the open question below.
 - **The scenes are stubs.** Every beat's dialogue exists and plays, but most scenes are 2-6 nodes: enough to prove the schema and the renderer, nowhere near enough to carry a route emotionally. Writing real scenes is now the highest-value content work, and it needs no code changes.
 - `Row` was renamed to **`BattleRow`** in the Dart code to avoid colliding with Flutter's `Row` widget; the elements enum is likewise **`GateElement`**, not `Element`, to avoid colliding with Flutter's own `Element` (widget tree node) class.
 - **`gatefall_flame/data/` is a manual mirror** of `gatefall_dialogue_engine/data/` — Flutter can't bundle assets from a pure-Dart path dependency. Nothing copies it automatically, but `game_test.dart` now **fails if the two ever drift**, so at least the mirror can't go stale silently.
 - **4× speed is an addition, not a locked decision.** The locked list names 2× only. 4× unlocks at ten clears because a 5-10 minute raid loop needs a second speed step once a player has cleared the same gate a dozen times. It is a presentation rate — the simulation still steps at `tickSeconds` — so it cannot affect balance. Easy to remove if unwanted.
-- **Dana lives in the house but cannot be deployed.** That is faithful to her route ("starts entirely outside the fight" until she awakens in Beat 6), but it means her bond can only be raised by gifts, dates and scenes, never by raiding. Her Beat 6 payoff — the wildcard kit — is written but has no combat implementation, so awakening her currently changes the story and not the party.
-- **Ascended kits are not implemented.** Every route's Beat 6 promises a transformed ability set (Kess links off allies, Momo's oracle kit, Thora's reciprocal kit, Dana's wildcard). The routes deliver those beats and their endings; the combat kit does not change. That is the largest gap between what the story says and what the fight does.
+- **Dana is a non-combatant until her route awakens her** — that is now the mechanic rather than a gap. She moves in, takes gifts and dates and scenes like anyone else, but the bench refuses her and `GameController.roster` leaves her out until `dana_b6_the_choice` completes. Her bond still can't be raised by raiding *before* that, which is intended: the route is the only road to the party slot.
+- **Ascension is derived, never stored.** `GameController.ascended` reads `state.completedBeats` every time it is asked. That is deliberate — an old save ascends the moment it is loaded, there is no second source of truth to migrate, and nothing can drift out of sync with the routes. The cost is that it recomputes a small set on every read; if that ever matters, cache it on `completeBeat`, not in the save file.
 - **Widget tests must boot inside `tester.runAsync`.** Loading routes and scenes is real file I/O, which never completes inside the FakeAsync zone a widget test body runs in. Without it the second test in a file hangs forever on a Future the fake clock will never advance — a genuinely confusing failure, so the helper in `widget_test.dart` carries the explanation.
 
 ---
@@ -217,6 +217,35 @@ Concretely, what the game now asks for: a portrait per companion with the five
 expression variants already generated for Faelen (`docs/art-direction/`), a
 room illustration or background per resident for the house, and a gate
 backdrop per element. Nothing else is blocking.
+
+---
+
+## Version 2 — "Ascension"
+
+Shipped as `gatefall_flame` **2.0.0+2**. One idea: *finishing a route is a
+combat power spike*. It was the keystone in every design doc and the one
+thing the code had never paid out.
+
+- **`lib/data/ascension.dart`** is the whole feature's table of contents —
+  who ascends, which beat grants it, the lie the base kit was built around,
+  and the cure the new ability is. Granted by completing that route's Beat 6
+  ("The Choice"), which the evaluator already gates behind bond tier 6 and
+  Act 3, so reaching it means the story was actually told.
+- **Five new `AbilityKind`s**, written as new kinds rather than bigger
+  numbers, because each one is the *shape* of a route resolving:
+  `rally` (Faelen shields and empowers everyone, not only herself),
+  `link` (Kess's Chainbreak loads off every ally action since her last cast),
+  `foresight` (Momo cuts incoming damage party-wide for a window),
+  `reciprocal` (Thora returns the healing and shielding the party put into
+  her, with interest), and `wildcard` (Dana rolls one of three effects).
+- **Ascension adds, it never replaces.** The base kit survives, so no
+  pre-v2 balance number changed meaning and no player has to relearn a
+  character they just finished a route with. `flutter test` still passes the
+  entire step-2 through step-7 suite unchanged.
+- **Dana fights.** She has a `FighterDef` (Sever, back-row generalist, 1050
+  HP) and her Beat 6 is the only thing that puts her in the roster. The
+  formation tap refuses her before that, and a save that somehow carries her
+  in the party is repaired on load.
 
 ---
 
@@ -238,15 +267,18 @@ In the order that adds the most to the game as it now stands.
    with one complete route — Faelen's, since her art exists — and let it set
    the length and voice standard for the rest.
 
-3. **Ascended kits.** Every Beat 6 promises a transformed ability set and none
-   of them changes combat. Kess linking off ally actions is the cleanest first
-   one to build, and it would prove the "combat kit mirrors the flaw, ascended
-   kit mirrors the cure" keystone actually lands mechanically rather than only
-   on paper.
+3. **Tune the ascended kits against real play.** *(Shipped in v2.0.0 — see
+   "Version 2" below.)* All five exist and are simulation-tested, but the
+   numbers that decide how big a spike a finished route is — `linkPerStack`,
+   `foresightReduction`, `reciprocalReturn`, `rallyAttackBonus` in
+   `combat/battle.dart` — were tuned for "clearly felt, never required".
+   Whether that is the right size is a question for playing, not simulating.
 
-4. **Dana in combat.** She lives in the house and has a full route but cannot
-   be deployed, so her Beat 6 awakening changes the story and not the party.
-   Needs a `FighterDef`, an ability set, and a gate on her recruitment.
+4. **A second ascended ability, or an ascended *passive*.** Each companion
+   gets exactly one new button today. The routes describe transformations
+   broad enough to justify changing how their base kit behaves too — Momo's
+   sense pre-empting an ambush before it lands, say, rather than only a
+   cooldown she presses.
 
 5. **Art direction** — see the open question above.
 

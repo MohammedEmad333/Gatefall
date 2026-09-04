@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../data/ascension.dart';
 import '../data/bond.dart';
 import '../data/element.dart';
 import '../data/gear.dart';
@@ -44,6 +45,18 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
           _fighterPanel(def),
           const SizedBox(height: 12),
         ],
+        for (final id in Roster.all
+            .map((f) => f.id)
+            .where(game.awaitingAwakening))
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12),
+            child: Callout(
+              '${Roster.byId(id).name} lives here but does not fight. '
+              '${Ascension.byId(id).cure} Finish her route and she joins the '
+              'party.',
+              tone: rose,
+            ),
+          ),
         if (game.roster.length < Roster.all.length)
           const Callout(
             'Not everyone here fights yet. Build rooms at the house to bring '
@@ -163,8 +176,27 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
             tone: boneDim,
             onPressed: null,
           ),
+
+          // Ascension — the fourth track, and the only one that cannot be
+          // bought at all. It is what finishing a route pays out.
+          if (Ascension.exists(def.id)) _ascensionRow(def.id),
         ],
       ),
+    );
+  }
+
+  Widget _ascensionRow(String id) {
+    final a = Ascension.byId(id);
+    final done = game.isAscended(id);
+    final ability = Ascension.abilities[id];
+    return _trackRow(
+      title: done ? '${a.title} — ascended' : 'Ascension locked',
+      detail: done
+          ? '${ability?.name ?? a.title}: ${a.cure}'
+          : 'her route\'s last scene grants it — ${a.lie}',
+      buttonLabel: done ? 'Earned' : 'Locked',
+      tone: done ? rose : boneDim,
+      onPressed: null,
     );
   }
 

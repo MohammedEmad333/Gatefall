@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gatefall_dialogue_engine/engine/evaluator.dart';
 import 'package:gatefall_dialogue_engine/models/route.dart';
 
+import '../data/ascension.dart';
 import '../data/barks.dart';
 import '../data/gifts.dart';
 import '../data/house.dart';
@@ -336,6 +337,19 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(
                 color: available != null ? gold : boneDim, fontSize: 10.5),
           ),
+          if (Ascension.exists(id)) ...[
+            const SizedBox(height: 6),
+            Text(
+              game.isAscended(id)
+                  ? 'Ascended — ${Ascension.byId(id).title}'
+                  : game.awaitingAwakening(id)
+                      ? 'Lives here, does not fight. Her route is the thing '
+                          'that changes that.'
+                      : 'Ascension waiting at the end of her route.',
+              style: TextStyle(
+                  color: game.isAscended(id) ? rose : boneDim, fontSize: 10.5),
+            ),
+          ],
           const SizedBox(height: 10),
           Text(Barks.idle(id),
               style: const TextStyle(
@@ -530,8 +544,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (!r.deployable) ...[
                         const SizedBox(height: 6),
                         const Text(
-                          'She does not fight. Not yet.',
-                          style: TextStyle(color: boneDim, fontSize: 10.5),
+                          'She does not fight. Not yet — her route is what '
+                          'changes that.',
+                          style: TextStyle(color: rose, fontSize: 10.5),
                         ),
                       ],
                       const SizedBox(height: 9),

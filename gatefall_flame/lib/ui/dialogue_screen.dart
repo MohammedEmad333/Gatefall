@@ -136,10 +136,42 @@ class _DialogueScreenState extends State<DialogueScreen> {
     });
   }
 
-  void _finish() {
+  Future<void> _finish() async {
     widget.game.completeBeat(widget.beat.beatId);
-    Navigator.of(context).pop();
+
+    // Version 2: the one place the two halves of the game visibly resolve at
+    // the same moment. If this scene was a route's Beat 6, the ascended
+    // ability was just granted — say so here, while the scene that earned it
+    // is still on screen, rather than leaving it to be discovered in a
+    // stat panel later.
+    final ascension = widget.game.ascensionMessage;
+    if (ascension != null) {
+      widget.game.ascensionMessage = null;
+      if (mounted) await _tellAscension(ascension);
+    }
+    if (mounted) Navigator.of(context).pop();
   }
+
+  Future<void> _tellAscension(String body) => showDialog<void>(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => AlertDialog(
+          backgroundColor: night2,
+          shape: const RoundedRectangleBorder(
+              side: BorderSide(color: rose)),
+          title: const Text('Ascended',
+              style: TextStyle(color: rose, fontSize: 16)),
+          content: Text(body,
+              style: const TextStyle(
+                  color: bone, fontSize: 13.5, height: 1.6)),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('Good', style: TextStyle(color: rose)),
+            ),
+          ],
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {

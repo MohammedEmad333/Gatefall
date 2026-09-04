@@ -6,6 +6,7 @@ import 'package:gatefall_dialogue_engine/models/game_state.dart';
 import 'package:gatefall_dialogue_engine/models/route.dart';
 
 import '../combat/battle.dart';
+import '../data/ascension.dart';
 import '../data/barks.dart';
 import '../data/combat_config.dart';
 import '../data/companion_routes.dart';
@@ -77,6 +78,11 @@ class GameController extends ChangeNotifier {
   DateTime? _lastOddJob;
   DateTime? _rentSince;
 
+  /// Set when a route's Beat 6 lands and the ascended ability is granted.
+  /// Read and cleared by the UI so the power spike is announced where the
+  /// scene ends, not buried in a stat panel.
+  String? ascensionMessage;
+
   /// Set when returning to the app with something waiting. Cleared by the UI
   /// once shown.
   String? welcomeBackMessage;
@@ -94,14 +100,39 @@ class GameController extends ChangeNotifier {
 
   int get act => state.storyAct;
 
+  /// Everyone who has finished their route's Beat 6 — "The Choice" — and so
+  /// carries their ascended ability into a raid (version 2, see
+  /// data/ascension.dart). Derived from completed beats rather than stored,
+  /// so an old save ascends the moment it is loaded and nothing can drift.
+  Set<String> get ascended => Ascension.from(state.completedBeats);
+
+  bool isAscended(String id) => ascended.contains(id);
+
+  /// True for a resident who lives here but cannot fight *yet* — Dana
+  /// before her Beat 6. Her room is buyable long before that; what her
+  /// route unlocks is the party slot.
+  bool awaitingAwakening(String id) =>
+      settled.contains(id) &&
+      House.exists(id) &&
+      !House.byId(id).deployable &&
+      Ascension.exists(id) &&
+      !isAscended(id);
+
   /// Deployable roster: the player plus every settled resident who fights.
+  ///
+  /// Version 2: "who fights" is no longer fixed at arrival. Dana ships
+  /// `deployable: false` because she is not a fighter when she moves in;
+  /// completing her route awakens her, and that is the only thing that puts
+  /// her in the party.
   List<FighterDef> get roster => Roster.all
       .where((f) =>
           f.id == 'player' ||
           (settled.contains(f.id) &&
               House.exists(f.id) &&
-              House.byId(f.id).deployable))
+              (House.byId(f.id).deployable || isAscended(f.id))))
       .toList();
+
+  bool canDeploy(String id) => roster.any((f) => f.id == id);
 
   int get partyCount => formation.length;
 
@@ -287,6 +318,7 @@ class GameController extends ChangeNotifier {
       ..mana = 0;
     _lastOddJob = null;
     welcomeBackMessage = null;
+    ascensionMessage = null;
     lastDropMessage = null;
     lastBondMessages = [];
     speed = 1;
@@ -436,6 +468,10 @@ class GameController extends ChangeNotifier {
     final def = Roster.byId(id);
     if (!formation.containsKey(id)) {
       if (partyCount >= CombatConfig.partyMax) return;
+      // Version 2: a resident who has not been awakened yet cannot be
+      // deployed at all, so the tap does nothing rather than smuggling a
+      // non-combatant into the party.
+      if (!canDeploy(id)) return;
       formation[id] = BattleRow.front;
     } else if (formation[id] == BattleRow.front) {
       formation[id] = BattleRow.back;
@@ -480,6 +516,7 @@ class GameController extends ChangeNotifier {
       levels: levels,
       gear: gear,
       bondTiers: bondTiers,
+      ascended: ascended,
       gateElement: gate.element,
       hpMult: gate.tier.hpMult,
       dpsMult: gate.tier.dpsMult,
@@ -570,10 +607,35 @@ class GameController extends ChangeNotifier {
   /// scene's own effects (flags, bond deltas) were already applied by
   /// [DialogueEngine] against this same [state] as the player chose them.
   void completeBeat(String beatId) {
+    final before = ascended;
     state.completedBeats.add(beatId);
+    _onAscended(ascended.difference(before));
     _syncAct();
     notifyListeners();
     persist();
+  }
+
+  /// The moment the two halves of the game resolve together: a route ends
+  /// and the party gets stronger for it. Anyone newly awakened is put into
+  /// the formation if there is room, because a player who just finished
+  /// Dana's route should not have to go and find the bench to see what
+  /// changed.
+  void _onAscended(Set<String> newly) {
+    if (newly.isEmpty) return;
+    final lines = <String>[];
+    for (final id in newly) {
+      final a = Ascension.byId(id);
+      final name = Roster.byId(id).name;
+      lines.add('$name — ${a.title}. ${a.cure}');
+      final wasDeployable = House.exists(id) && House.byId(id).deployable;
+      if (!wasDeployable &&
+          !formation.containsKey(id) &&
+          formation.length < CombatConfig.partyMax) {
+        formation[id] = BattleRow.back;
+        lines.add('$name is in the party now.');
+      }
+    }
+    ascensionMessage = lines.join('\n\n');
   }
 
   void _syncAct() {
@@ -694,6 +756,13 @@ class GameController extends ChangeNotifier {
       settled.add('faelen');
       formation['faelen'] = BattleRow.front;
     }
+
+    // Version 2 added a resident who is only deployable once her route
+    // awakens her. A save that somehow carries her in the formation without
+    // that — hand-edited, or written by a build where the rule differed —
+    // must not field a non-combatant.
+    formation.removeWhere((id, _) => id != 'player' && !canDeploy(id));
+    if (formation.isEmpty) formation = {'player': BattleRow.front};
   }
 
   Future<void> persist() => _store.save(toJson());

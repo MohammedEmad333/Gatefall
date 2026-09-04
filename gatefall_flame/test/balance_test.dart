@@ -13,6 +13,8 @@ import 'package:gatefall_dialogue_engine/models/route.dart';
 import 'package:test/test.dart';
 
 import 'package:gatefall/combat/battle.dart';
+import 'package:gatefall/data/ascension.dart';
+import 'package:gatefall/data/companion_routes.dart';
 import 'package:gatefall/data/gate.dart';
 import 'package:gatefall/data/progression.dart';
 import 'package:gatefall/data/roster.dart';
@@ -23,12 +25,14 @@ import 'package:gatefall/data/roster.dart';
     Map<String, int> levels = const {},
     Map<String, Gear?> gear = const {},
     Map<String, int> bondTiers = const {},
+    Set<String> ascended = const {},
     GateTier? tier}) {
   final b = Battle.fromFormation(formation,
       gateElement: gateElement,
       levels: levels,
       gear: gear,
       bondTiers: bondTiers,
+      ascended: ascended,
       hpMult: tier?.hpMult ?? 1.0,
       dpsMult: tier?.dpsMult ?? 1.0,
       manaMult: tier?.manaMult ?? 1.0,
@@ -47,6 +51,7 @@ double _winRate(Map<String, BattleRow> formation,
     Map<String, int> levels = const {},
     Map<String, Gear?> gear = const {},
     Map<String, int> bondTiers = const {},
+    Set<String> ascended = const {},
     GateTier? tier}) {
   var wins = 0;
   for (var i = 0; i < trials; i++) {
@@ -55,6 +60,7 @@ double _winRate(Map<String, BattleRow> formation,
             levels: levels,
             gear: gear,
             bondTiers: bondTiers,
+            ascended: ascended,
             tier: tier)
         .won) {
       wins++;
@@ -69,6 +75,7 @@ double _avgWinSeconds(Map<String, BattleRow> formation,
     Map<String, int> levels = const {},
     Map<String, Gear?> gear = const {},
     Map<String, int> bondTiers = const {},
+    Set<String> ascended = const {},
     GateTier? tier}) {
   final times = <double>[];
   for (var i = 0; i < trials; i++) {
@@ -77,6 +84,7 @@ double _avgWinSeconds(Map<String, BattleRow> formation,
         levels: levels,
         gear: gear,
         bondTiers: bondTiers,
+        ascended: ascended,
         tier: tier);
     if (r.won) times.add(r.seconds);
   }
@@ -617,4 +625,227 @@ void main() {
     });
   });
 
+  // ---------------------------------------------------------------------
+  // Version 2: ascended kits. The keystone the design has promised since
+  // the start — finishing a route is a combat power spike — so these tests
+  // exist to keep two promises at once: it has to be *felt* (an ascended
+  // party is measurably stronger) and it must not become mandatory (an
+  // un-ascended party still clears everything it could clear before).
+  // ---------------------------------------------------------------------
+  group('ascension (version 2)', () {
+    const full = {
+      'player': BattleRow.front,
+      'faelen': BattleRow.front,
+      'kess': BattleRow.back,
+      'momo': BattleRow.back,
+    };
+
+    test('every route Beat 6 maps to exactly one ascended ability', () {
+      for (final a in Ascension.all) {
+        expect(a.beatId, equals('${a.characterId}_b6_the_choice'),
+            reason: 'ascension must be granted by that route\'s own Beat 6');
+        expect(Ascension.abilities[a.characterId], isNotNull,
+            reason: '${a.characterId} has an ascension with no ability');
+      }
+      expect(Ascension.all.map((a) => a.characterId).toSet(),
+          equals(CompanionRoutes.ids.toSet()),
+          reason: 'every companion with a route ascends, and only those');
+    });
+
+    test('ascension is derived from completed beats, never stored', () {
+      expect(Ascension.from(const []), isEmpty);
+      expect(Ascension.from(['kess_b6_the_choice']), equals({'kess'}));
+      expect(Ascension.from(['kess_b5_full_truth']), isEmpty,
+          reason: 'an earlier beat must not grant the ascended kit');
+      expect(
+          Ascension.from(
+              ['kess_b6_the_choice', 'thora_b6_the_choice', 'nonsense']),
+          equals({'kess', 'thora'}));
+    });
+
+    test('an ascended companion brings one more ability, not a replacement',
+        () {
+      final base = Roster.abilitiesFor(full.keys).map((a) => a.id).toList();
+      final ascended =
+          Roster.abilitiesFor(full.keys, ascended: {'kess'}).map((a) => a.id);
+      expect(ascended, containsAll(base),
+          reason: 'the base kit must survive ascension — no relearning');
+      expect(ascended, contains('chainbreak'));
+      expect(ascended.length, equals(base.length + 1));
+    });
+
+    test('an ability only appears for a companion who is actually deployed',
+        () {
+      final ids = Roster.abilitiesFor(full.keys,
+              ascended: {'kess', 'thora', 'dana'})
+          .map((a) => a.id);
+      expect(ids, contains('chainbreak'));
+      expect(ids, isNot(contains('reciprocity')),
+          reason: 'Thora is benched in this formation');
+      expect(ids, isNot(contains('casework')));
+    });
+
+    test('a fully ascended party clears faster than the same party without it',
+        () {
+      final plain = _avgWinSeconds(full);
+      final risen = _avgWinSeconds(full, ascended: const {'faelen', 'kess', 'momo'});
+      expect(risen, lessThan(plain),
+          reason: 'finishing routes has to be felt in the fight: '
+              '${plain.round()}s plain vs ${risen.round()}s ascended');
+    });
+
+    test('an un-ascended party is still fully viable — this is never a gate',
+        () {
+      // The same rule bond, gear and levels all follow. A player who has
+      // raided but not romanced must not hit a wall.
+      expect(_winRate(full), greaterThan(0.9));
+    });
+
+    test('Chainbreak scales off ally actions and spends them', () {
+      final b = Battle.fromFormation(full,
+          ascended: const {'kess'}, rng: Random(11));
+      b.start();
+      b.autoCast = false;
+
+      expect(b.linkStacks, 0);
+      // Faelen casting is an ally action; Kess's own cast is not.
+      b.castAbility('guard');
+      b.castAbility('bolt');
+      expect(b.linkStacks, 2);
+
+      final before = b.enemy.hp;
+      b.castAbility('chainbreak');
+      final loaded = before - b.enemy.hp;
+      expect(b.linkStacks, 0, reason: 'the strike spends what it was loaded with');
+
+      // Same seed, same fight, but fired cold.
+      final c = Battle.fromFormation(full,
+          ascended: const {'kess'}, rng: Random(11));
+      c.start();
+      c.autoCast = false;
+      final coldBefore = c.enemy.hp;
+      c.castAbility('chainbreak');
+      final cold = coldBefore - c.enemy.hp;
+
+      expect(loaded, greaterThan(cold),
+          reason: 'Kess is meant to be strongest when she is not alone');
+    });
+
+    test('link stacks are not tracked at all when nobody can spend them', () {
+      final b = Battle.fromFormation(full, rng: Random(3));
+      b.start();
+      b.autoCast = false;
+      b.castAbility('guard');
+      b.castAbility('bolt');
+      expect(b.linkStacks, 0);
+    });
+
+    test('Foresight cuts incoming damage for the whole party, then expires',
+        () {
+      final b = Battle.fromFormation(full,
+          ascended: const {'momo'}, rng: Random(5));
+      b.start();
+      b.autoCast = false;
+      final normal = b.incomingDps;
+
+      b.castAbility('foresight');
+      expect(b.warded, isTrue);
+      expect(b.incomingDps,
+          closeTo(normal * (1 - Battle.foresightReduction), 0.001));
+
+      for (var i = 0; i < 200; i++) {
+        b.tick(0.1);
+      }
+      expect(b.warded, isFalse, reason: 'the ward is a window, not a passive');
+    });
+
+    test('Oathbound shields and empowers everyone, not only Faelen', () {
+      final b = Battle.fromFormation(full,
+          ascended: const {'faelen'}, rng: Random(9));
+      b.start();
+      b.autoCast = false;
+      b.castAbility('oathbound');
+
+      for (final p in b.party) {
+        expect(p.shield, greaterThan(0),
+            reason: '${p.name} was left out of an ability about togetherness');
+        expect(p.isRallied, isTrue);
+        expect(p.effectiveAttack, greaterThan(p.attack));
+      }
+    });
+
+    test('Reciprocity returns what the party put into Thora', () {
+      const withThora = {
+        'player': BattleRow.front,
+        'faelen': BattleRow.front,
+        'thora': BattleRow.front,
+        'momo': BattleRow.back,
+      };
+      final b = Battle.fromFormation(withThora,
+          ascended: const {'thora'}, rng: Random(21));
+      b.start();
+      b.autoCast = false;
+
+      final thora = b.party.firstWhere((p) => p.id == 'thora');
+      thora.hp = thora.maxHp * 0.4;
+      thora.receiveShield(600);
+
+      final before = b.enemy.hp;
+      b.castAbility('reciprocity');
+      final cared = before - b.enemy.hp;
+      expect(thora.careReceived, 0, reason: 'the care is spent on the strike');
+
+      final c = Battle.fromFormation(withThora,
+          ascended: const {'thora'}, rng: Random(21));
+      c.start();
+      c.autoCast = false;
+      final coldBefore = c.enemy.hp;
+      c.castAbility('reciprocity');
+      expect(cared, greaterThan(coldBefore - c.enemy.hp),
+          reason: 'being held up is what makes her hit harder');
+    });
+
+    test('Dana fights once awakened, and every roll of Casework does something',
+        () {
+      const withDana = {
+        'player': BattleRow.front,
+        'faelen': BattleRow.front,
+        'dana': BattleRow.back,
+        'momo': BattleRow.back,
+      };
+      expect(Roster.byId('dana').element, GateElement.sever,
+          reason: 'she is human, same as the player');
+
+      for (var seed = 0; seed < 30; seed++) {
+        final b = Battle.fromFormation(withDana,
+            ascended: const {'dana'}, rng: Random(seed));
+        b.start();
+        b.autoCast = false;
+        for (final p in b.party) {
+          p.hp = p.maxHp * 0.5;
+        }
+        final hpBefore = b.enemy.hp;
+        final partyBefore = b.party.fold<double>(
+            0, (a, p) => a + p.hp + p.shield + (p.isRallied ? 1 : 0));
+        expect(b.castAbility('casework'), isTrue);
+        final partyAfter = b.party.fold<double>(
+            0, (a, p) => a + p.hp + p.shield + (p.isRallied ? 1 : 0));
+        expect(b.enemy.hp < hpBefore || partyAfter > partyBefore, isTrue,
+            reason: 'a wildcard roll that does nothing is a dead cooldown');
+      }
+    });
+
+    test('a party of four including Dana clears a standard gate', () {
+      const withDana = {
+        'player': BattleRow.front,
+        'faelen': BattleRow.front,
+        'dana': BattleRow.back,
+        'momo': BattleRow.back,
+      };
+      final rate = _winRate(withDana, ascended: const {'dana'});
+      expect(rate, greaterThan(0.9),
+          reason: 'the wildcard slot must be a real party member, not a '
+              'downgrade the player is punished for using');
+    });
+  });
 }

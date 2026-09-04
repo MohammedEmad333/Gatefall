@@ -22,6 +22,25 @@ whoever turns up next, read their scenes, raise bond by fighting and by gifts,
 reach Act III, answer the question about the gates, and read the epilogue.
 Progress saves automatically.
 
+## Version 2 — "Ascension"
+
+Finishing someone's route is now a combat power spike. Each companion's Beat 6
+grants the transformed ability their story always promised — Faelen's oath
+covers the whole party, Kess's strike loads off everything her allies did
+while she waited, Momo reads the gate ahead and the party takes less for it,
+Thora returns what the party put into her, and Dana — who moves in as a
+non-combatant and cannot be deployed at all — awakens and joins the fight.
+
+Ascension adds to a kit, it never replaces one, and nothing about it is
+required: an un-ascended party still clears everything it could clear before.
+
+## Android
+
+`.github/workflows/build-apk.yml` builds a release APK on every push. Pushes
+to `main` also publish it as a GitHub Release tagged with the `pubspec.yaml`
+version; other branches leave it as a downloadable workflow artifact. The
+Android platform files are generated in CI and are not committed.
+
 See `docs/HANDOFF.md` for the full project handoff — premise, locked design
 decisions, findings, and what to build next.
 

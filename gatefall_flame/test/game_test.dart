@@ -13,6 +13,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gatefall/data/companion_routes.dart';
+import 'package:gatefall/data/roster.dart';
 import 'package:gatefall/data/gear.dart';
 import 'package:gatefall/data/gifts.dart';
 import 'package:gatefall/data/house.dart';
@@ -505,6 +506,138 @@ void main() {
       }
       expect(g.routeComplete('faelen'), isTrue);
       expect(g.upcomingBeat('faelen'), isNull);
+    });
+  });
+
+  // -------------------------------------------------------------------
+  // Version 2. The story half and the combat half were connected in one
+  // direction only — bond buffed stats — and every route's last scene
+  // promised a transformed kit that combat never delivered. These tests
+  // hold the other direction: a finished route changes what the party can
+  // do, and for Dana, whether she is in the party at all.
+  group('ascension (version 2)', () {
+    test('nobody starts ascended', () async {
+      final g = await booted();
+      expect(g.ascended, isEmpty);
+      for (final id in CompanionRoutes.ids) {
+        expect(g.isAscended(id), isFalse);
+      }
+    });
+
+    test('completing a route\'s Beat 6 grants exactly that ascension',
+        () async {
+      final g = await booted();
+      g.completeBeat('kess_b6_the_choice');
+      expect(g.ascended, equals({'kess'}));
+      expect(g.isAscended('thora'), isFalse);
+    });
+
+    test('the ascended ability reaches the actual raid, not just the UI',
+        () async {
+      final g = await booted();
+      g.settled.add('kess');
+      g.formation['kess'] = BattleRow.back;
+
+      final before = g.startRaid(g.board.first).abilities.map((a) => a.id);
+      expect(before, isNot(contains('chainbreak')));
+
+      g.completeBeat('kess_b6_the_choice');
+      final after = g.startRaid(g.board.first).abilities.map((a) => a.id);
+      expect(after, contains('chainbreak'));
+      expect(after, contains('dash'),
+          reason: 'the base kit is kept — ascension adds, it never swaps');
+    });
+
+    test('Dana lives in the house long before she can be deployed', () async {
+      final g = await booted();
+      g.gold = 99999;
+      g.clears = 20;
+      g.settleResident('dana');
+
+      expect(g.settled, contains('dana'));
+      expect(g.awaitingAwakening('dana'), isTrue);
+      expect(g.canDeploy('dana'), isFalse);
+      expect(g.roster.map((f) => f.id), isNot(contains('dana')));
+
+      // The bench tap must refuse her rather than smuggling a
+      // non-combatant into the formation.
+      g.cycleFormation('dana');
+      expect(g.formation.containsKey('dana'), isFalse);
+    });
+
+    test('her Beat 6 awakens her, announces it, and puts her in the party',
+        () async {
+      final g = await booted();
+      g.gold = 99999;
+      g.clears = 20;
+      g.settleResident('dana');
+      g.formation.removeWhere((id, _) => id != 'player' && id != 'faelen');
+
+      g.completeBeat('dana_b6_the_choice');
+
+      expect(g.isAscended('dana'), isTrue);
+      expect(g.awaitingAwakening('dana'), isFalse);
+      expect(g.canDeploy('dana'), isTrue);
+      expect(g.formation.containsKey('dana'), isTrue,
+          reason: 'the payoff should not have to be gone looking for');
+      expect(g.ascensionMessage, isNotNull);
+      expect(g.ascensionMessage, contains('Dana'));
+    });
+
+    test('an awakened Dana who is benched stays benched, but stays eligible',
+        () async {
+      final g = await booted();
+      g.gold = 99999;
+      g.clears = 20;
+      g.settleResident('dana');
+      g.completeBeat('dana_b6_the_choice');
+      g.formation.remove('dana');
+
+      expect(g.canDeploy('dana'), isTrue);
+      g.cycleFormation('dana');
+      expect(g.formation.containsKey('dana'), isTrue);
+    });
+
+    test('ascension survives a save round trip because it is never stored',
+        () async {
+      final store = MemorySaveStore();
+      final a = await booted(store: store);
+      a.gold = 99999;
+      a.clears = 20;
+      a.settleResident('dana');
+      a.completeBeat('dana_b6_the_choice');
+      await a.persist();
+
+      final b = await booted(store: store);
+      expect(b.isAscended('dana'), isTrue);
+      expect(b.canDeploy('dana'), isTrue);
+    });
+
+    test('a save carrying a non-combatant in the party is repaired on load',
+        () async {
+      // Hand-edited, or written by a build where the rule differed. Loading
+      // it must not field someone who cannot fight.
+      final store = MemorySaveStore();
+      final a = await booted(store: store);
+      a.gold = 99999;
+      a.clears = 20;
+      a.settleResident('dana');
+      a.formation['dana'] = BattleRow.back;
+      await a.persist();
+
+      final b = await booted(store: store);
+      expect(b.isAscended('dana'), isFalse);
+      expect(b.formation.containsKey('dana'), isFalse);
+      expect(b.formation, isNotEmpty);
+    });
+
+    test('starting over takes the ascensions with it', () async {
+      final g = await booted();
+      g.completeBeat('faelen_b6_the_choice');
+      expect(g.ascended, isNotEmpty);
+      await g.resetGame();
+      expect(g.ascended, isEmpty);
+      expect(g.ascensionMessage, isNull);
     });
   });
 
