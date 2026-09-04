@@ -76,6 +76,17 @@ class GameController extends ChangeNotifier {
   int speed = 1;
   bool autoCast = true;
 
+  /// Whether the opening comic has been read. Saved, because the opening
+  /// is an *introduction* — a returning player must never be made to sit
+  /// through it again, and a save from before it existed has already been
+  /// introduced by simply having been played.
+  ///
+  /// It starts false and only [_restore] and [markPrologueSeen] ever set
+  /// it, which is why "start over" does not replay it: the flag is about
+  /// this *player* having been introduced, not about this run. Re-reading
+  /// it is a button on the house.
+  bool prologueSeen = false;
+
   /// Version 3's two sound switches. They live here rather than in the
   /// audio bus because they are player state — they belong in the save
   /// beside auto-cast and speed, not in a singleton that forgets.
@@ -293,6 +304,16 @@ class GameController extends ChangeNotifier {
     _refreshBoard();
     _syncAct();
     applySoundSettings();
+    notifyListeners();
+    await persist();
+  }
+
+  /// Called by the UI when the opening has been read or skipped. Persists
+  /// immediately: closing the app on the last panel must not cost the
+  /// player the same six pages again.
+  Future<void> markPrologueSeen() async {
+    if (prologueSeen) return;
+    prologueSeen = true;
     notifyListeners();
     await persist();
   }
@@ -725,6 +746,7 @@ class GameController extends ChangeNotifier {
         'auto_cast': autoCast,
         'sfx_on': sfxOn,
         'music_on': musicOn,
+        'prologue_seen': prologueSeen,
       };
 
   void _restore(Map<String, dynamic> json) {
@@ -737,6 +759,10 @@ class GameController extends ChangeNotifier {
     // for it is the same as for a new player: everything on.
     sfxOn = json['sfx_on'] as bool? ?? true;
     musicOn = json['music_on'] as bool? ?? true;
+    // A save written before the opening existed belongs to someone who has
+    // already met these characters. Default it to read, so an update never
+    // opens on a prologue.
+    prologueSeen = json['prologue_seen'] as bool? ?? true;
 
     settled
       ..clear()

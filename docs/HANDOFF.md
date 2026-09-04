@@ -295,6 +295,46 @@ Everything visible and audible is generated from code in this repo.
 
 ---
 
+## Version 3.1 — "Cold Open"
+
+Shipped as `gatefall_flame` **3.1.0+4**. One idea: *the game should say what
+it is before it starts asking for rent.*
+
+The premise is three sentences long and the game had nowhere to say them.
+A new player landed on the house screen with an elf already settled
+upstairs, a rent timer running, and no account of the gates, the Gatekin or
+their own awakening — all of which lived only in `docs/story-bible.md`.
+
+- **A comic, not a cutscene** (`lib/ui/start_scene.dart`). Six pages,
+  thirteen panels, ending on the line Faelen's Beat 0 opens with — so the
+  opening hands straight over to the scene that was already there. Panels
+  are revealed one tap at a time on a page that is laid out from the first
+  frame, so nothing reflows under the reader; a tap while a line is still
+  lettering finishes that line first, the same rule the dialogue screen
+  uses.
+- **The comic layer is generated too** (`lib/art/comic.dart`). `ComicPanel`
+  (ink border, hard offset shadow, a fraction of a degree of tilt, halftone
+  screen tone in the panel's element colour), `SpeechBalloon` (with tails,
+  and a spiked variant for a shout), `CaptionBox`, `SfxWord` on a burst,
+  `SpeedLinesPainter`, and two establishing shots the game did not own yet —
+  a city skyline and the building itself. No fonts and no images were added:
+  lettering is a stroked copy of the text under a filled one, in whichever
+  heavy face the platform has.
+- **What is inside the panels is the game's own art.** The rift, the
+  stalker, the player's faceless silhouette and the four companions are all
+  the existing painters from `character_art.dart` and `gate_art.dart`, so
+  the opening cannot show a world the game then fails to be.
+- **It plays exactly once.** `prologueSeen` is one bool in the save.
+  `_restore` defaults it to **true**, so shipping this never opens a
+  cutscene on an existing player; only a brand-new game leaves it false.
+  "Start over" deliberately does *not* replay it — the flag is about this
+  player having been introduced, not about this run — and `read the
+  opening` at the bottom of the house replays it without touching the save.
+- **The simulation did not move at all.** No combat, economy or story file
+  changed; the controller gained one bool and one method.
+
+---
+
 ## Suggested next steps
 
 In the order that adds the most to the game as it now stands.

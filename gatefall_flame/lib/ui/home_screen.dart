@@ -13,6 +13,7 @@ import '../data/story.dart';
 import '../state/game_controller.dart';
 import 'dialogue_screen.dart';
 import 'ending_screen.dart';
+import 'start_scene.dart';
 import 'theme.dart';
 
 /// The house — the Gold half of the game, and the only place a
@@ -112,7 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         _soundPanel(),
         const SizedBox(height: 10),
-        _startOver(),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [_readOpening(), _startOver()],
+        ),
       ],
     );
   }
@@ -645,45 +649,50 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
 
-  Widget _startOver() => Align(
-        alignment: Alignment.center,
-        child: TextButton(
-          onPressed: () async {
-            final ok = await showDialog<bool>(
-              context: context,
-              builder: (_) => AlertDialog(
-                backgroundColor: night2,
-                shape: const RoundedRectangleBorder(
-                    side: BorderSide(color: riftDim)),
-                title: const Text('Start over?',
-                    style: TextStyle(color: bone, fontSize: 16)),
-                content: const Text(
-                  'Every level, every gift, every scene played. Gone. The '
-                  'house is empty again except for the elf on the step.',
-                  style: TextStyle(color: boneDim, fontSize: 13, height: 1.6),
-                ),
-                actions: [
-                  TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text('Keep playing',
-                          style: TextStyle(color: verdant))),
-                  TextButton(
-                      onPressed: () {
-                        Audio.instance.play(Sfx.defeat);
-                        Navigator.of(context).pop(true);
-                      },
-                      child: const Text('Erase it',
-                          style: TextStyle(color: blood))),
-                ],
+  /// The opening comic, again. Reading it costs nothing and changes
+  /// nothing — it is the one thing on this screen that cannot alter a save.
+  Widget _readOpening() => TextButton(
+        onPressed: () => StartScene.replay(context),
+        child: const Text('read the opening',
+            style: TextStyle(color: boneDim, fontSize: 11)),
+      );
+
+  Widget _startOver() => TextButton(
+        onPressed: () async {
+          final ok = await showDialog<bool>(
+            context: context,
+            builder: (_) => AlertDialog(
+              backgroundColor: night2,
+              shape: const RoundedRectangleBorder(
+                  side: BorderSide(color: riftDim)),
+              title: const Text('Start over?',
+                  style: TextStyle(color: bone, fontSize: 16)),
+              content: const Text(
+                'Every level, every gift, every scene played. Gone. The '
+                'house is empty again except for the elf on the step.',
+                style: TextStyle(color: boneDim, fontSize: 13, height: 1.6),
               ),
-            );
-            if (ok == true) {
-              await game.resetGame();
-              if (mounted) setState(() {});
-            }
-          },
-          child: const Text('start over',
-              style: TextStyle(color: boneDim, fontSize: 11)),
-        ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: const Text('Keep playing',
+                        style: TextStyle(color: verdant))),
+                TextButton(
+                    onPressed: () {
+                      Audio.instance.play(Sfx.defeat);
+                      Navigator.of(context).pop(true);
+                    },
+                    child: const Text('Erase it',
+                        style: TextStyle(color: blood))),
+              ],
+            ),
+          );
+          if (ok == true) {
+            await game.resetGame();
+            if (mounted) setState(() {});
+          }
+        },
+        child: const Text('start over',
+            style: TextStyle(color: boneDim, fontSize: 11)),
       );
 }

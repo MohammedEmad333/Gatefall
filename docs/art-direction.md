@@ -13,6 +13,14 @@ the guardian, the ambient dust) is painted by `lib/art/gate_art.dart`. It is
 a deliberate style, not a placeholder: it reads at 30 pixels, it costs
 nothing to ship, and it cannot drift out of step with the roster.
 
+Version 3.1 added a second generated style beside it: the **comic layer**
+(`lib/art/comic.dart`) the opening is told in — inked panels with a hard
+shadow and halftone tone, caption boxes, speech balloons with tails, and
+lettering that is a stroked copy of the text under a filled one. It borrows
+no assets and no fonts, and the pictures inside its panels are the same
+painters as everything else. If rendered art ever lands, the comic panels
+take it the same way every other screen does: they ask for a *widget*.
+
 Everything below is still the plan for **rendered** art, and nothing here
 forecloses it. A painted portrait can replace `CharacterPortrait` one
 character at a time, because every screen asks for a *widget*, not for an
