@@ -1,0 +1,77 @@
+name: Build APK
+
+# Builds the Gatefall Flutter app into an Android APK.
+#
+# The repo only scaffolds the `web` platform (see gatefall_flame/.metadata),
+# so this workflow generates the Android platform files in CI with
+# `flutter create` before building. Nothing Android-specific is committed.
+
+on:
+  push:
+    branches:
+      - main
+      - claude/**
+    paths:
+      - 'gatefall_flame/**'
+      - 'gatefall_dialogue_engine/**'
+      - '.github/workflows/build-apk.yml'
+  pull_request:
+    paths:
+      - 'gatefall_flame/**'
+      - 'gatefall_dialogue_engine/**'
+      - '.github/workflows/build-apk.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    name: Build Android APK
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: gatefall_flame
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Show Flutter version
+        run: flutter --version
+
+      - name: Generate Android platform files
+        # The Android platform is not committed; regenerate it here. This only
+        # adds the android/ scaffolding and never touches lib/ or assets.
+        run: flutter create --platforms=android --org com.gatefall --project-name gatefall .
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Analyze
+        # Informational only — a lint finding must not block the APK build.
+        continue-on-error: true
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: gatefall-release-apk
+          path: gatefall_flame/build/app/outputs/flutter-apk/app-release.apk
+          if-no-file-found: error
