@@ -1,18 +1,23 @@
 name: gatefall
 description: Gatefall — idle action-RPG x romance simulation.
 publish_to: 'none'
-# 2.0.0 — "Ascension". Every route's Beat 6 now grants the transformed
-# ability it always promised, and Dana awakens into the party. The build
-# number is what Android orders installs by, so it goes up with every
-# release: 1.0.0 shipped as +1.
-version: 2.0.0+2
+# 3.0.0 — "Illumination". The game finally looks and sounds like itself:
+# drawn characters, a gate you can watch turn, combat that reacts, and a
+# score synthesised from scratch. The build number is what Android orders
+# installs by, so it goes up with every release: 1.0.0 shipped as +1.
+version: 3.0.0+3
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  # Raised from >=3.0.0 for audioplayers, which is what version 3's sound
+  # runs on and which needs a 3.6 SDK.
+  sdk: '>=3.6.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
+  # The one sound plugin that covers Android, web and desktop unchanged —
+  # the same reason shared_preferences is the save layer.
+  audioplayers: ^6.5.0
   flame: ^1.18.0
   gatefall_dialogue_engine:
     path: ../gatefall_dialogue_engine
@@ -29,3 +34,6 @@ flutter:
   assets:
     - data/
     - data/scenes/
+    # Synthesised by tool/make_sounds.py. Committed rather than generated at
+    # build time so a clone plays sound with nothing installed.
+    - assets/audio/

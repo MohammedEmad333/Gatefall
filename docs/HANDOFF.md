@@ -126,8 +126,8 @@ Future gacha: a pull grants the character, then a **character-specific unlock qu
 
 ### Verification
 
-`flutter analyze` is clean and **90 tests pass** (`flutter test`) — the
-original 33 unchanged, plus gate tiers, save/load round trips, offline
+`flutter analyze` is clean and **90 tests pass** (`flutter test`; 135 as of
+version 3) — the original 33 unchanged, plus gate tiers, save/load round trips, offline
 accrual, the house economy, gifts, acts, endings, scene-graph integrity, and
 widget tests that drive the real screens the way a player does. The web build
 was then loaded in Chromium and played: opening scene to completion, a gate
@@ -249,6 +249,52 @@ thing the code had never paid out.
 
 ---
 
+## Version 3 — "Illumination"
+
+Shipped as `gatefall_flame` **3.0.0+3**. One idea: *the game should look and
+sound like itself, without waiting for an illustrator or a sample library.*
+Everything visible and audible is generated from code in this repo.
+
+- **The cast is drawn** (`lib/art/character_art.dart`). Each companion is a
+  flat dark silhouette with an element-lit outline — Faelen's ears and cloak
+  clasp, Kess's ears and tail, Momo as two lights inside a hood, Thora's
+  tusks and braid, Dana's bob and lanyard, and the player faceless with a
+  gate where a face would be. One painter, six builds, readable from 30px
+  (a formation chip) to 130px (a dialogue header). An id with no look
+  defined still draws, and `presentation_test.dart` fails if anyone in the
+  roster or the house is missing one.
+- **The world is drawn** (`lib/art/gate_art.dart`). Rifts turn — three
+  counter-rotating rings, a lit tear, motes falling inward — in the element's
+  own colour, on the gate board and in the fight. The five wave enemies and
+  the guardian each have their own silhouette, keyed off the same wave index
+  the simulation uses, so what is on screen is what is being fought.
+- **The fight reacts** (`lib/art/effects.dart`). Hits flash the creature and
+  float numbers off it, ultimates shake the screen, bars drain with a slower
+  ghost behind them, ready abilities breathe, and the event log — which the
+  simulation had always emitted and nothing had ever rendered — is finally
+  on screen.
+- **Sound is synthesised** (`tool/make_sounds.py`, `lib/audio/sfx.dart`).
+  Twenty effects and two ambient beds, about a megabyte of WAVs, built from
+  sine partials, filtered noise and a cheap reverb, with an equal-power
+  crossfade so the beds loop without a click. The bus is fire-and-forget,
+  rate-limited, gesture-gated for browsers, and disables itself rather than
+  throwing if a platform has no audio.
+- **The simulation barely moved.** `battle.dart` gained one field
+  (`eventsEmitted`, a monotonic counter so a renderer can react to *new*
+  events after the list is trimmed), an `amount` on each event, and finer
+  event kinds (`heal`, `revive`, `boss`, `down`). Every step-2 through
+  version-2 balance test passes unchanged.
+- **Animation and tests coexist.** `Motion.ambient` is false under
+  `flutter test` (detected via `FLUTTER_TEST` behind a conditional import,
+  so nothing test-only leaks into the app), because an endless animation
+  makes `pumpAndSettle` wait forever. One-shot animations stay on, so tests
+  still settle *on* them.
+
+`flutter analyze` is clean, **135 tests pass**, and `flutter build web
+--release` compiles with the audio bundled.
+
+---
+
 ## Suggested next steps
 
 In the order that adds the most to the game as it now stands.
@@ -280,12 +326,20 @@ In the order that adds the most to the game as it now stands.
    sense pre-empting an ambush before it lands, say, rather than only a
    cooldown she presses.
 
-5. **Art direction** — see the open question above.
+5. **Art direction** — see the open question above. *(Version 3 shipped a
+   complete generated art style — painted silhouettes, animated rifts,
+   drawn creatures — so the game is no longer blocked on this. The
+   rendered-splash-art path in `docs/art-direction.md` is still open and
+   still worth doing: a painted portrait can replace `CharacterPortrait`
+   one character at a time, because every screen asks for a widget, not for
+   an image.)*
 
 6. **Sprites, once there is art.** `battle.dart` is a pure simulation with no
    rendering in it, so swapping the raid screen for a `FlameGame` is a
    presentation change only: call `battle.tick(dt)` from Flame's `update()`
-   instead of the `Timer`.
+   instead of the `Timer`. *(Version 3 did the whole presentation layer in
+   `CustomPainter`s instead and did not need this; it is now only worth it
+   if you want thousands of particles.)*
 
 7. **De-duplicate `gatefall_flame/data/`.** Still a manual mirror of the
    canonical route JSON, though `game_test.dart` now fails loudly if the two

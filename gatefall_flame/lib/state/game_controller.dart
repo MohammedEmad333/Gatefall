@@ -5,6 +5,7 @@ import 'package:gatefall_dialogue_engine/engine/evaluator.dart';
 import 'package:gatefall_dialogue_engine/models/game_state.dart';
 import 'package:gatefall_dialogue_engine/models/route.dart';
 
+import '../audio/sfx.dart';
 import '../combat/battle.dart';
 import '../data/ascension.dart';
 import '../data/barks.dart';
@@ -74,6 +75,12 @@ class GameController extends ChangeNotifier {
 
   int speed = 1;
   bool autoCast = true;
+
+  /// Version 3's two sound switches. They live here rather than in the
+  /// audio bus because they are player state — they belong in the save
+  /// beside auto-cast and speed, not in a singleton that forgets.
+  bool sfxOn = true;
+  bool musicOn = true;
   DateTime? _lastSeen;
   DateTime? _lastOddJob;
   DateTime? _rentSince;
@@ -285,6 +292,7 @@ class GameController extends ChangeNotifier {
     }
     _refreshBoard();
     _syncAct();
+    applySoundSettings();
     notifyListeners();
     await persist();
   }
@@ -496,6 +504,26 @@ class GameController extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setSfxOn(bool v) {
+    sfxOn = v;
+    Audio.instance.setSfxOn(v);
+    notifyListeners();
+    persist();
+  }
+
+  void setMusicOn(bool v) {
+    musicOn = v;
+    Audio.instance.setMusicOn(v);
+    notifyListeners();
+    persist();
+  }
+
+  /// Push the saved settings into the bus. Called once, at the end of boot.
+  void applySoundSettings() {
+    Audio.instance.sfxOn = sfxOn;
+    Audio.instance.setMusicOn(musicOn);
+  }
+
   // ---------------- raiding ----------------
 
   void _refreshBoard() {
@@ -695,6 +723,8 @@ class GameController extends ChangeNotifier {
         'rent_since': _rentSince?.toIso8601String(),
         'last_odd_job': _lastOddJob?.toIso8601String(),
         'auto_cast': autoCast,
+        'sfx_on': sfxOn,
+        'music_on': musicOn,
       };
 
   void _restore(Map<String, dynamic> json) {
@@ -703,6 +733,10 @@ class GameController extends ChangeNotifier {
     clears = json['clears'] as int? ?? 0;
     bestClearMana = json['best_clear_mana'] as int? ?? 0;
     autoCast = json['auto_cast'] as bool? ?? true;
+    // A save from before version 3 has no sound settings, and the answer
+    // for it is the same as for a new player: everything on.
+    sfxOn = json['sfx_on'] as bool? ?? true;
+    musicOn = json['music_on'] as bool? ?? true;
 
     settled
       ..clear()

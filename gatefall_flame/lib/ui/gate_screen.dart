@@ -1,7 +1,13 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import '../art/character_art.dart';
+import '../art/effects.dart';
+import '../art/gate_art.dart';
+import '../art/palette.dart';
+import '../audio/sfx.dart';
 import '../combat/battle.dart';
 import '../data/combat_config.dart';
 import '../data/gate.dart';
@@ -16,6 +22,12 @@ import 'theme.dart';
 /// auto-battle, collect. Still plain Flutter widgets rather than a Flame
 /// render loop — see the note in main.dart; battle.dart is the simulation
 /// and does not care what draws it.
+///
+/// Version 3 is where that separation paid: the fight now has a turning
+/// rift, a creature that flinches, numbers coming off it, a screen that
+/// shakes and a sound per event — and battle.dart gained exactly one field
+/// for it ([Battle.eventsEmitted]) plus an amount on each event. Everything
+/// else here is this screen reading the simulation and reacting.
 class GateScreen extends StatefulWidget {
   final GameController game;
   const GateScreen({super.key, required this.game});
@@ -34,6 +46,30 @@ class _GateScreenState extends State<GateScreen> {
   Gate? gate;
   Timer? _timer;
 
+  /// The presentation layer's own state. None of this is the simulation —
+  /// it is what the simulation looked like last frame, so this frame can
+  /// tell what just happened.
+  final GlobalKey<ShakeBoxState> _shake = GlobalKey<ShakeBoxState>();
+  final GlobalKey<DamageLayerState> _numbers = GlobalKey<DamageLayerState>();
+
+  /// How many events we have already reacted to. Monotonic, so trimming
+  /// the event list cannot make us replay anything.
+  int _eventCursor = 0;
+
+  /// Enemy HP as of the last frame, for reading off chip damage that never
+  /// emits an event of its own.
+  double _enemyHp = 0;
+  int _wave = 0;
+  bool _onBoss = false;
+
+  /// 0…1, how recently the thing on screen was hit. Decays every tick.
+  double _hurt = 0;
+
+  /// Auto-attack damage waiting to be shown as one number, so a five-per-
+  /// second trickle does not become five numbers a second.
+  double _chip = 0;
+  double _chipAge = 0;
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -46,6 +82,16 @@ class _GateScreenState extends State<GateScreen> {
     final b = game.startRaid(g);
     battle = b;
     stage = _Stage.fighting;
+    _eventCursor = 0;
+    _enemyHp = b.enemy.hp;
+    _wave = b.waveIndex;
+    _onBoss = b.onBoss;
+    _hurt = 0;
+    _chip = 0;
+    _chipAge = 0;
+    // The gate-opening sound comes from the button that called this (see
+    // its `sound:`), so entering by any other route stays silent rather
+    // than doubling up.
     _timer = Timer.periodic(
       Duration(milliseconds: (CombatConfig.tickSeconds * 1000).round()),
       (_) {
@@ -55,16 +101,104 @@ class _GateScreenState extends State<GateScreen> {
           if (b.status != BattleStatus.fighting) break;
           b.tick(CombatConfig.tickSeconds);
         }
+        _react(b);
         if (b.status != BattleStatus.fighting) {
           _timer?.cancel();
           _timer = null;
           game.finishRaid(b, g);
           stage = _Stage.result;
+          Audio.instance.play(
+              b.status == BattleStatus.won ? Sfx.victory : Sfx.defeat);
         }
         if (mounted) setState(() {});
       },
     );
     setState(() {});
+  }
+
+  /// Turn one simulation frame into sound and motion.
+  ///
+  /// Two sources, deliberately: *events*, which are the things the fight
+  /// says out loud (a cast, a crit, someone going down), and *chip damage*,
+  /// which is the auto-attack trickle that emits nothing at all. Without
+  /// the second, a fight with no abilities up would be silent and still
+  /// even though the boss's health is visibly falling.
+  void _react(Battle b) {
+    // A new enemy: re-baseline, or the swap reads as one colossal hit.
+    if (b.waveIndex != _wave || b.onBoss != _onBoss) {
+      _wave = b.waveIndex;
+      _onBoss = b.onBoss;
+      _enemyHp = b.enemy.hp;
+      _hurt = 0;
+    }
+
+    final dealt = _enemyHp - b.enemy.hp;
+    _enemyHp = b.enemy.hp;
+    if (dealt > 0) {
+      _hurt = (_hurt + dealt / max(1.0, b.enemy.maxHp) * 7).clamp(0.0, 1.0);
+      _chip += dealt;
+      // The bus rate-limits this; at 4× speed the hits arrive far faster
+      // than a human ear wants them.
+      Audio.instance.play(Sfx.hit);
+    }
+    // ~0.6s of fade, at a 0.1s tick.
+    _hurt = max(0, _hurt - .16);
+
+    _chipAge += CombatConfig.tickSeconds * game.speed;
+    if (_chip >= 1 && _chipAge >= .45) {
+      _numbers.currentState
+          ?.spawn('${_chip.round()}', bone.withValues(alpha: .8));
+      _chip = 0;
+      _chipAge = 0;
+    }
+
+    // Events since the last frame. [Battle.eventsEmitted] counts every one
+    // ever emitted, so this stays correct after the list is trimmed.
+    final fresh = (b.eventsEmitted - _eventCursor).clamp(0, b.events.length);
+    if (fresh > 0) {
+      for (final e in b.events.sublist(b.events.length - fresh)) {
+        _onEvent(e, b);
+      }
+      _eventCursor = b.eventsEmitted;
+    }
+  }
+
+  void _onEvent(BattleEvent e, Battle b) {
+    final numbers = _numbers.currentState;
+    final shake = _shake.currentState;
+    switch (e.kind) {
+      case 'ultimate':
+        Audio.instance.play(Sfx.ultimate);
+        shake?.shake(1.5);
+        if (e.amount >= 1) {
+          numbers?.spawn('${e.amount.round()}', rose, big: true);
+        }
+      case 'crit':
+        Audio.instance.play(Sfx.crit);
+        shake?.shake(.7);
+        numbers?.spawn('${e.amount.round()}', gold, big: true);
+      case 'damage':
+        Audio.instance.play(Sfx.ability);
+        numbers?.spawn('${e.amount.round()}', bone);
+      case 'heal':
+        Audio.instance.play(Sfx.heal);
+        if (e.amount >= 1) numbers?.spawn('+${e.amount.round()}', verdant);
+      case 'revive':
+        Audio.instance.play(Sfx.heal);
+      case 'boss':
+        Audio.instance.play(Sfx.bossStir);
+        shake?.shake(2.2);
+      case 'down':
+        Audio.instance.play(Sfx.partyDown);
+        shake?.shake(1.1);
+      case 'reward':
+        // The last one of these is the clear itself, and the result screen
+        // is about to play something much bigger over the top of it.
+        if (b.status == BattleStatus.fighting) {
+          Audio.instance.play(Sfx.enemyDown);
+          numbers?.spawn('+${e.amount.round()} mana', verdant);
+        }
+    }
   }
 
   Future<void> _leaveResult() async {
@@ -115,8 +249,8 @@ class _GateScreenState extends State<GateScreen> {
                 height: 1.5),
           ),
           const SizedBox(height: 14),
-          for (final g in game.board) ...[
-            _gateCard(g),
+          for (final (i, g) in game.board.indexed) ...[
+            Reveal(delay: Duration(milliseconds: 60 * i), child: _gateCard(g)),
             const SizedBox(height: 10),
           ],
           const SizedBox(height: 4),
@@ -143,39 +277,67 @@ class _GateScreenState extends State<GateScreen> {
         matchupOf(Roster.byId(id).element, g.element) == Matchup.advantage);
 
     return InkWell(
-      onTap: () => setState(() {
-        gate = g;
-        stage = _Stage.formation;
-      }),
+      onTap: () {
+        Audio.instance.play(Sfx.uiSelect);
+        setState(() {
+          gate = g;
+          stage = _Stage.formation;
+        });
+      },
       child: Panel(
         borderColor: short ? gold.withValues(alpha: .7) : riftDim,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Every gate on the board is turning. It is the same
+                // painter the fight uses, held at half strength — a card is
+                // a tear seen from across the city, not one you are
+                // standing in.
+                RiftView(element: g.element, size: 56, intensity: .55),
+                const SizedBox(width: 10),
                 Expanded(
-                  child: Text(g.fullName,
-                      style: const TextStyle(color: bone, fontSize: 15)),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(border: Border.all(color: riftDim)),
-                  child: Text(g.element.label,
-                      style: const TextStyle(color: boneDim, fontSize: 10.5)),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(g.fullName,
+                                style:
+                                    const TextStyle(color: bone, fontSize: 15)),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: elementColor(g.element)
+                                        .withValues(alpha: .55))),
+                            child: Text(g.element.label,
+                                style: TextStyle(
+                                    color: elementColor(g.element),
+                                    fontSize: 10.5)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 3),
+                      Text(g.description,
+                          style: const TextStyle(
+                              color: boneDim,
+                              fontSize: 12,
+                              fontStyle: FontStyle.italic)),
+                      const SizedBox(height: 6),
+                      Text(g.tier.blurb,
+                          style: const TextStyle(
+                              color: boneDim, fontSize: 11.5, height: 1.4)),
+                    ],
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: 3),
-            Text(g.description,
-                style: const TextStyle(
-                    color: boneDim,
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic)),
-            const SizedBox(height: 8),
-            Text(g.tier.blurb,
-                style: const TextStyle(color: boneDim, fontSize: 11.5, height: 1.4)),
             const SizedBox(height: 9),
             Wrap(
               spacing: 12,
@@ -294,6 +456,7 @@ class _GateScreenState extends State<GateScreen> {
             Expanded(
               child: SlabButton('Enter the gate',
                   filled: true,
+                  sound: Sfx.gateOpen,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   onPressed: _enter),
             ),
@@ -359,9 +522,12 @@ class _GateScreenState extends State<GateScreen> {
     };
     final tier = game.bondTier(def.id);
     return GestureDetector(
-      onTap: () => setState(() => game.cycleFormation(def.id)),
+      onTap: () {
+        Audio.instance.play(Sfx.uiTap);
+        setState(() => game.cycleFormation(def.id));
+      },
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 4),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
         decoration: BoxDecoration(
           color: night2,
           border: Border.all(color: matchupColor),
@@ -369,6 +535,9 @@ class _GateScreenState extends State<GateScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            CharacterPortrait(def.id,
+                size: 34, glow: .35 + tier * .12, calm: true),
+            const SizedBox(height: 4),
             Text(def.name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -393,7 +562,9 @@ class _GateScreenState extends State<GateScreen> {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(
-                  color: matchup == Matchup.neutral ? boneDim : matchupColor,
+                  color: matchup == Matchup.neutral
+                      ? elementColor(def.element).withValues(alpha: .8)
+                      : matchupColor,
                   fontSize: 9),
             ),
           ],
@@ -404,51 +575,91 @@ class _GateScreenState extends State<GateScreen> {
 
   // ---------------- the fight ----------------
 
-  Widget _fightView(Battle b) => ScreenBody(
-        children: [
-          ScreenHeader(gate!.fullName,
-              trailing:
-                  CurrencyChip('${game.mana + b.manaEarned}', 'mana', verdant)),
-          const SizedBox(height: 12),
-          _enemyPanel(b),
-          const SizedBox(height: 9),
-          _waveTrack(b),
-          const SizedBox(height: 12),
-          ..._partyList(b),
-          const SizedBox(height: 8),
-          _abilityRow(b),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              const Expanded(
-                child: SlabButton('In the gate…',
-                    filled: true,
-                    padding: EdgeInsets.symmetric(vertical: 14)),
-              ),
-              const SizedBox(width: 7),
-              _autoButton(),
-              const SizedBox(width: 7),
-              _speedButton(),
-            ],
-          ),
-        ],
+  Widget _fightView(Battle b) => ShakeBox(
+        key: _shake,
+        child: ScreenBody(
+          children: [
+            ScreenHeader(gate!.fullName,
+                trailing: CurrencyChip(
+                    '${game.mana + b.manaEarned}', 'mana', verdant)),
+            const SizedBox(height: 12),
+            _enemyPanel(b),
+            const SizedBox(height: 9),
+            _waveTrack(b),
+            const SizedBox(height: 12),
+            ..._partyList(b),
+            const SizedBox(height: 8),
+            _abilityRow(b),
+            const SizedBox(height: 10),
+            _battleLog(b),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                const Expanded(
+                  child: SlabButton('In the gate…',
+                      filled: true,
+                      padding: EdgeInsets.symmetric(vertical: 14)),
+                ),
+                const SizedBox(width: 7),
+                _autoButton(),
+                const SizedBox(width: 7),
+                _speedButton(),
+              ],
+            ),
+          ],
+        ),
       );
 
+  /// The thing you are fighting, drawn: the tear it came out of behind it,
+  /// the creature itself in front, and every number it takes coming off the
+  /// top of the panel.
   Widget _enemyPanel(Battle b) {
     final e = b.enemy;
     final stacks = b.enrageStacks;
+    final form =
+        beastformFor(waveIndex: b.waveIndex, boss: e.isBoss);
     return Container(
-      padding: const EdgeInsets.fromLTRB(14, 17, 14, 15),
+      padding: const EdgeInsets.fromLTRB(14, 12, 14, 15),
       decoration: BoxDecoration(
-        border: Border.all(color: riftDim),
+        border: Border.all(
+            color: e.isBoss ? blood.withValues(alpha: .55) : riftDim),
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [rift.withValues(alpha: .16), Colors.transparent],
+          colors: [
+            elementColor(e.element).withValues(alpha: .16),
+            Colors.transparent,
+          ],
         ),
       ),
       child: Column(
         children: [
+          SizedBox(
+            height: 148,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                RiftView(
+                  element: e.element,
+                  size: 148,
+                  intensity: e.isBoss ? 1 : .8,
+                  boss: e.isBoss,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 22),
+                  child: CreatureView(
+                    form: form,
+                    element: e.element,
+                    size: e.isBoss ? 176 : 138,
+                    hurt: _hurt,
+                    falling: e.hp <= 0,
+                  ),
+                ),
+                DamageLayer(key: _numbers),
+              ],
+            ),
+          ),
+          const SizedBox(height: 4),
           Text(e.name,
               style: TextStyle(
                   color: e.isBoss ? blood : bone,
@@ -464,11 +675,61 @@ class _GateScreenState extends State<GateScreen> {
                 TextStyle(color: stacks > 2 ? blood : boneDim, fontSize: 11.5),
           ),
           const SizedBox(height: 12),
-          Bar(e.hpFraction, e.isBoss ? blood : const Color(0xFFA33B52)),
+          AnimatedBar(e.hpFraction, e.isBoss ? blood : const Color(0xFFA33B52)),
           const SizedBox(height: 5),
           Text('${e.hp.ceil()} / ${e.maxHp.round()}',
               style: const TextStyle(
                   color: boneDim, fontSize: 11, fontFamily: 'monospace')),
+        ],
+      ),
+    );
+  }
+
+  /// The last few things the fight said. It was always emitting these —
+  /// version 3 is the first build that shows them, and the reason a crit or
+  /// an ascended cast now reads as an event rather than as a number that
+  /// moved faster than usual.
+  Widget _battleLog(Battle b) {
+    final lines = b.events.length <= 3
+        ? b.events
+        : b.events.sublist(b.events.length - 3);
+    return Container(
+      // Keyed so a widget test can assert the fight is actually narrating
+      // itself, without depending on which line happens to be last.
+      key: const ValueKey('battle-log'),
+      width: double.infinity,
+      constraints: const BoxConstraints(minHeight: 54),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      decoration: BoxDecoration(
+        border: Border.all(color: riftDim.withValues(alpha: .55)),
+        color: Colors.black.withValues(alpha: .22),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (final (i, e) in lines.indexed)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 1.5),
+              child: Opacity(
+                opacity: i == lines.length - 1 ? 1 : .45,
+                child: Text(
+                  e.message,
+                  style: TextStyle(
+                    color: switch (e.kind) {
+                      'crit' => gold,
+                      'ultimate' => rose,
+                      'heal' || 'revive' => verdant,
+                      'reward' => verdant,
+                      'boss' || 'down' || 'hurt' => blood,
+                      _ => boneDim,
+                    },
+                    fontSize: 11,
+                    height: 1.35,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
@@ -527,53 +788,68 @@ class _GateScreenState extends State<GateScreen> {
             : f.isRallied
                 ? 'oathbound'
                 : f.role;
-    return Opacity(
+    final accent = !f.alive
+        ? boneDim
+        : f.isTaunting
+            ? gold
+            : f.isRallied
+                ? rose
+                : verdant;
+    return AnimatedOpacity(
       opacity: f.alive ? 1 : .42,
+      duration: const Duration(milliseconds: 350),
       child: Container(
         margin: const EdgeInsets.only(bottom: 5),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        padding: const EdgeInsets.fromLTRB(8, 6, 10, 6),
         decoration: BoxDecoration(
-          color: f.isTaunting || f.isRallied
-              ? const Color(0xFF1C1734)
-              : night2,
-          border: Border(
-            left: BorderSide(
-              color: !f.alive
-                  ? boneDim
-                  : f.isTaunting
-                      ? gold
-                      : f.isRallied
-                          ? rose
-                          : verdant,
-              width: 2,
-            ),
-          ),
+          color:
+              f.isTaunting || f.isRallied ? const Color(0xFF1C1734) : night2,
+          border: Border(left: BorderSide(color: accent, width: 2)),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+        child: Row(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                  child: Text('${f.name}  Lv.${f.level}',
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: bone, fontSize: 13)),
-                ),
-                const SizedBox(width: 8),
-                Text(tag,
-                    style: TextStyle(
-                        color: f.isTaunting
-                            ? gold
-                            : f.isRallied
-                                ? rose
-                                : boneDim,
-                        fontSize: 10.5,
-                        fontStyle: FontStyle.italic)),
-              ],
+            // The person, not the label. A row that is drawing fire or
+            // oathbound lights up, so the buff reads without reading.
+            CharacterPortrait(
+              f.id,
+              size: 38,
+              glow: f.isTaunting || f.isRallied ? 1 : .45,
+              dimmed: !f.alive,
+              calm: true,
             ),
-            const SizedBox(height: 4),
-            Bar(frac, color),
+            const SizedBox(width: 9),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text('${f.name}  Lv.${f.level}',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(color: bone, fontSize: 13)),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(tag,
+                          style: TextStyle(
+                              color: f.alive && (f.isTaunting || f.isRallied)
+                                  ? accent
+                                  : boneDim,
+                              fontSize: 10.5,
+                              fontStyle: FontStyle.italic)),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  AnimatedBar(frac, color),
+                  if (f.shield > 0) ...[
+                    const SizedBox(height: 3),
+                    Text('shield ${f.shield.round()}',
+                        style: const TextStyle(color: gold, fontSize: 9.5)),
+                  ],
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -612,6 +888,8 @@ class _GateScreenState extends State<GateScreen> {
                   isUltimate: a.kind == AbilityKind.ultimate,
                   isAscended: ascended,
                   badge: ascended ? _ascendedBadge(b, a) : null,
+                  // The cast itself makes the noise, through the event it
+                  // emits — tapping only has to be allowed to happen.
                   onTap: () => setState(() => b.castAbility(a.id)),
                 ),
               );
@@ -651,23 +929,41 @@ class _GateScreenState extends State<GateScreen> {
     final won = b.status == BattleStatus.won;
     final g = gate!;
     final post = game.postRaidBeat;
+    var step = 0;
+    // Each line arrives after the one above it, so the payout reads in
+    // order instead of landing as a wall.
+    Widget staged(Widget child) => Reveal(
+          delay: Duration(milliseconds: 90 * step++),
+          child: child,
+        );
+
     return ScreenBody(
       children: [
-        const SizedBox(height: 24),
-        Text(won ? 'Gate cleared' : 'Party withdrawn',
+        const SizedBox(height: 12),
+        staged(Center(
+          child: RiftView(
+            element: g.element,
+            size: 96,
+            // A cleared gate is a closing one: the tear is still there, but
+            // it has stopped pulling.
+            intensity: won ? .35 : .8,
+          ),
+        )),
+        const SizedBox(height: 14),
+        staged(Text(won ? 'Gate cleared' : 'Party withdrawn',
             textAlign: TextAlign.center,
-            style: TextStyle(color: won ? verdant : blood, fontSize: 25)),
+            style: TextStyle(color: won ? verdant : blood, fontSize: 25))),
         const SizedBox(height: 11),
-        Text(
+        staged(Text(
           won
               ? 'The rift closes behind you. ${b.elapsed.round()}s in the gate.'
               : 'You pull back through the tear. The gate stays open, and '
                   'everything you earned in there is still yours.',
           textAlign: TextAlign.center,
           style: const TextStyle(color: boneDim, fontSize: 14, height: 1.6),
-        ),
+        )),
         const SizedBox(height: 16),
-        Center(
+        staged(Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -678,38 +974,42 @@ class _GateScreenState extends State<GateScreen> {
               ],
             ],
           ),
-        ),
+        )),
         if (won && game.lastDropMessage != null) ...[
           const SizedBox(height: 14),
-          Text(game.lastDropMessage!,
+          staged(Text(game.lastDropMessage!,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: verdant, fontSize: 12.5, height: 1.4)),
+              style:
+                  const TextStyle(color: verdant, fontSize: 12.5, height: 1.4))),
         ],
         if (won)
           for (final msg in game.lastBondMessages) ...[
             const SizedBox(height: 10),
-            Text(msg,
+            staged(Text(msg,
                 textAlign: TextAlign.center,
-                style: const TextStyle(color: gold, fontSize: 12.5, height: 1.4)),
+                style:
+                    const TextStyle(color: gold, fontSize: 12.5, height: 1.4))),
           ],
         if (won && game.clears == CombatConfig.clearsToUnlockDoubleSpeed) ...[
           const SizedBox(height: 14),
-          const Callout('2× speed unlocked — raid faster from now on.'),
+          staged(const Callout(
+              '2× speed unlocked — raid faster from now on.')),
         ],
         if (won && game.clears == CombatConfig.clearsToUnlockFastSpeed) ...[
           const SizedBox(height: 14),
-          const Callout('4× speed unlocked.'),
+          staged(const Callout('4× speed unlocked.')),
         ],
         const SizedBox(height: 26),
-        SlabButton(
+        staged(SlabButton(
           post != null
               ? '${House.byId(post.characterId).name} wants a word'
               : 'Back to the board',
           filled: true,
           tone: post != null ? gold : rift,
+          sound: post != null ? Sfx.bond : Sfx.uiSelect,
           padding: const EdgeInsets.symmetric(vertical: 14),
           onPressed: _leaveResult,
-        ),
+        )),
       ],
     );
   }
@@ -774,41 +1074,55 @@ class _AbilityButton extends StatelessWidget {
         ability.remaining > 0 ? ability.remaining / ability.cooldown : 0.0;
     final accent = isAscended ? rose : (isUltimate ? gold : verdant);
     final borderColor = enabled ? accent : riftDim;
-    return GestureDetector(
-      onTap: enabled ? onTap : null,
-      child: Container(
-        height: 40,
-        decoration: BoxDecoration(
-          color: night2,
-          border: Border.all(
-              color: borderColor, width: isAscended && enabled ? 1.6 : 1.0),
-        ),
-        child: Stack(
-          children: [
-            FractionallySizedBox(
-              widthFactor: pctLeft.clamp(0, 1),
-              child: Container(color: rift.withValues(alpha: .22)),
-            ),
-            Center(
-              child: Text(
-                ability.name,
-                style: TextStyle(
-                  color: enabled ? (isUltimate || isAscended ? accent : bone) : boneDim,
-                  fontSize: 12,
+    // A ready ability breathes. It is the only prompt the fight gives the
+    // player, and before version 3 it was a border colour and nothing else.
+    return Beacon(
+      color: accent,
+      active: enabled,
+      child: GestureDetector(
+        onTap: enabled ? onTap : null,
+        child: Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: night2,
+            border: Border.all(
+                color: borderColor, width: isAscended && enabled ? 1.6 : 1.0),
+          ),
+          child: Stack(
+            children: [
+              // The cooldown drains rather than stepping, even though the
+              // simulation only moves ten times a second.
+              TweenAnimationBuilder<double>(
+                tween: Tween(begin: pctLeft, end: pctLeft),
+                duration: const Duration(milliseconds: 120),
+                builder: (_, v, __) => FractionallySizedBox(
+                  widthFactor: v.clamp(0, 1),
+                  child: Container(color: rift.withValues(alpha: .22)),
                 ),
               ),
-            ),
-            if (badge != null)
-              Positioned(
-                right: 3,
-                top: 2,
-                child: Text(badge!,
-                    style: TextStyle(
-                        color: enabled ? accent : boneDim,
-                        fontSize: 9,
-                        fontFamily: 'monospace')),
+              Center(
+                child: Text(
+                  ability.name,
+                  style: TextStyle(
+                    color: enabled
+                        ? (isUltimate || isAscended ? accent : bone)
+                        : boneDim,
+                    fontSize: 12,
+                  ),
+                ),
               ),
-          ],
+              if (badge != null)
+                Positioned(
+                  right: 3,
+                  top: 2,
+                  child: Text(badge!,
+                      style: TextStyle(
+                          color: enabled ? accent : boneDim,
+                          fontSize: 9,
+                          fontFamily: 'monospace')),
+                ),
+            ],
+          ),
         ),
       ),
     );

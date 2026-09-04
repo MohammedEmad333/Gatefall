@@ -22,7 +22,9 @@ Everything:
 
 ```
 flutter analyze
-flutter test                     # 90 tests: balance, systems, and widgets
+flutter test                     # 135 tests: balance, systems, art, sound, widgets
+python3 tool/make_sounds.py      # regenerate every sound in assets/audio/
+flutter test test/_preview.dart  # proof sheets of the art -> build/art-preview/
 ```
 
 ### Build a web version you can just open
@@ -40,6 +42,12 @@ directory and open the page.
 
 ```
 lib/
+  art/character_art.dart      The cast, drawn: one painted silhouette per companion
+  art/gate_art.dart           Rifts, the things that come out of them, ambient dust
+  art/effects.dart            Shake, floating numbers, draining bars, typewriter
+  art/palette.dart            An element is a colour
+  art/motion.dart             The one switch that holds ambient animation still in tests
+  audio/sfx.dart              The sound bus: 20 effects, 2 ambient beds, 2 settings
   combat/battle.dart          Pure simulation — no Flutter, no Flame, unit-testable
   data/combat_config.dart     Tuned constants, with the reasoning recorded
   data/roster.dart            Fighters, abilities, formation
@@ -58,19 +66,58 @@ lib/
   ui/                         theme, shell, house, gates, party, dialogue, ending
 data/                         Route and scene JSON, mirrored from the engine
 test/
-  balance_test.dart           Simulated-raid regression tests (90 across all files)
+  balance_test.dart           Simulated-raid regression tests (135 across all files)
   game_test.dart              Systems: save/load, economy, acts, endings, scenes
+  presentation_test.dart      Art, sound files, the sound bus, a fight drawn and heard
   widget_test.dart            The real screens, driven the way a player does
+  _preview.dart               Not a test: renders proof sheets of the art as PNGs
+assets/audio/                 22 synthesised WAVs (see tool/make_sounds.py)
+tool/make_sounds.py           The synthesiser that produced them
 ```
 
 **The model is separate from the UI on purpose.** Balance changes can be
 tested in milliseconds without rendering anything, and the same `Battle` class
 drives the offline-progress maths. Keep it that way.
 
-**Plain widgets, not FlameGame, also on purpose.** The open question is still
-pacing and decision-feel, not presentation. Swap in `FlameGame` + sprite
-components when you need sprites and particles — `battle.dart` won't change,
-you just call `battle.tick(dt)` from Flame's `update()` instead of a `Timer`.
+**Plain widgets, not FlameGame, also on purpose.** Version 3 added the art,
+the animation and the sound without needing that swap: `CustomPainter`s and
+`AnimationController`s did all of it. Swap in `FlameGame` + sprite components
+if you ever need thousands of particles — `battle.dart` won't change, you
+just call `battle.tick(dt)` from Flame's `update()` instead of a `Timer`.
+
+## Art, animation and sound (version 3)
+
+Nothing here is an imported asset except the WAVs, and those are generated
+too. The reasons are practical: art that is code cannot drift out of step
+with the roster, and a game with no illustrator still has to look like
+something.
+
+**Art.** `art/character_art.dart` draws each companion as a flat dark
+silhouette with an element-lit outline — ears, hood, tusks, badge, hair
+shape. It reads at 30px on a formation chip and at 130px in a dialogue
+header, and an id it has never heard of still returns a drawable look rather
+than a hole in the layout. `art/gate_art.dart` draws the rifts (three
+counter-rotating rings, a lit tear, motes falling in), the five wave
+creatures and the guardian, and the drifting dust behind every screen.
+`docs/art-direction.md` still describes the rendered-splash-art path; this
+does not foreclose it, because everything in the UI asks for a *widget*.
+
+**Animation.** `art/effects.dart` holds the one-shot pieces: `ShakeBox`,
+`DamageLayer`, `AnimatedBar` (with a slower ghost behind the fill, so a hit
+reads as damage taken), `Reveal`, `Typewriter` and `Beacon`. One-shot is the
+rule — they finish, which is what lets `pumpAndSettle` work. Endless motion
+sits behind `Motion.ambient`, which is **off under `flutter test`** so a
+repeating controller can never hang the suite.
+
+**Sound.** `tool/make_sounds.py` synthesises all 22 files from arithmetic —
+sine partials, filtered noise, a cheap reverb, and an equal-power crossfade
+that makes the two ambient beds loop without a click. `audio/sfx.dart` is a
+fire-and-forget bus over six voices: it never blocks a frame, rate-limits
+the sounds combat can ask for sixty times a second, waits for the first
+gesture before starting the bed (browsers require one), and switches itself
+off after any platform failure rather than throwing once a frame. The
+combat screen turns simulation events into sound: `BattleEvent.kind` picks
+the sound, `BattleEvent.amount` is the number that floats off the enemy.
 
 **The dialogue engine is not reimplemented here.** `gatefall_dialogue_engine`
 is a path dependency; the house and the scene renderer call its real

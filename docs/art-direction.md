@@ -2,6 +2,24 @@
 
 Working doc for AI-generated character art. Not locked — this is the
 starting reference to keep prompts consistent once generation begins.
+
+## What actually ships today (version 3)
+
+The game is **not** waiting on the art below. Version 3 shipped a complete
+generated art style: every companion is a hand-written silhouette painted by
+`gatefall_flame/lib/art/character_art.dart` — flat dark shapes, an
+element-lit outline, a glow behind — and the world (rifts, wave creatures,
+the guardian, the ambient dust) is painted by `lib/art/gate_art.dart`. It is
+a deliberate style, not a placeholder: it reads at 30 pixels, it costs
+nothing to ship, and it cannot drift out of step with the roster.
+
+Everything below is still the plan for **rendered** art, and nothing here
+forecloses it. A painted portrait can replace `CharacterPortrait` one
+character at a time, because every screen asks for a *widget*, not for an
+image — start with Faelen, whose reference is already locked below. Run
+`flutter test test/_preview.dart` in `gatefall_flame/` to write proof sheets
+of the current generated art to `build/art-preview/` if you want to see what
+you are replacing.
 See `docs/HANDOFF.md` for sequencing: **Faelen's model sheet first, to
 lock overall style; the rest wait until the combat loop is proven**
 (roughly step 3-4). All five companions are female; Dana is a human foil

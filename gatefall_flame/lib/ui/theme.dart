@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../audio/sfx.dart';
+
 /// The one palette. Night, rift-violet, and the three currencies each with
 /// their own colour so a number's meaning reads before you read the number:
 /// mana is verdant, gold is gold, bond is rose.
@@ -121,12 +123,20 @@ class Bar extends StatelessWidget {
 }
 
 /// The square-cornered button this game uses everywhere.
+///
+/// Version 3: this is also where the interface got its voice. Every button
+/// in the game is one of these, so wiring the tap sound in here — rather
+/// than at two dozen call sites — means nothing can be silent by omission.
 class SlabButton extends StatelessWidget {
   final String label;
   final VoidCallback? onPressed;
   final Color tone;
   final bool filled;
   final EdgeInsetsGeometry padding;
+
+  /// The sound this button makes. A destructive or backward action passes
+  /// something else; the default is the neutral tap.
+  final Sfx sound;
 
   const SlabButton(
     this.label, {
@@ -135,14 +145,22 @@ class SlabButton extends StatelessWidget {
     this.tone = rift,
     this.filled = false,
     this.padding = const EdgeInsets.symmetric(vertical: 12, horizontal: 14),
+    this.sound = Sfx.uiSelect,
   });
 
   @override
   Widget build(BuildContext context) {
     final enabled = onPressed != null;
+    final press = onPressed == null
+        ? null
+        : () {
+            Audio.instance.noteGesture();
+            Audio.instance.play(sound);
+            onPressed!();
+          };
     if (filled) {
       return FilledButton(
-        onPressed: onPressed,
+        onPressed: press,
         style: FilledButton.styleFrom(
           backgroundColor: tone,
           disabledBackgroundColor: riftDim.withValues(alpha: .4),
@@ -153,7 +171,7 @@ class SlabButton extends StatelessWidget {
       );
     }
     return OutlinedButton(
-      onPressed: onPressed,
+      onPressed: press,
       style: OutlinedButton.styleFrom(
         foregroundColor: enabled ? tone : boneDim,
         side: BorderSide(color: enabled ? tone : riftDim),

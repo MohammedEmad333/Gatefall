@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../art/character_art.dart';
+import '../art/effects.dart';
+import '../audio/sfx.dart';
 import '../data/ascension.dart';
 import '../data/bond.dart';
 import '../data/element.dart';
@@ -41,8 +44,10 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
               height: 1.5),
         ),
         const SizedBox(height: 14),
-        for (final def in game.roster) ...[
-          _fighterPanel(def),
+        for (final (i, def) in game.roster.indexed) ...[
+          Reveal(
+              delay: Duration(milliseconds: 55 * i),
+              child: _fighterPanel(def)),
           const SizedBox(height: 12),
         ],
         for (final id in Roster.all
@@ -103,8 +108,16 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Benched is drawn, not just written: a companion who is not
+              // going through the door is drained of their colour.
+              CharacterPortrait(def.id,
+                  size: 54,
+                  glow: deployed ? .8 : .3,
+                  dimmed: !deployed,
+                  calm: true),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,6 +153,7 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
                     '$levelCost mana',
             buttonLabel: levelMaxed ? 'Max' : 'Level up',
             tone: canLevel ? gold : boneDim,
+            sound: Sfx.reward,
             onPressed: canLevel
                 ? () => setState(() => game.levelUp(def.id))
                 : null,
@@ -158,6 +172,7 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
                     : '+$gearPct% to everything — enhance for $gearCost mana',
             buttonLabel: g == null ? '—' : (gearMaxed ? 'Max' : 'Enhance'),
             tone: canEnhance ? gold : boneDim,
+            sound: Sfx.reward,
             onPressed: canEnhance
                 ? () => setState(() => game.enhanceGear(def.id))
                 : null,
@@ -206,6 +221,7 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
     required String buttonLabel,
     required Color tone,
     VoidCallback? onPressed,
+    Sfx sound = Sfx.uiSelect,
   }) =>
       Padding(
         padding: const EdgeInsets.only(top: 8),
@@ -231,6 +247,7 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
               child: SlabButton(buttonLabel,
                   tone: tone,
                   onPressed: onPressed,
+                  sound: sound,
                   padding: const EdgeInsets.symmetric(vertical: 9)),
             ),
           ],

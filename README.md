@@ -22,6 +22,32 @@ whoever turns up next, read their scenes, raise bond by fighting and by gifts,
 reach Act III, answer the question about the gates, and read the epilogue.
 Progress saves automatically.
 
+## Version 3 — "Illumination"
+
+The game now looks and sounds like itself. Everything you see and hear is
+**generated from code in this repo** — there is no art pack and no sample
+library anywhere in it.
+
+- **Art.** Every companion is a hand-written silhouette in a stained-glass
+  style, drawn by a `CustomPainter` and lit in their own element: you know
+  Faelen by her ears, Kess by hers, Momo by the two lights inside a hood.
+  Gates are animated tears that turn, each element its own colour, and the
+  five wave enemies and the guardian each have their own shape.
+- **Animation.** The fight reacts: the creature flinches and flashes when
+  it takes a hit, damage floats off it, the screen shakes for an ultimate,
+  health bars drain instead of jumping, a ready ability breathes, and
+  dialogue arrives a character at a time. Screens stage themselves in
+  reading order rather than appearing all at once.
+- **Sound.** Twenty effects and two ambient beds, all **synthesised** by
+  `gatefall_flame/tool/make_sounds.py` — arithmetic in, WAVs out, about a
+  megabyte in total. Every combat event has a voice; the house and the
+  gates each have their own bed. Both switches (effects, ambience) live at
+  the bottom of the house screen and are saved with everything else.
+
+The simulation gained exactly one field for all of this
+(`Battle.eventsEmitted`) plus an amount on each combat event. `battle.dart`
+still knows nothing about how it is drawn.
+
 ## Version 2 — "Ascension"
 
 Finishing someone's route is now a combat power spike. Each companion's Beat 6
@@ -85,3 +111,5 @@ decisions, findings, and what to build next.
   all five companion routes as JSON data. The canonical copy.
 - `gatefall_flame/` — the game: Flutter app over a pure combat simulation,
   with the house, the gates, the party, the scene renderer and the endings.
+  Its `lib/art/` draws the whole cast and world, `lib/audio/` plays it, and
+  `tool/make_sounds.py` regenerates every sound in `assets/audio/`.

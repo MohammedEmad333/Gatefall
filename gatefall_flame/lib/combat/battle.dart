@@ -151,10 +151,21 @@ class Enemy {
 
 enum BattleStatus { idle, fighting, won, lost }
 
+/// One line of what just happened, for whatever is drawing the fight.
+///
+/// [kind] is a presentation hint, not simulation state — version 3's combat
+/// screen turns it into a sound, a colour and a floating number, and
+/// version 1 ignored it entirely. [amount] is the number that line is
+/// about (damage dealt, healing landed, mana paid), so the renderer never
+/// has to parse it back out of the message.
 class BattleEvent {
   final String message;
-  final String kind; // damage | crit | ultimate | hurt | reward
-  BattleEvent(this.message, this.kind);
+
+  /// damage | crit | ultimate | heal | revive | boss | down | hurt | reward
+  final String kind;
+  final double amount;
+
+  BattleEvent(this.message, this.kind, {this.amount = 0});
 }
 
 class Battle {
@@ -186,6 +197,12 @@ class Battle {
 
   late Enemy enemy;
   final List<BattleEvent> events = [];
+
+  /// Total events ever emitted this fight, including the ones already
+  /// trimmed off the front of [events]. A renderer reacting to *new* events
+  /// needs a count that only goes up — the list itself is capped and shifts
+  /// under anyone holding an index into it.
+  int eventsEmitted = 0;
 
   /// Ally actions — ability casts and critical hits — since the last
   /// [AbilityKind.link] cast. Kess's Chainbreak spends them; nothing else
@@ -274,6 +291,7 @@ class Battle {
       a.remaining = 0;
     }
     events.clear();
+    eventsEmitted = 0;
     _spawn();
   }
 
@@ -296,7 +314,7 @@ class Battle {
         element: gateElement,
         isBoss: true,
       );
-      _emit('The gate guardian stirs.', 'hurt');
+      _emit('The gate guardian stirs.', 'boss');
     } else {
       final hp = (CombatConfig.waveEnemyHp +
               CombatConfig.waveEnemyHpGrowth * waveIndex) *
@@ -312,8 +330,9 @@ class Battle {
     }
   }
 
-  void _emit(String msg, String kind) {
-    events.add(BattleEvent(msg, kind));
+  void _emit(String msg, String kind, {double amount = 0}) {
+    events.add(BattleEvent(msg, kind, amount: amount));
+    eventsEmitted++;
     if (events.length > 40) events.removeAt(0);
   }
 
@@ -358,6 +377,7 @@ class Battle {
           a.kind == AbilityKind.ultimate
               ? 'ultimate'
               : (crit ? 'crit' : 'damage'),
+          amount: dmg,
         );
         break;
 
@@ -367,7 +387,8 @@ class Battle {
         _emit(
             '${owner.name}: "Get behind me." '
                 '(+${a.power.round()} shield, drawing fire)',
-            'ultimate');
+            'ultimate',
+            amount: a.power);
         break;
 
       case AbilityKind.heal:
@@ -377,7 +398,8 @@ class Battle {
           healed += p.receiveHealing(a.power);
         }
         _emit('${owner.name} mends the party (${healed.round()} healed)',
-            'ultimate');
+            'heal',
+            amount: healed);
         break;
 
       // ---- ascended kits (version 2, see data/ascension.dart) ----
@@ -418,7 +440,8 @@ class Battle {
             '${owner.name} — Chainbreak off $stacks link'
             '${stacks == 1 ? "" : "s"}: ${dmg.round()}'
             '${crit ? " (critical)" : ""}',
-            'ultimate');
+            'ultimate',
+            amount: dmg);
         break;
 
       // Momo's cure: the sense that dragged danger to the party now reads it
@@ -434,7 +457,8 @@ class Battle {
             '${owner.name} reads it coming — party takes '
             '${(foresightReduction * 100).round()}% less for '
             '${a.duration.round()}s (${dmg.round()} damage)',
-            'ultimate');
+            'ultimate',
+            amount: dmg);
         break;
 
       // Thora's cure: everything the party put back into her is returned
@@ -455,7 +479,8 @@ class Battle {
         _emit(
             '${owner.name} gives it back — ${dmg.round()} damage off '
             '${held.round()} taken care of, ${healed.round()} healed',
-            'ultimate');
+            'ultimate',
+            amount: dmg);
         break;
 
       // Dana's cure: she was never supposed to be in the fight, so what she
@@ -471,7 +496,8 @@ class Battle {
             enemy.hp -= dmg;
             _emit(
                 '${owner.name} files an emergency order: ${dmg.round()} damage',
-                'ultimate');
+                'ultimate',
+                amount: dmg);
             break;
           case 1:
             var healed = 0.0;
@@ -482,7 +508,8 @@ class Battle {
             _emit(
                 '${owner.name} calls in a favour — ${healed.round()} healed '
                 'across the party',
-                'ultimate');
+                'heal',
+                amount: healed);
             break;
           default:
             for (final p in party) {
@@ -494,7 +521,8 @@ class Battle {
             _emit(
                 '${owner.name} reads the regulations aloud — party shielded '
                 'and steadied for ${a.duration.round()}s',
-                'ultimate');
+                'ultimate',
+                amount: a.power * 0.9);
             break;
         }
         break;
@@ -568,7 +596,8 @@ class Battle {
           // A critical is an ally action Chainbreak can load off, same as a
           // cast — "the party did something while she waited".
           _noteAllyAction(p.id);
-          _emit('${p.name} strikes for ${dmg.round()} (critical)', 'crit');
+          _emit('${p.name} strikes for ${dmg.round()} (critical)', 'crit',
+              amount: dmg);
         }
       }
     }
@@ -591,7 +620,7 @@ class Battle {
         target.taunt = 0;
         target.attackBuffRemaining = 0;
         target.attackBuff = 1.0;
-        _emit('${target.name} goes down', 'hurt');
+        _emit('${target.name} goes down', 'down');
       }
     }
 
@@ -607,11 +636,13 @@ class Battle {
 
       if (enemy.isBoss) {
         status = BattleStatus.won;
-        _emit('The rift closes. +$gain mana', 'reward');
+        _emit('The rift closes. +$gain mana', 'reward',
+            amount: gain.toDouble());
         return;
       }
 
-      _emit('${enemy.name} falls. +$gain mana', 'reward');
+      _emit('${enemy.name} falls. +$gain mana', 'reward',
+          amount: gain.toDouble());
 
       // Between-wave recovery + revive. This is what keeps a poor formation
       // slower rather than unwinnable — no death spiral.
@@ -621,7 +652,7 @@ class Battle {
         } else {
           p.alive = true;
           p.hp = p.maxHp * CombatConfig.reviveAtWave;
-          _emit('${p.name} gets back up', 'ultimate');
+          _emit('${p.name} gets back up', 'revive');
         }
       }
 
