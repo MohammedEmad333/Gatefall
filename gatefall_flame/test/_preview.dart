@@ -19,6 +19,7 @@ import 'package:gatefall/ui/companions_screen.dart';
 import 'package:gatefall/ui/dialogue_screen.dart';
 import 'package:gatefall/ui/gate_screen.dart';
 import 'package:gatefall/ui/shell.dart';
+import 'package:gatefall/ui/start_scene.dart';
 import 'package:gatefall/art/gate_art.dart';
 import 'package:gatefall/data/element.dart';
 import 'package:gatefall/ui/theme.dart';
@@ -50,6 +51,7 @@ Future<void> shoot(WidgetTester tester, String name, Widget child,
 
 void main() {
   screens();
+  opening();
   const ids = ['player', 'faelen', 'kess', 'momo', 'thora', 'dana'];
 
   testWidgets('portraits', (tester) async {
@@ -260,5 +262,51 @@ void screens() {
         }
       },
     );
+  });
+}
+
+
+/// The opening comic, page by page. Each page is shot with every one of its
+/// panels revealed — which is what the reader sees just before turning it.
+void opening() {
+  // The script's shape: how many panels each page has.
+  const pageSizes = [2, 2, 2, 2, 2, 1];
+
+  testWidgets('opening', (tester) async {
+    final key = GlobalKey();
+    tester.view.devicePixelRatio = 1.0;
+    tester.view.physicalSize = const Size(430, 880);
+    await tester.pumpWidget(MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: gatefallTheme(),
+      home: RepaintBoundary(key: key, child: StartScene(onDone: () {})),
+    ));
+
+    for (var page = 0; page < pageSizes.length; page++) {
+      // Let the lettering finish, then reveal the rest of the page.
+      for (var panel = 1; panel < pageSizes[page]; panel++) {
+        await tester.pumpAndSettle();
+        await tester.tapAt(const Offset(215, 500));
+      }
+      await tester.pumpAndSettle();
+      await shootBoundary(tester, 'opening-${page + 1}', key);
+      if (page < pageSizes.length - 1) {
+        await tester.tapAt(const Offset(215, 500));
+      }
+    }
+  });
+}
+
+/// Writes whatever is currently under [key] to build/art-preview/.
+Future<void> shootBoundary(
+    WidgetTester tester, String name, GlobalKey key) async {
+  await tester.runAsync(() async {
+    final boundary =
+        key.currentContext!.findRenderObject() as RenderRepaintBoundary;
+    final image = await boundary.toImage(pixelRatio: 2.0);
+    final data = await image.toByteData(format: ui.ImageByteFormat.png);
+    final dir = Directory('build/art-preview')..createSync(recursive: true);
+    File('${dir.path}/$name.png')
+        .writeAsBytesSync(data!.buffer.asUint8List(), flush: true);
   });
 }

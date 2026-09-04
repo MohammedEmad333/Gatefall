@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'art/gate_art.dart';
 import 'data/element.dart';
 import 'state/game_controller.dart';
 import 'ui/shell.dart';
+import 'ui/start_scene.dart';
 import 'ui/theme.dart';
 
 /// Gatefall — idle action-RPG × romance simulation.
@@ -19,6 +22,11 @@ import 'ui/theme.dart';
 /// components once the pacing is proven and you actually need sprites,
 /// particles and animation — combat/battle.dart won't change, you just call
 /// battle.tick(dt) from Flame's update() instead of a Timer.
+///
+/// Version 3.1 added the opening: a six-page comic (ui/start_scene.dart,
+/// art/comic.dart) that says what the game is before the game starts
+/// asking for rent. It plays once, off a saved flag, and can be re-read
+/// from the house.
 ///
 /// Version 3 ("Illumination") added the art, the animation and the sound
 /// without needing that swap: everything is drawn by CustomPainters in
@@ -47,6 +55,15 @@ class _GatefallAppState extends State<GatefallApp> {
     super.dispose();
   }
 
+  /// The opening was read or skipped. [GameController.markPrologueSeen]
+  /// flips the flag synchronously and writes the save in the background, so
+  /// the rebuild can hand over to the house in this same frame rather than
+  /// holding a finished comic on screen while storage catches up.
+  void _openingRead() {
+    unawaited(_game.markPrologueSeen());
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -61,6 +78,12 @@ class _GatefallAppState extends State<GatefallApp> {
           }
           if (snap.hasError) {
             return _BootScreen(error: '${snap.error}');
+          }
+          // A player who has never been introduced gets the comic first.
+          // Everyone else — including every save written before it existed
+          // — goes straight to the house.
+          if (!_game.prologueSeen) {
+            return StartScene(onDone: _openingRead);
           }
           return GatefallShell(game: _game);
         },

@@ -1,11 +1,14 @@
 name: gatefall
 description: Gatefall — idle action-RPG x romance simulation.
 publish_to: 'none'
+# 3.1.0 — "Cold Open". The game opens on a six-page comic that says what it
+# is: the gates, what came through, what woke up, and the elf on the step.
+#
 # 3.0.0 — "Illumination". The game finally looks and sounds like itself:
 # drawn characters, a gate you can watch turn, combat that reacts, and a
 # score synthesised from scratch. The build number is what Android orders
 # installs by, so it goes up with every release: 1.0.0 shipped as +1.
-version: 3.0.0+3
+version: 3.1.0+4
 
 environment:
   # Raised from >=3.0.0 for audioplayers, which is what version 3's sound

@@ -105,6 +105,13 @@ class CharacterPortrait extends StatefulWidget {
   /// rather than the subject of the screen.
   final bool calm;
 
+  /// The lit plate behind the figure — the thing that makes a portrait read
+  /// as a *card*. Every screen in the game wants it. A comic panel does
+  /// not: there the figure stands in a scene that is already drawn, and an
+  /// opaque square behind them reads as a sticker. Turning it off keeps the
+  /// backlight, the rays and the floor glow, and drops only the fill.
+  final bool plate;
+
   const CharacterPortrait(
     this.id, {
     super.key,
@@ -112,6 +119,7 @@ class CharacterPortrait extends StatefulWidget {
     this.glow = .6,
     this.dimmed = false,
     this.calm = false,
+    this.plate = true,
   });
 
   @override
@@ -153,6 +161,7 @@ class _CharacterPortraitState extends State<CharacterPortrait>
           t: t,
           glow: widget.glow,
           dimmed: widget.dimmed,
+          plate: widget.plate,
         );
     final loop = _loop;
     return SizedBox(
@@ -176,12 +185,14 @@ class _PortraitPainter extends CustomPainter {
   final double t;
   final double glow;
   final bool dimmed;
+  final bool plate;
 
   _PortraitPainter({
     required this.look,
     required this.t,
     required this.glow,
     required this.dimmed,
+    this.plate = true,
   });
 
   Color get _accent => dimmed
@@ -213,7 +224,7 @@ class _PortraitPainter extends CustomPainter {
     canvas.translate(0, lift);
     _figure(canvas, s, breath);
     canvas.restore();
-    _vignette(canvas, s);
+    if (plate) _vignette(canvas, s);
     canvas.restore();
   }
 
@@ -221,15 +232,17 @@ class _PortraitPainter extends CustomPainter {
 
   void _backdrop(Canvas canvas, double s) {
     final rect = Rect.fromLTWH(0, 0, s, s);
-    canvas.drawRect(
-      rect,
-      Paint()
-        ..shader = const LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [night2, night],
-        ).createShader(rect),
-    );
+    if (plate) {
+      canvas.drawRect(
+        rect,
+        Paint()
+          ..shader = const LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [night2, night],
+          ).createShader(rect),
+      );
+    }
 
     // The backlight — the one thing that makes a flat silhouette look lit.
     final halo = Offset(s * .5, s * .36);
@@ -697,5 +710,6 @@ class _PortraitPainter extends CustomPainter {
       old.t != t ||
       old.glow != glow ||
       old.dimmed != dimmed ||
+      old.plate != plate ||
       old.look != look;
 }

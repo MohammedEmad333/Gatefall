@@ -22,6 +22,30 @@ whoever turns up next, read their scenes, raise bond by fighting and by gifts,
 reach Act III, answer the question about the gates, and read the epilogue.
 Progress saves automatically.
 
+## Version 3.1 — "Cold Open"
+
+The game now opens by saying what it is. A new player used to land on a rent
+panel with an elf already asleep upstairs and no idea why; they now get a
+**six-page comic** first — the sky tearing, what came through it, what woke
+up in a few ordinary people, the building you inherited, and the elf who
+reaches your door still on her feet.
+
+- **It is drawn the same way as everything else** (`lib/art/comic.dart`).
+  Inked panels with a hard shadow, halftone screen tone, caption boxes,
+  speech balloons with tails, and onomatopoeia on a burst — all painters and
+  widgets, no imported art. The pictures inside the panels are the game's
+  own: the same rift, the same cast, the same creatures.
+- **It reads like a page, not a slideshow** (`lib/ui/start_scene.dart`). The
+  whole page is laid out at once and revealed a panel at a time, so nothing
+  reflows under you, and a tap while a line is still lettering finishes that
+  line first.
+- **It plays once.** `prologue_seen` is saved with everything else, and a
+  save written before this existed defaults to *read* — an update never
+  opens on a cutscene. `skip` is on every page, and `read the opening` at
+  the bottom of the house plays it again without touching the save.
+
+---
+
 ## Version 3 — "Illumination"
 
 The game now looks and sounds like itself. Everything you see and hear is
@@ -111,5 +135,6 @@ decisions, findings, and what to build next.
   all five companion routes as JSON data. The canonical copy.
 - `gatefall_flame/` — the game: Flutter app over a pure combat simulation,
   with the house, the gates, the party, the scene renderer and the endings.
-  Its `lib/art/` draws the whole cast and world, `lib/audio/` plays it, and
+  Its `lib/art/` draws the whole cast and world (including `comic.dart`, the
+  panels and balloons the opening is told in), `lib/audio/` plays it, and
   `tool/make_sounds.py` regenerates every sound in `assets/audio/`.
