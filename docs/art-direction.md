@@ -122,6 +122,8 @@ action; back row = ranged/support stance, more distance/guard).
   long silver-white hair, city-balcony backdrop. Chosen over two other
   finalist renders as the most restrained/practical-reading of the
   three, closest fit to her "guarded, not decorative" character notes.
+  **File no longer in the repo** (deleted in `d426ece`) — see the open
+  issue under the LoRA training-set note below.
 - Model sheet prompt (Midjourney, draft, not yet run):
   `[fill in — SD/Pony is the primary tool in use, this can wait]`
 - Locked prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
@@ -145,25 +147,28 @@ action; back row = ranged/support stance, more distance/guard).
   ```
   Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
   See `docs/comfyui-tutorial.md` for how to run this.
-- LoRA training-set in progress, img2img off the locked reference
-  (denoise 0.3): `docs/art-direction/faelen_01_neutral.png` through
-  `faelen_05_flustered.png` (neutral, happy, sad, angry, flustered).
-  **Not yet ready to train on as-is** — two open issues:
-  1. Expression variance is subtle at denoise 0.3 (low denoise mostly
-     preserves the source's facial geometry). Get real expression
-     change via **inpainting the face region** at higher denoise
-     (~0.6-0.75) instead of full-image img2img — see the workflow
-     notes exchanged when this was hit, not yet written up as a
-     doc section.
-  2. The locked reference has a hand/finger rendering flaw (visible in
-     the belt-buckle-hand crop) that's propagated into all 5 of these
-     derivatives since they were generated before the fix. Inpaint the
-     hand on the reference first (denoise ~0.5-0.6, positive tags
-     `detailed hand, five fingers, natural fingers, clean fingernails`,
-     matching negatives), then regenerate the expression set from the
-     corrected reference before using any of it for LoRA training.
-  Aim for ~15-20 total images (these 5 plus more pose variety) before
-  moving to `docs/colab/gatefall_lora_training.ipynb`.
+- LoRA training-set: **19 images in `docs/art-direction/`**,
+  `faelen_01_neutral.png` through `faelen_19_windswept_b.png`.
+  Expression set (`01`-`06`) generated via img2img off the locked
+  reference at denoise 0.3; pose/angle variety (`07`-`19`) at denoise
+  0.55 — 0.3 barely shifted expression at all (low denoise mostly
+  preserves the source's facial geometry) and fresh generation
+  (denoise 1.0) broke outfit consistency (produced a full silver-plate
+  variant, discarded), so 0.55 is the working sweet spot: enough
+  freedom to change pose/angle while staying recognizably on-model.
+  Hand-fixing individual images (manual inpaint, then
+  ComfyUI Impact Pack's `FaceDetailer` + `UltralyticsDetectorProvider`
+  auto-detect route) was tried and abandoned — not worth it for
+  training data, since the LoRA learns identity from the set as a
+  whole and minor per-image hand flaws don't get baked in the way a
+  *repeated* flaw would. This set is ready to move to
+  `docs/colab/gatefall_lora_training.ipynb` for captioning + training.
+- **Open issue:** the original locked reference file
+  (`faelen-locked-v1.png`, the leather/steel corset + green cloak
+  render this whole set was generated from) was deleted from the repo
+  in a later commit (`d426ece`) without a replacement being documented
+  here — worth confirming whether `faelen_01_neutral.png` is meant to
+  be the new reference image, or whether the deletion was accidental.
 
 ### Kess — Fox Beastkin, the hustler
 - Role: fast DPS, fragile if caught. Row: front (wants it, but needs
