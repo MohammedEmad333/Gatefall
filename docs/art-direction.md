@@ -117,13 +117,11 @@ action; back row = ranged/support stance, more distance/guard).
   armor or gear (not ornate), guarded posture even at rest, muted
   greens/naturals reflecting Verdant. **First character rendered —
   locked the house style** (see "Global style" above).
-- Locked reference: `docs/art-direction/faelen-locked-v1.png` —
+- Locked reference: `docs/art-direction/faelen_01_neutral.png` —
   green-cloaked leather/steel corset armor over a high-ish neckline,
-  long silver-white hair, city-balcony backdrop. Chosen over two other
-  finalist renders as the most restrained/practical-reading of the
-  three, closest fit to her "guarded, not decorative" character notes.
-  **File no longer in the repo** (deleted in `d426ece`) — see the open
-  issue under the LoRA training-set note below.
+  long silver-white hair, city-balcony backdrop. Supersedes the
+  original `faelen-locked-v1.png` (deleted from the repo in `d426ece`;
+  this is its confirmed replacement, not an accidental loss).
 - Model sheet prompt (Midjourney, draft, not yet run):
   `[fill in — SD/Pony is the primary tool in use, this can wait]`
 - Locked prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
@@ -163,12 +161,6 @@ action; back row = ranged/support stance, more distance/guard).
   whole and minor per-image hand flaws don't get baked in the way a
   *repeated* flaw would. This set is ready to move to
   `docs/colab/gatefall_lora_training.ipynb` for captioning + training.
-- **Open issue:** the original locked reference file
-  (`faelen-locked-v1.png`, the leather/steel corset + green cloak
-  render this whole set was generated from) was deleted from the repo
-  in a later commit (`d426ece`) without a replacement being documented
-  here — worth confirming whether `faelen_01_neutral.png` is meant to
-  be the new reference image, or whether the deletion was accidental.
 
 ### Kess — Fox Beastkin, the hustler
 - Role: fast DPS, fragile if caught. Row: front (wants it, but needs
