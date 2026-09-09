@@ -314,6 +314,61 @@ action; back row = ranged/support stance, more distance/guard).
   ```
   Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
 
+## Enemy creatures — sprite prompts (draft)
+
+What comes through the gates. Six forms, keyed to the `Beastform` enum
+and to what `lib/art/gate_art.dart` already draws, so a generated sprite
+reads as the same thing the painter does. These are **not** hero cards:
+
+- **No `1girl` / no humans.** They are monsters — the score tags stay,
+  the character-framing tags go.
+- **Neutral dark palette, cool rim light.** In-game the *rift behind* the
+  creature carries the gate's element colour; the sprite itself is not
+  tinted (`CreatureSprite` draws the PNG as-is). So generate a desaturated,
+  dark creature that reads against any element backdrop rather than baking
+  in one element's colour.
+- **Transparent background, roughly square**, framed like the painted
+  silhouette (grounded, facing right/toward the party). Drop the result at
+  `gatefall_flame/assets/sprites/enemies/<form>.png`.
+
+Shared style preamble (prepend to each):
+`score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
+detailed, monster, creature, solo, no humans, dark fantasy, eldritch,
+desaturated dark palette, cool rim lighting, dramatic lighting, sharp
+focus, simple background, full body`
+
+Shared negative (append to each):
+`1girl, 1boy, human, humanoid face, cute, chibi, deformed, extra limbs,
+extra eyes wrong, blurry, lowres, watermark, signature, text, flat
+lighting, cel shading, bright colors, colorful background, weapon`
+
+| form | body |
+|---|---|
+| `stalker` | `low quadruped predator, long lean body, four legs, forward-hunched head, small glowing eyes, stalking pose, prowling` |
+| `hound` | `hunched quadruped beast, tall pointed ears, elongated snout, wiry fast build, glowing eyes, alert lunging stance` |
+| `shade` | `legless floating wraith, tattered hanging shroud, torn ragged hem, two glowing eyes in the dark, hovering, no legs, ghostly` |
+| `husk` | `gaunt hunched humanoid husk, arms hanging limp, crown of dead twigs, bark-like skin, dim glowing eyes, shambling` |
+| `thornbound` | `spherical mass of thorns, radial spikes, coiled bramble core, short spindly legs, glowing eyes between spikes, spiked ball creature` |
+| `guardian` | `towering antlered root-beast, "the root that walks", many glowing eyes, gnarled bark body, roots for legs, massive imposing boss monster, low camera angle` |
+
+Example (guardian, full):
+```
+score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
+detailed, monster, creature, solo, no humans, dark fantasy, eldritch,
+desaturated dark palette, cool rim lighting, dramatic lighting, sharp
+focus, simple background, full body, towering antlered root-beast, many
+glowing eyes, gnarled bark body, roots for legs, massive imposing boss
+monster, low camera angle
+
+Negative: 1girl, 1boy, human, humanoid face, cute, chibi, deformed,
+extra limbs, blurry, lowres, watermark, signature, text, flat lighting,
+cel shading, bright colors, colorful background, weapon
+```
+Resolution: 1024x1024 (square suits these better than the portrait
+crop). Checkpoint: AniVerse (Pony XL). These are drafts — run, pick a
+keeper per form, and drop it in; enemies look good on the painted
+`CreatureView` until you do, so there is no rush.
+
 ## Open questions
 
 - Momo's gloamkin trait now has a **proposed** visual (void-dark hair,

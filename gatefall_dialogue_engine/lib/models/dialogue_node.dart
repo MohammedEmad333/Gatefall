@@ -47,6 +47,14 @@ class DialogueNode {
   final bool endScene;
   final Condition? condition;
 
+  /// Optional expression cue for the speaker's portrait — a bare token like
+  /// `happy`, `sad`, `angry`, `flustered` (see docs/art-direction.md's
+  /// expression set). Purely presentational: the engine never reads it, and
+  /// a scene without it behaves exactly as before. A renderer that has a
+  /// matching sprite (`<id>_<emotion>.png`) can show it; everything else
+  /// ignores it and falls back to the neutral look.
+  final String? emotion;
+
   DialogueNode({
     required this.id,
     this.speaker,
@@ -55,6 +63,7 @@ class DialogueNode {
     this.choices = const [],
     this.endScene = false,
     this.condition,
+    this.emotion,
   });
 
   bool get isBranch => choices.isNotEmpty;
@@ -72,6 +81,7 @@ class DialogueNode {
       condition: json['condition'] == null
           ? null
           : Condition.fromJson(json['condition'] as Map<String, dynamic>),
+      emotion: json['emotion'] as String?,
     );
   }
 }

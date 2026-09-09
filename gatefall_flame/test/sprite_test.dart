@@ -20,6 +20,10 @@ void main() {
 
   test('asset paths follow the documented convention', () {
     expect(characterSpritePath('faelen'), 'assets/sprites/characters/faelen.png');
+    expect(characterSpritePath('faelen', expression: 'happy'),
+        'assets/sprites/characters/faelen_happy.png');
+    expect(characterSpritePath('faelen', expression: ''),
+        'assets/sprites/characters/faelen.png');
     expect(creatureSpritePath(Beastform.guardian),
         'assets/sprites/enemies/guardian.png');
   });
@@ -69,5 +73,42 @@ void main() {
     ));
     expect(find.byType(Image), findsOneWidget);
     expect(find.byType(CreatureView), findsNothing);
+  });
+
+  testWidgets('expression variant is used when present, else neutral base',
+      (t) async {
+    // Both a neutral base and a happy variant exist.
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('faelen'),
+      characterSpritePath('faelen', expression: 'happy'),
+    });
+
+    Image imageOf(Finder f) => t.widget<Image>(f);
+
+    // A requested variant that exists resolves to the variant file.
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite('faelen', size: 40, expression: 'happy'),
+    ));
+    expect((imageOf(find.byType(Image)).image as AssetImage).assetName,
+        characterSpritePath('faelen', expression: 'happy'));
+
+    // A requested variant that is missing falls back to the neutral base.
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite('faelen', size: 40, expression: 'furious'),
+    ));
+    expect((imageOf(find.byType(Image)).image as AssetImage).assetName,
+        characterSpritePath('faelen'));
+
+    // Only a variant exists, no neutral base: still falls back to painted art
+    // rather than showing an expression the neutral portrait can't match.
+    SpriteBook.instance.setAvailableForTest(
+        {characterSpritePath('kess', expression: 'happy')});
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite('kess', size: 40),
+    ));
+    expect(find.byType(CharacterPortrait), findsOneWidget);
   });
 }
