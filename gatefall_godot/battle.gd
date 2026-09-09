@@ -307,7 +307,7 @@ func draw_hud() -> void:
 		draw_label(card.position + Vector2(70, 31), hero.name, 18, Color.WHITE)
 		draw_bar(Rect2(card.position + Vector2(70, 48), Vector2(96, 9)), hero.hp / hero.max_hp, Color("43dc82"))
 		draw_label(card.position + Vector2(70, 79), "%d / %d" % [maxi(0, roundi(hero.hp)), roundi(hero.max_hp)], 13, Color("b9c6df"))
-	var ready := skill_cooldown <= 0.0 and heroes[0].hp > 0.0
+	var ready: bool = skill_cooldown <= 0.0 and heroes[0].hp > 0.0
 	draw_rect(skill_rect, Color("245a78") if ready else Color("273145"), true)
 	draw_rect(skill_rect, Color("78e8ff") if ready else Color("607087"), false, 4)
 	draw_label(skill_rect.position + Vector2(18, 31), "WARDEN'S", 18, Color.WHITE)
@@ -335,4 +335,3 @@ func draw_button(rect: Rect2, text: String, color: Color) -> void:
 
 func draw_label(position: Vector2, text: String, size: int, color: Color) -> void:
 	draw_string(ThemeDB.fallback_font, position, text, HORIZONTAL_ALIGNMENT_LEFT, -1, size, color)
-
