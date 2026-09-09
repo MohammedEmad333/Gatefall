@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../art/character_art.dart';
 import '../art/effects.dart';
+import '../art/sprites.dart';
 import '../audio/sfx.dart';
 import '../data/ascension.dart';
 import '../data/bond.dart';
@@ -112,7 +112,7 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
             children: [
               // Benched is drawn, not just written: a companion who is not
               // going through the door is drained of their colour.
-              CharacterPortrait(def.id,
+              CharacterSprite(def.id,
                   size: 54,
                   glow: deployed ? .8 : .3,
                   dimmed: !deployed,

@@ -69,6 +69,11 @@ card" render style**: polished skin/hair rendering, dramatic rim
 lighting, glossy highlights, cinematic vignette backgrounds. Closer to
 gacha splash art than to cel-shaded anime.
 
+The locked prompt below is written in Pony's `score_*` tag grammar and
+works on AniVerse (Pony XL) and on stock Pony V6 XL alike; if you switch
+checkpoints, re-confirm the neckline/coverage negatives still hold, since
+merges differ in how skimpy they default.
+
 - Line/render style: semi-realistic/photoreal-leaning shading, glossy
   highlights, sharp focus, ultra detailed — not flat cel shading.
 - Palette/lighting mood: dramatic rim lighting, cinematic lighting,
@@ -97,7 +102,12 @@ gacha splash art than to cel-shaded anime.
    flustered/blushing (romance scenes).
 3. **Battle sprite/icon** — simplified, readable at small combat-UI
    size. Pose should read the character's row (frontline melee stance
-   vs. backline caster/ranged stance).
+   vs. backline caster/ranged stance). **Wiring is done**: drop a
+   transparent PNG at `gatefall_flame/assets/sprites/characters/<id>.png`
+   (or `.../enemies/<beastform>.png`) and the battle screen shows it in
+   place of the painted silhouette, with a fallback when it is absent —
+   no code change. See `docs/flame-battle-plan.md` and
+   `gatefall_flame/assets/sprites/*/README.md`.
 4. **Ultimate splash art** *(later)* — bigger action pose for the
    tap-triggered ultimate moment.
 5. **Bond-event CG** *(later, cozy-side content)* — one or two

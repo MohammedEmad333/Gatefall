@@ -5,6 +5,7 @@ import 'package:gatefall_dialogue_engine/engine/evaluator.dart';
 import 'package:gatefall_dialogue_engine/models/game_state.dart';
 import 'package:gatefall_dialogue_engine/models/route.dart';
 
+import '../art/sprites.dart';
 import '../audio/sfx.dart';
 import '../combat/battle.dart';
 import '../data/ascension.dart';
@@ -283,6 +284,11 @@ class GameController extends ChangeNotifier {
     routes = await CompanionRoutes.loadAll();
     await CompanionRoutes.preloadScenes(routes);
     routesLoaded = true;
+    // Which rendered sprites exist, if any. Empty until PNGs are dropped into
+    // assets/sprites/ — the battle screen falls back to painted art either
+    // way (see art/sprites.dart). One-time, so a widget can decide per frame
+    // without touching the bundle.
+    await SpriteBook.instance.load();
     final saved = await _store.load();
     var restored = false;
     if (saved != null) {

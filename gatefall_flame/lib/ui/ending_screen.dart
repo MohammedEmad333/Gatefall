@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../art/character_art.dart';
 import '../art/effects.dart';
 import '../art/gate_art.dart';
+import '../art/sprites.dart';
 import '../data/element.dart';
 import '../data/house.dart';
 import '../data/story.dart';
@@ -118,7 +118,7 @@ class EndingScreen extends StatelessWidget {
         children: [
           Row(
             children: [
-              CharacterPortrait(id,
+              CharacterSprite(id,
                   size: 52,
                   // A route that ended well ends lit.
                   glow: label == 'True' ? 1 : (label == 'Lost' ? .15 : .55),
