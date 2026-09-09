@@ -25,7 +25,8 @@ No plugins or downloaded assets are required.
 - Five increasingly difficult waves
 - Rift Guardian boss in wave five
 - HP bars, damage numbers, hit flashes, skill cooldown, pause, and speed controls
+- Procedural Stage 1 animation: idle breathing, running bounce, attack lunges,
+  slash trails, hit recoil, skill pulses, and death fades
 - Responsive 1280×720 canvas for desktop, web, and Android testing
 
 The Faelen image is copied from the existing Flame asset as the same Git blob, so the file is not recompressed.
-

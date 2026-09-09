@@ -50,7 +50,9 @@ func make_hero(hero_name: String, hero_pos: Vector2, hp: float, damage: float, a
 	return {
 		"name": hero_name, "pos": hero_pos, "home": hero_pos, "hp": hp, "max_hp": hp,
 		"damage": damage, "range": attack_range, "interval": interval, "timer": 0.2,
-		"color": color, "faelen": is_faelen, "hit": 0.0
+		"color": color, "faelen": is_faelen, "hit": 0.0, "hurt_anim": 0.0,
+		"attack_anim": 0.0, "skill_anim": 0.0, "death_timer": 0.0,
+		"moving": false, "phase": randf_range(0.0, TAU)
 	}
 
 func start_next_wave() -> void:
@@ -67,7 +69,9 @@ func start_next_wave() -> void:
 			"pos": Vector2(900.0 + i * 92.0, GROUND_Y + (i % 2) * 30.0 - 15.0),
 			"hp": hp, "max_hp": hp, "damage": 34.0 + wave * 6.0,
 			"interval": 1.15 if is_boss else 1.5, "timer": 0.5 + i * 0.12,
-			"speed": 34.0 if is_boss else 49.0, "boss": is_boss, "hit": 0.0
+			"speed": 34.0 if is_boss else 49.0, "boss": is_boss, "hit": 0.0,
+			"hurt_anim": 0.0, "attack_anim": 0.0, "death_timer": 0.0,
+			"moving": false, "counted": false, "phase": randf_range(0.0, TAU)
 		})
 	next_wave_delay = 1.0
 
@@ -93,42 +97,61 @@ func _process(delta: float) -> void:
 func update_heroes(dt: float) -> void:
 	for hero in heroes:
 		if hero.hp <= 0.0:
+			hero.death_timer += dt
+			hero.moving = false
+			hero.attack_anim = 0.0
 			continue
 		hero.timer -= dt
 		hero.hit = maxf(0.0, hero.hit - dt)
+		hero.hurt_anim = maxf(0.0, hero.hurt_anim - dt)
+		hero.attack_anim = maxf(0.0, hero.attack_anim - dt)
+		hero.skill_anim = maxf(0.0, hero.skill_anim - dt)
+		hero.moving = false
 		var target := nearest_enemy(hero.pos)
 		if target.is_empty():
 			continue
 		var distance: float = absf(target.pos.x - hero.pos.x)
 		if distance > hero.range:
 			hero.pos.x = minf(hero.pos.x + 72.0 * dt, target.pos.x - hero.range)
+			hero.moving = true
 		elif hero.timer <= 0.0:
 			hero.timer = hero.interval
+			hero.attack_anim = 0.34
 			var dealt: float = hero.damage * randf_range(0.9, 1.12)
 			if randf() < 0.14:
 				dealt *= 1.75
 			target.hp -= dealt
 			target.hit = 0.1
+			target.hurt_anim = 0.2
 			spawn_hit(target.pos + Vector2(0, -65), dealt, hero.color)
 			effects.append({"from": hero.pos + Vector2(35, -72), "to": target.pos + Vector2(-20, -65), "life": 0.12, "color": hero.color})
 
 func update_enemies(dt: float) -> void:
 	for enemy in enemies:
 		if enemy.hp <= 0.0:
+			enemy.death_timer += dt
+			enemy.moving = false
+			enemy.attack_anim = 0.0
 			continue
 		enemy.timer -= dt
 		enemy.hit = maxf(0.0, enemy.hit - dt)
+		enemy.hurt_anim = maxf(0.0, enemy.hurt_anim - dt)
+		enemy.attack_anim = maxf(0.0, enemy.attack_anim - dt)
+		enemy.moving = false
 		var target := nearest_hero(enemy.pos)
 		if target.is_empty():
 			continue
 		var reach := 95.0 if enemy.boss else 62.0
 		if enemy.pos.x - target.pos.x > reach:
 			enemy.pos.x -= enemy.speed * dt
+			enemy.moving = true
 		elif enemy.timer <= 0.0:
 			enemy.timer = enemy.interval
+			enemy.attack_anim = 0.38
 			var dealt: float = enemy.damage * randf_range(0.88, 1.08)
 			target.hp -= dealt
 			target.hit = 0.12
+			target.hurt_anim = 0.2
 			spawn_hit(target.pos + Vector2(0, -80), dealt, Color("ff806f"))
 
 func update_feedback(dt: float) -> void:
@@ -141,9 +164,11 @@ func update_feedback(dt: float) -> void:
 	effects = effects.filter(func(item: Dictionary) -> bool: return item.life > 0.0)
 
 func remove_defeated() -> void:
-	var before := enemies.size()
-	enemies = enemies.filter(func(enemy: Dictionary) -> bool: return enemy.hp > 0.0)
-	defeated += before - enemies.size()
+	for enemy in enemies:
+		if enemy.hp <= 0.0 and not enemy.counted:
+			enemy.counted = true
+			defeated += 1
+	enemies = enemies.filter(func(enemy: Dictionary) -> bool: return enemy.hp > 0.0 or enemy.death_timer < 0.55)
 
 func nearest_enemy(from: Vector2) -> Dictionary:
 	var best: Dictionary = {}
@@ -183,10 +208,12 @@ func cast_warden_oath() -> void:
 	faelen.hp = minf(faelen.max_hp, faelen.hp + 125.0)
 	for hero in alive_heroes():
 		hero.hp = minf(hero.max_hp, hero.hp + 45.0)
+		hero.skill_anim = 0.65
 	for enemy in enemies:
 		var dealt := 135.0 if enemy.boss else 185.0
 		enemy.hp -= dealt
 		enemy.hit = 0.22
+		enemy.hurt_anim = 0.28
 		spawn_hit(enemy.pos + Vector2(0, -100), dealt, Color("7fe8ff"))
 	effects.append({"from": Vector2(150, GROUND_Y - 80), "to": Vector2(1110, GROUND_Y - 80), "life": 0.32, "color": Color("7fe8ff")})
 
@@ -244,35 +271,69 @@ func draw_units() -> void:
 func draw_hero(hero: Dictionary) -> void:
 	var pos: Vector2 = hero.pos
 	var alive: bool = hero.hp > 0.0
+	var render_pos: Vector2 = pos + Vector2(0.0, sin(elapsed * 2.8 + hero.phase) * 3.0)
+	if hero.moving:
+		render_pos += Vector2(sin(elapsed * 12.0 + hero.phase) * 2.5, absf(sin(elapsed * 12.0 + hero.phase)) * -6.0)
+	if hero.attack_anim > 0.0:
+		var attack_progress: float = 1.0 - hero.attack_anim / 0.34
+		render_pos.x += sin(attack_progress * PI) * 52.0
+		render_pos.y -= sin(attack_progress * PI) * 5.0
+	if hero.hurt_anim > 0.0:
+		render_pos.x -= sin(hero.hurt_anim / 0.2 * PI) * 22.0
 	var tint: Color = Color.WHITE if hero.hit <= 0.0 else Color("ffb3a7")
 	if not alive:
-		tint = Color(0.25, 0.25, 0.3, 0.75)
-	draw_ellipse_shadow(pos)
+		var death_progress: float = clampf(hero.death_timer / 0.55, 0.0, 1.0)
+		render_pos += Vector2(-28.0 * death_progress, 38.0 * death_progress)
+		tint = Color(0.25, 0.25, 0.3, 1.0 - death_progress)
+	if hero.skill_anim > 0.0:
+		var pulse: float = sin((1.0 - hero.skill_anim / 0.65) * PI)
+		draw_circle(render_pos + Vector2(0, -75), 55.0 + pulse * 38.0, Color(0.35, 0.9, 1.0, 0.08 + pulse * 0.18))
+	draw_ellipse_shadow(render_pos)
 	if hero.faelen:
-		var frame := Rect2(pos.x - 60, pos.y - 160, 120, 160)
+		var frame := Rect2(render_pos.x - 60, render_pos.y - 160, 120, 160)
 		draw_texture_rect(FAELEN_TEXTURE, frame, false, tint)
 	else:
-		draw_circle(pos + Vector2(0, -86), 31, hero.color * tint)
-		draw_rect(Rect2(pos.x - 25, pos.y - 56, 50, 58), hero.color.darkened(0.38) * tint)
-		draw_line(pos + Vector2(15, -55), pos + Vector2(45, -92), Color("e8edf8"), 7)
+		draw_circle(render_pos + Vector2(0, -86), 31, hero.color * tint)
+		draw_rect(Rect2(render_pos.x - 25, render_pos.y - 56, 50, 58), hero.color.darkened(0.38) * tint)
+		var weapon_color := Color("e8edf8")
+		weapon_color.a = tint.a
+		draw_line(render_pos + Vector2(15, -55), render_pos + Vector2(45, -92), weapon_color, 7)
+	if hero.attack_anim > 0.0 and alive:
+		var arc_alpha: float = sin((1.0 - hero.attack_anim / 0.34) * PI)
+		draw_arc(render_pos + Vector2(42, -76), 43, -1.15, 1.15, 18, Color(0.75, 0.95, 1.0, arc_alpha), 6)
 	draw_bar(Rect2(pos.x - 45, pos.y - 181, 90, 8), hero.hp / hero.max_hp, Color("43dc82"))
 	draw_label(Vector2(pos.x - 34, pos.y + 22), hero.name, 16, Color("eef5ff"))
 
 func draw_enemy(enemy: Dictionary) -> void:
 	var pos: Vector2 = enemy.pos
 	var boss: bool = enemy.boss
-	var body := Color("78376f") if boss else Color("5b3b68")
+	var render_pos: Vector2 = pos + Vector2(0.0, sin(elapsed * 3.1 + enemy.phase) * 2.5)
+	if enemy.moving:
+		render_pos += Vector2(sin(elapsed * 10.0 + enemy.phase) * 2.0, absf(sin(elapsed * 10.0 + enemy.phase)) * -5.0)
+	if enemy.attack_anim > 0.0:
+		var attack_progress: float = 1.0 - enemy.attack_anim / 0.38
+		render_pos.x -= sin(attack_progress * PI) * 38.0
+	if enemy.hurt_anim > 0.0:
+		render_pos.x += sin(enemy.hurt_anim / 0.2 * PI) * 19.0
+	var death_alpha: float = 1.0
+	if enemy.hp <= 0.0:
+		var death_progress: float = clampf(enemy.death_timer / 0.55, 0.0, 1.0)
+		render_pos += Vector2(24.0 * death_progress, 35.0 * death_progress)
+		death_alpha = 1.0 - death_progress
+	var body: Color = Color("78376f") if boss else Color("5b3b68")
 	if enemy.hit > 0.0:
 		body = Color("fff1e5")
-	draw_ellipse_shadow(pos)
-	draw_circle(pos + Vector2(0, -58), 52 if boss else 36, body)
-	draw_circle(pos + Vector2(-16, -65), 6, Color("ff504f"))
-	draw_circle(pos + Vector2(16, -65), 6, Color("ff504f"))
+	body.a = death_alpha
+	draw_ellipse_shadow(render_pos)
+	draw_circle(render_pos + Vector2(0, -58), 52 if boss else 36, body)
+	draw_circle(render_pos + Vector2(-16, -65), 6, Color(1.0, 0.31, 0.31, death_alpha))
+	draw_circle(render_pos + Vector2(16, -65), 6, Color(1.0, 0.31, 0.31, death_alpha))
 	if boss:
-		draw_line(pos + Vector2(-35, -95), pos + Vector2(-58, -130), Color("bf77df"), 10)
-		draw_line(pos + Vector2(35, -95), pos + Vector2(58, -130), Color("bf77df"), 10)
-	draw_bar(Rect2(pos.x - (62 if boss else 43), pos.y - (137 if boss else 112), 124 if boss else 86, 9), enemy.hp / enemy.max_hp, Color("ff5e69"))
-	if boss:
+		draw_line(render_pos + Vector2(-35, -95), render_pos + Vector2(-58, -130), Color(0.75, 0.47, 0.87, death_alpha), 10)
+		draw_line(render_pos + Vector2(35, -95), render_pos + Vector2(58, -130), Color(0.75, 0.47, 0.87, death_alpha), 10)
+	if enemy.hp > 0.0:
+		draw_bar(Rect2(pos.x - (62 if boss else 43), pos.y - (137 if boss else 112), 124 if boss else 86, 9), enemy.hp / enemy.max_hp, Color("ff5e69"))
+	if boss and enemy.hp > 0.0:
 		draw_label(Vector2(pos.x - 58, pos.y + 25), "GUARDIAN", 16, Color("ffc0ff"))
 
 func draw_ellipse_shadow(pos: Vector2) -> void:
