@@ -171,7 +171,29 @@ action; back row = ranged/support stance, more distance/guard).
 - Visual starting point: fox ears + tail, streetwear/modern mixed with
   a scrappy improvised look, warm oranges/reds for Ember, dynamic/
   high-energy pose language.
-- Model sheet prompt: `[fill in]`
+- Draft prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
+  framing) — style locked to the house look, design not yet locked:
+  ```
+  score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
+  detailed, 1girl, solo, fox girl, animal ears, fox ears, fox tail,
+  full body, messy orange-red hair, amber eyes, tan skin, detailed
+  skin texture, confident grin, cocky expression, dynamic pose,
+  modern streetwear layered with scrappy improvised leather armor,
+  hooded jacket, fingerless gloves, high collar, closed neckline,
+  full coverage armor, modest clothing, practical armor, covered
+  torso, orange glowing ember seams, glowing gate-shaped pendant,
+  warm orange and red palette, photorealistic shading, glossy
+  highlights, dramatic rim lighting, cinematic lighting, dark
+  vignette background, blurred cityscape background, game character
+  splash art, sharp focus
+
+  Negative: chibi, deformed, extra limbs, extra fingers, extra tails,
+  blurry, lowres, watermark, signature, text, bad anatomy, flat
+  lighting, cartoon, cel shading, cleavage, exposed midriff, bare
+  stomach, underboob, cutout armor, revealing clothing, low-cut, bare
+  shoulders
+  ```
+  Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
 
 ### Momo — Gloamkin, the quiet one
 - Role: ranged spellcaster/support, gate-sense utility. Row: back.
@@ -182,18 +204,67 @@ action; back row = ranged/support stance, more distance/guard).
   visually distinct, e.g. faint shadow/void motif around her, dim
   glowing eyes, or void-dark hair/markings), oversized/protective
   layered clothing, dark desaturated palette with a Gloam accent color.
-- Model sheet prompt: `[fill in]`
+- Gloamkin trait — proposed lock for the prompt below: **void-dark hair,
+  dim violet glowing eyes, and faint glowing void-purple markings on the
+  skin, with a soft shadow haze clinging around her.** This is the
+  concrete choice the open question was waiting on; treat it as a
+  candidate until the design is locked the way Faelen's is.
+- Draft prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
+  framing) — style locked to the house look, design not yet locked:
+  ```
+  score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
+  detailed, 1girl, solo, full body, small petite figure, short
+  stature, long void-black hair, dim glowing violet eyes, pale skin,
+  detailed skin texture, faint glowing violet void markings on skin,
+  soft shadow haze around her, shy expression, downcast look,
+  oversized layered hooded robe, protective layered clothing, high
+  collar, closed neckline, full coverage, modest clothing, covered
+  torso, holding a small worn book, indigo and violet gloam accents,
+  dark desaturated palette, photorealistic shading, glossy
+  highlights, dramatic rim lighting, cinematic lighting, dark
+  vignette background, blurred cityscape background, game character
+  splash art, sharp focus
+
+  Negative: chibi, deformed, extra limbs, extra fingers, blurry,
+  lowres, watermark, signature, text, bad anatomy, flat lighting,
+  cartoon, cel shading, cleavage, exposed midriff, bare stomach,
+  underboob, cutout armor, revealing clothing, low-cut, bare
+  shoulders, oversexualized, mature body
+  ```
+  Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
 
 ### Thora — Orc-kin, the heart
-- Role: tank/healer, keeps the party standing. Row: back-leaning
-  bulwark (confirm against combat-spec's natural-row table). Element:
-  **Stone** (endurance, earth, the hearth).
+- Role: tank/healer, keeps the party standing. Row: **front** —
+  confirmed against `docs/combat-spec.md`'s natural-row table (bulwark +
+  healer, needs to be where the damage is). Element: **Stone**
+  (endurance, earth, the hearth).
 - Character notes: tall, warm, former clan healer who lost her people;
   mothers everyone; doesn't believe she deserves a second home.
 - Visual starting point: orc-kin build (tusks, tall/sturdy frame),
   warm earthy palette for Stone, soft/nurturing details (an apron over
   armor, a healer's satchel) contrasted with obvious physical strength.
-- Model sheet prompt: `[fill in]`
+- Draft prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
+  framing) — style locked to the house look, design not yet locked:
+  ```
+  score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
+  detailed, 1girl, solo, orc, orc girl, small tusks, full body, tall
+  muscular sturdy build, green skin, detailed skin texture, dark hair
+  tied back, warm gentle smile, kind eyes, heavy earth-toned plate
+  and leather armor, cloth apron over armor, healer's satchel, high
+  collar, closed neckline, full coverage armor, modest clothing,
+  practical armor, covered torso, amber glowing stone seams, glowing
+  gate-shaped clasp, warm earthy brown and ochre palette,
+  photorealistic shading, glossy highlights, dramatic rim lighting,
+  cinematic lighting, dark vignette background, blurred cityscape
+  background, game character splash art, sharp focus
+
+  Negative: chibi, deformed, extra limbs, extra fingers, blurry,
+  lowres, watermark, signature, text, bad anatomy, flat lighting,
+  cartoon, cel shading, cleavage, exposed midriff, bare stomach,
+  underboob, cutout armor, revealing clothing, low-cut, bare
+  shoulders, skinny, frail
+  ```
+  Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
 
 ### Dana — Human, the foil
 - Role: non-combat caseworker, possible late wildcard combatant. Element
@@ -206,15 +277,42 @@ action; back row = ranged/support stance, more distance/guard).
   fantasy gear (she's the one grounded, non-Awakened presence for most
   of the story), neutral/muted palette to contrast the other four's
   elemental colors.
-- Model sheet prompt: `[fill in]`
+- Draft prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
+  framing) — deliberately **no elemental glow and no fantasy gear**: she
+  is the grounded human foil, so the render leans photoreal and plain.
+  Style locked to the house look, design not yet locked:
+  ```
+  score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
+  detailed, 1girl, solo, human, full body, shoulder-length brown
+  hair, tired eyes, guarded skeptical expression, realistic skin
+  texture, plain office-casual clothing, buttoned blouse, blazer,
+  slacks, lanyard id badge, high collar, closed neckline, modest
+  clothing, covered torso, holding a clipboard, muted neutral grey
+  and beige palette, no magic, photorealistic shading, glossy
+  highlights, dramatic rim lighting, cinematic lighting, dark
+  vignette background, blurred cityscape background, game character
+  splash art, sharp focus
+
+  Negative: chibi, deformed, extra limbs, extra fingers, blurry,
+  lowres, watermark, signature, text, bad anatomy, flat lighting,
+  cartoon, cel shading, cleavage, exposed midriff, bare stomach,
+  underboob, cutout armor, revealing clothing, low-cut, bare
+  shoulders, fantasy armor, glowing magic, elf ears, animal ears,
+  weapon
+  ```
+  Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
 
 ## Open questions
 
-- Momo's gloamkin trait isn't visually defined yet — needs a concrete
-  choice before her model sheet.
-- Confirm Thora's natural row against `docs/combat-spec.md`'s table
-  before finalizing her battle-sprite pose.
+- Momo's gloamkin trait now has a **proposed** visual (void-dark hair,
+  dim violet eyes, glowing void markings, shadow haze — see her prompt);
+  lock it the way Faelen's is before generating her full asset set.
+- Thora's natural row is **confirmed front** against
+  `docs/combat-spec.md` — her battle-sprite pose should read as a
+  frontline bulwark, not a backline healer.
 - House style is locked (see "Global style" above); Faelen's full
   asset set (dialogue portraits, battle sprite) still needs to be
-  generated from the locked prompt, then the same style applied to
-  Kess, Momo, Thora, and Dana.
+  generated from the locked prompt. Kess, Momo, Thora, and Dana now
+  have **draft** Pony prompts in the house style — run them, pick a
+  keeper per character, and lock each design (locked reference image +
+  LoRA set) the same way Faelen's was before treating any as final.
