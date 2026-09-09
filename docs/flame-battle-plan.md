@@ -30,9 +30,17 @@ the painted silhouette.
 - **Ceiling:** static/frame-cycled sprites plus the existing widget effects.
   Not free-moving sprites or heavy particle systems.
 
-The same `CharacterSprite` / `CreatureSprite` widgets can be adopted on the
-house, dialogue, and companions screens the same way; only the battle screen
-is wired today because that was the request.
+`CharacterSprite` is wired on every screen that shows a character as a
+card/figure: the battle screen (formation, fighter rows, enemy), the house
+(`home_screen.dart`), dialogue headers (`dialogue_screen.dart`), the roster
+(`companions_screen.dart`), and the endings (`ending_screen.dart`). So a
+dropped-in PNG shows everywhere at once, with the same painted fallback.
+
+The one screen deliberately **left on painted art** is the opening comic
+(`start_scene.dart`): it is a distinct inked / halftone style layer that draws
+its figures with `plate: false` inside already-drawn panels, and a
+semi-realistic hero-card render would clash with it. Swap it too only if you
+generate comic-styled art for that sequence.
 
 ## Approach B — the FlameGame swap (open)
 

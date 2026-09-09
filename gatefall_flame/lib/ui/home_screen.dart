@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:gatefall_dialogue_engine/engine/evaluator.dart';
 import 'package:gatefall_dialogue_engine/models/route.dart';
 
-import '../art/character_art.dart';
 import '../art/effects.dart';
+import '../art/sprites.dart';
 import '../audio/sfx.dart';
 import '../data/ascension.dart';
 import '../data/barks.dart';
@@ -164,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             child: Row(
               children: [
-                CharacterPortrait(characterId, size: 46, glow: .9),
+                CharacterSprite(characterId, size: 46, glow: .9),
                 const SizedBox(width: 11),
                 Expanded(
                   child: Column(
@@ -340,7 +340,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               // Bond lights them: tier 0 is a silhouette in the dark, a
               // finished route is somebody standing in their own colour.
-              CharacterPortrait(id,
+              CharacterSprite(id,
                   size: 54, glow: (.25 + tier * .18).clamp(0.0, 1.0)),
               const SizedBox(width: 10),
               Expanded(
@@ -560,7 +560,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Row(
                         children: [
-                          CharacterPortrait(r.id, size: 40, glow: .2, calm: true),
+                          CharacterSprite(r.id, size: 40, glow: .2, calm: true),
                           const SizedBox(width: 9),
                           Expanded(
                             child: Text('${r.name} · ${r.species}',

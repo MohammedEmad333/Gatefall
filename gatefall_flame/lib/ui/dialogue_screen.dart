@@ -4,8 +4,8 @@ import 'package:gatefall_dialogue_engine/models/dialogue_node.dart';
 import 'package:gatefall_dialogue_engine/models/route.dart';
 import 'package:gatefall_dialogue_engine/models/scene.dart';
 
-import '../art/character_art.dart';
 import '../art/effects.dart';
+import '../art/sprites.dart';
 import '../audio/sfx.dart';
 import '../data/companion_routes.dart';
 import '../data/house.dart';
@@ -258,7 +258,7 @@ class _DialogueScreenState extends State<DialogueScreen> {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Row(
         children: [
-          CharacterPortrait(
+          CharacterSprite(
             widget.characterId,
             size: 66,
             // Their portrait brightens on their own lines and settles back
