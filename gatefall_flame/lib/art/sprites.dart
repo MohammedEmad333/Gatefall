@@ -28,6 +28,10 @@ import 'gate_art.dart';
 /// - Character (party) sprite: `assets/sprites/characters/<rosterId>.png`
 ///   e.g. `assets/sprites/characters/faelen.png`. Ids are the roster ids
 ///   (`faelen`, `kess`, `momo`, `thora`, `dana`, `player`).
+/// - Optional expression variant: `<rosterId>_<emotion>.png`, e.g.
+///   `faelen_happy.png`. The dialogue portrait uses it when a scene node
+///   carries an `emotion`; a missing variant falls back to the neutral
+///   `<rosterId>.png`, then to painted art. Base sprite alone is enough.
 /// - Enemy sprite: `assets/sprites/enemies/<beastform>.png`
 ///   e.g. `assets/sprites/enemies/guardian.png`. Names are the [Beastform]
 ///   enum values (`stalker`, `hound`, `shade`, `husk`, `thornbound`,
@@ -74,7 +78,10 @@ class SpriteBook {
   bool has(String assetPath) => _available.contains(assetPath);
 }
 
-String characterSpritePath(String id) => 'assets/sprites/characters/$id.png';
+String characterSpritePath(String id, {String? expression}) =>
+    expression == null || expression.isEmpty
+        ? 'assets/sprites/characters/$id.png'
+        : 'assets/sprites/characters/${id}_$expression.png';
 
 String creatureSpritePath(Beastform form) =>
     'assets/sprites/enemies/${form.name}.png';
@@ -90,6 +97,12 @@ class CharacterSprite extends StatelessWidget {
   final bool calm;
   final bool plate;
 
+  /// Optional expression variant, e.g. `happy` → `<id>_happy.png`. Falls back
+  /// to the neutral `<id>.png` when the variant is missing, then to painted
+  /// art. Drives the dialogue portrait off a scene node's `emotion` (see
+  /// DialogueNode.emotion); harmless everywhere else.
+  final String? expression;
+
   const CharacterSprite(
     this.id, {
     super.key,
@@ -98,6 +111,7 @@ class CharacterSprite extends StatelessWidget {
     this.dimmed = false,
     this.calm = false,
     this.plate = true,
+    this.expression,
   });
 
   Widget _painted() => CharacterPortrait(id,
@@ -105,8 +119,15 @@ class CharacterSprite extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final path = characterSpritePath(id);
-    if (!SpriteBook.instance.has(path)) return _painted();
+    // Prefer the expression variant; fall back to the neutral sprite; then to
+    // painted art. So a character can have a base PNG and no variants, or a
+    // full expression set, and both just work.
+    final variant = characterSpritePath(id, expression: expression);
+    final base = characterSpritePath(id);
+    final path = SpriteBook.instance.has(variant)
+        ? variant
+        : (SpriteBook.instance.has(base) ? base : null);
+    if (path == null) return _painted();
 
     Widget sprite = Image.asset(
       path,

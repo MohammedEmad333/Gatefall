@@ -61,6 +61,11 @@ Flame's overlay system.
   same `assets/sprites/...` PNGs by the same names this layer already uses.
   `flame` is already a dependency in `pubspec.yaml`.
 
+## How to actually make one
+
+Step-by-step (generate → crop → transparent → drop in → run), plus the
+expression-variant and proof-sheet workflow: **`docs/making-sprites.md`**.
+
 ## Asset prep note
 
 `docs/art-direction/faelen_*.png` are 832×1216 full-body **LoRA training**

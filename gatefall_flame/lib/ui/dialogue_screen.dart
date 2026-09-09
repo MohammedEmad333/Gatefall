@@ -110,7 +110,8 @@ class _DialogueScreenState extends State<DialogueScreen> {
   void _pushCurrent(DialogueEngine engine) {
     final node = engine.currentNode;
     if (node.text != null && node.text!.isNotEmpty) {
-      _history.add(_Line(speaker: node.speaker, text: node.text!));
+      _history.add(_Line(
+          speaker: node.speaker, text: node.text!, emotion: node.emotion));
     }
   }
 
@@ -244,16 +245,18 @@ class _DialogueScreenState extends State<DialogueScreen> {
     );
   }
 
-  /// Who spoke last, so the portrait can react to it.
-  String? get _lastSpeaker {
+  /// The last spoken line, so the portrait can react to who is talking and
+  /// (when the scene provides it) with what expression.
+  _Line? get _lastSpoken {
     for (final line in _history.reversed) {
-      if (!line.isChoice) return line.speaker;
+      if (!line.isChoice) return line;
     }
     return null;
   }
 
   Widget _header() {
-    final theirs = _lastSpeaker != 'player';
+    final last = _lastSpoken;
+    final theirs = last?.speaker != 'player';
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Row(
@@ -265,6 +268,10 @@ class _DialogueScreenState extends State<DialogueScreen> {
             // while the player is talking. It is the cheapest possible
             // "who is speaking" cue and it costs no layout.
             glow: theirs ? 1 : .35,
+            // Show the scene's expression cue only on the character's own
+            // lines; the player talking leaves them neutral. Missing a
+            // matching sprite falls back to neutral, then to painted art.
+            expression: theirs ? last?.emotion : null,
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -411,5 +418,14 @@ class _Line {
   final String text;
   final bool isChoice;
 
-  _Line({required this.speaker, required this.text, this.isChoice = false});
+  /// Expression cue carried from the scene node ([DialogueNode.emotion]), or
+  /// null. Drives the header portrait's sprite variant when one exists.
+  final String? emotion;
+
+  _Line({
+    required this.speaker,
+    required this.text,
+    this.isChoice = false,
+    this.emotion,
+  });
 }

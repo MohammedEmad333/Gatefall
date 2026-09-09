@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gatefall/art/character_art.dart';
+import 'package:gatefall/art/sprites.dart';
 import 'package:gatefall/state/game_controller.dart';
 import 'package:gatefall/state/save_store.dart';
 import 'package:gatefall/ui/companions_screen.dart';
@@ -111,6 +112,67 @@ void main() {
         ),
       ),
       size: const Size(560, 420),
+    );
+  });
+
+  // Sprite vs. painted fallback, side by side. Drop PNGs into
+  // assets/sprites/ and re-run: the left of each pair becomes the rendered
+  // sprite, the right stays the painted silhouette, so you can eyeball
+  // whether the crop/framing sits right next to what it replaces. With no
+  // PNGs present both sides are identical — that is the shipping state.
+  testWidgets('sprites', (tester) async {
+    await tester.runAsync(() => SpriteBook.instance.load());
+    Widget pair(String label, Widget sprite, Widget painted) => Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(mainAxisSize: MainAxisSize.min, children: [
+              sprite,
+              const SizedBox(width: 6),
+              painted,
+            ]),
+            Text(label, style: const TextStyle(color: bone, fontSize: 10)),
+          ],
+        );
+    await shoot(
+      tester,
+      'sprites',
+      Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('sprite | painted fallback',
+                style: TextStyle(color: boneDim, fontSize: 11)),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 14,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
+              children: [
+                for (final id in ids)
+                  pair(id, CharacterSprite(id, size: 96, glow: .9),
+                      CharacterPortrait(id, size: 96, glow: .9)),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 14,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
+              children: [
+                for (final f in Beastform.values)
+                  pair(
+                    f.name,
+                    CreatureSprite(
+                        form: f, element: GateElement.gloam, size: 110),
+                    CreatureView(
+                        form: f, element: GateElement.gloam, size: 110),
+                  ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      size: const Size(1000, 760),
     );
   });
 
