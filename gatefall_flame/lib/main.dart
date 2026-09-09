@@ -18,10 +18,16 @@ import 'ui/theme.dart';
 ///
 /// Note this is plain Flutter widgets, not a Flame render loop. That's
 /// deliberate at this stage: the open question is whether the *loop* feels
-/// good, and widgets get you there far faster. Swap in FlameGame + sprite
-/// components once the pacing is proven and you actually need sprites,
-/// particles and animation — combat/battle.dart won't change, you just call
-/// battle.tick(dt) from Flame's update() instead of a Timer.
+/// good, and widgets get you there far faster.
+///
+/// Rendered sprites now have a home without that swap: art/sprites.dart is
+/// "Approach A" — a battle-screen widget that draws a PNG from
+/// assets/sprites/ when one exists and falls back to the painted silhouette
+/// when it doesn't, one character or creature at a time. The full FlameGame
+/// swap ("Approach B") stays open for a live particle/animation canvas —
+/// call battle.tick(dt) from Flame's update() instead of a Timer, and read
+/// the same assets/sprites/ files from SpriteComponents. combat/battle.dart
+/// won't change either way. See docs/flame-battle-plan.md.
 ///
 /// Version 3.1 added the opening: a six-page comic (ui/start_scene.dart,
 /// art/comic.dart) that says what the game is before the game starts

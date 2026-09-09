@@ -3,10 +3,10 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../art/character_art.dart';
 import '../art/effects.dart';
 import '../art/gate_art.dart';
 import '../art/palette.dart';
+import '../art/sprites.dart';
 import '../audio/sfx.dart';
 import '../combat/battle.dart';
 import '../data/combat_config.dart';
@@ -535,7 +535,7 @@ class _GateScreenState extends State<GateScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CharacterPortrait(def.id,
+            CharacterSprite(def.id,
                 size: 34, glow: .35 + tier * .12, calm: true),
             const SizedBox(height: 4),
             Text(def.name,
@@ -647,7 +647,7 @@ class _GateScreenState extends State<GateScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 22),
-                  child: CreatureView(
+                  child: CreatureSprite(
                     form: form,
                     element: e.element,
                     size: e.isBoss ? 176 : 138,
@@ -810,7 +810,7 @@ class _GateScreenState extends State<GateScreen> {
           children: [
             // The person, not the label. A row that is drawing fire or
             // oathbound lights up, so the buff reads without reading.
-            CharacterPortrait(
+            CharacterSprite(
               f.id,
               size: 38,
               glow: f.isTaunting || f.isRallied ? 1 : .45,

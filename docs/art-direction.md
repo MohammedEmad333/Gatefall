@@ -62,11 +62,17 @@ lock overall style; the rest wait until the combat loop is proven**
 
 ## Global style — LOCKED
 
-Decided from Faelen's exploration pass (Pony Diffusion V6 XL). Not a
-flat cel-shaded anime look — a **semi-realistic, mobile-gacha "hero
-card" render style**: polished skin/hair rendering, dramatic rim
-lighting, glossy highlights, cinematic vignette backgrounds. Closer to
-gacha splash art than to cel-shaded anime.
+Decided from Faelen's exploration pass. Not a flat cel-shaded anime
+look — a **semi-realistic, mobile-gacha "hero card" render style**:
+polished skin/hair rendering, dramatic rim lighting, glossy highlights,
+cinematic vignette backgrounds. Closer to gacha splash art than to
+cel-shaded anime.
+
+**Checkpoint in use: Aniverse Pony XL** (a Pony Diffusion V6 XL–based
+merge). The locked prompt below is written in Pony's `score_*` tag
+grammar and works on Aniverse Pony XL and on stock Pony V6 XL alike;
+if you switch checkpoints, re-confirm the neckline/coverage negatives
+still hold, since merges differ in how skimpy they default.
 
 - Line/render style: semi-realistic/photoreal-leaning shading, glossy
   highlights, sharp focus, ultra detailed — not flat cel shading.
@@ -96,7 +102,12 @@ gacha splash art than to cel-shaded anime.
    flustered/blushing (romance scenes).
 3. **Battle sprite/icon** — simplified, readable at small combat-UI
    size. Pose should read the character's row (frontline melee stance
-   vs. backline caster/ranged stance).
+   vs. backline caster/ranged stance). **Wiring is done**: drop a
+   transparent PNG at `gatefall_flame/assets/sprites/characters/<id>.png`
+   (or `.../enemies/<beastform>.png`) and the battle screen shows it in
+   place of the painted silhouette, with a fallback when it is absent —
+   no code change. See `docs/flame-battle-plan.md` and
+   `gatefall_flame/assets/sprites/*/README.md`.
 4. **Ultimate splash art** *(later)* — bigger action pose for the
    tap-triggered ultimate moment.
 5. **Bond-event CG** *(later, cozy-side content)* — one or two
@@ -143,7 +154,7 @@ action; back row = ranged/support stance, more distance/guard).
   shading, cleavage, exposed midriff, bare stomach, underboob, cutout
   armor, revealing clothing, low-cut, bare shoulders
   ```
-  Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
+  Resolution: 832x1216. Checkpoint: Aniverse Pony XL (Pony V6 XL base).
   See `docs/comfyui-tutorial.md` for how to run this.
 - LoRA training-set: **19 images in `docs/art-direction/`**,
   `faelen_01_neutral.png` through `faelen_19_windswept_b.png`.

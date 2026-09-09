@@ -40,3 +40,10 @@ flutter:
     # Synthesised by tool/make_sounds.py. Committed rather than generated at
     # build time so a clone plays sound with nothing installed.
     - assets/audio/
+    # Rendered character/enemy sprites (Approach A — see lib/art/sprites.dart
+    # and assets/sprites/README.md). Empty of art today: the game ships on
+    # painted silhouettes and shows a PNG the moment one is dropped in under
+    # the right name. Directories are declared so that drop-in needs no
+    # pubspec edit.
+    - assets/sprites/characters/
+    - assets/sprites/enemies/
