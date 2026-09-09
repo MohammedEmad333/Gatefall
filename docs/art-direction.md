@@ -62,7 +62,8 @@ lock overall style; the rest wait until the combat loop is proven**
 
 ## Global style — LOCKED
 
-Decided from Faelen's exploration pass (Pony Diffusion V6 XL). Not a
+Decided from Faelen's exploration pass (originally Pony Diffusion V6 XL,
+now regenerated on **AniVerse (Pony XL)** — the house checkpoint). Not a
 flat cel-shaded anime look — a **semi-realistic, mobile-gacha "hero
 card" render style**: polished skin/hair rendering, dramatic rim
 lighting, glossy highlights, cinematic vignette backgrounds. Closer to
@@ -124,7 +125,7 @@ action; back row = ranged/support stance, more distance/guard).
   this is its confirmed replacement, not an accidental loss).
 - Model sheet prompt (Midjourney, draft, not yet run):
   `[fill in — SD/Pony is the primary tool in use, this can wait]`
-- Locked prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
+- Locked prompt (SD / AniVerse — Pony XL, full-body "hero card"
   framing):
   ```
   score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
@@ -143,7 +144,8 @@ action; back row = ranged/support stance, more distance/guard).
   shading, cleavage, exposed midriff, bare stomach, underboob, cutout
   armor, revealing clothing, low-cut, bare shoulders
   ```
-  Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
+  Resolution: 832x1216. Checkpoint: AniVerse (Pony XL) — regenerated on
+  this checkpoint; supersedes the original Pony Diffusion V6 XL pass.
   See `docs/comfyui-tutorial.md` for how to run this.
 - LoRA training-set: **19 images in `docs/art-direction/`**,
   `faelen_01_neutral.png` through `faelen_19_windswept_b.png`.
