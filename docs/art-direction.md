@@ -171,7 +171,7 @@ action; back row = ranged/support stance, more distance/guard).
 - Visual starting point: fox ears + tail, streetwear/modern mixed with
   a scrappy improvised look, warm oranges/reds for Ember, dynamic/
   high-energy pose language.
-- Draft prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
+- Draft prompt (SD / AniVerse — Pony XL, full-body "hero card"
   framing) — style locked to the house look, design not yet locked:
   ```
   score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
@@ -193,7 +193,7 @@ action; back row = ranged/support stance, more distance/guard).
   stomach, underboob, cutout armor, revealing clothing, low-cut, bare
   shoulders
   ```
-  Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
+  Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
 
 ### Momo — Gloamkin, the quiet one
 - Role: ranged spellcaster/support, gate-sense utility. Row: back.
@@ -209,7 +209,7 @@ action; back row = ranged/support stance, more distance/guard).
   skin, with a soft shadow haze clinging around her.** This is the
   concrete choice the open question was waiting on; treat it as a
   candidate until the design is locked the way Faelen's is.
-- Draft prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
+- Draft prompt (SD / AniVerse — Pony XL, full-body "hero card"
   framing) — style locked to the house look, design not yet locked:
   ```
   score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
@@ -231,7 +231,7 @@ action; back row = ranged/support stance, more distance/guard).
   underboob, cutout armor, revealing clothing, low-cut, bare
   shoulders, oversexualized, mature body
   ```
-  Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
+  Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
 
 ### Thora — Orc-kin, the heart
 - Role: tank/healer, keeps the party standing. Row: **front** —
@@ -243,7 +243,7 @@ action; back row = ranged/support stance, more distance/guard).
 - Visual starting point: orc-kin build (tusks, tall/sturdy frame),
   warm earthy palette for Stone, soft/nurturing details (an apron over
   armor, a healer's satchel) contrasted with obvious physical strength.
-- Draft prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
+- Draft prompt (SD / AniVerse — Pony XL, full-body "hero card"
   framing) — style locked to the house look, design not yet locked:
   ```
   score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
@@ -264,7 +264,7 @@ action; back row = ranged/support stance, more distance/guard).
   underboob, cutout armor, revealing clothing, low-cut, bare
   shoulders, skinny, frail
   ```
-  Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
+  Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
 
 ### Dana — Human, the foil
 - Role: non-combat caseworker, possible late wildcard combatant. Element
@@ -277,7 +277,7 @@ action; back row = ranged/support stance, more distance/guard).
   fantasy gear (she's the one grounded, non-Awakened presence for most
   of the story), neutral/muted palette to contrast the other four's
   elemental colors.
-- Draft prompt (SD / Pony Diffusion V6 XL, full-body "hero card"
+- Draft prompt (SD / AniVerse — Pony XL, full-body "hero card"
   framing) — deliberately **no elemental glow and no fantasy gear**: she
   is the grounded human foil, so the render leans photoreal and plain.
   Style locked to the house look, design not yet locked:
@@ -300,7 +300,7 @@ action; back row = ranged/support stance, more distance/guard).
   shoulders, fantasy armor, glowing magic, elf ears, animal ears,
   weapon
   ```
-  Resolution: 832x1216. Checkpoint: Pony Diffusion V6 XL.
+  Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
 
 ## Open questions
 
