@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gatefall_dialogue_engine/models/route.dart';
 
+import '../art/effects.dart';
 import '../art/sprites.dart';
 import '../data/ascension.dart';
 import '../data/element.dart';
