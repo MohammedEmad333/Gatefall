@@ -2,34 +2,45 @@
   "scene_id": "faelen_b3_first_truth",
   "start_node": "n1",
   "nodes": {
-    "n1": {
-      "speaker": "faelen",
-      "text": "I didn't flee here. I was a Warden. I crossed chasing something I failed to stop back home.",
-      "next": "n1b"
+    "n1": { "speaker": "player", "text": "(Faelen calls it a perimeter survey. It somehow ends with two cups of bitter tea on the roof and the city spread below you.)", "next": "n2" },
+    "n2": { "speaker": "faelen", "emotion": "neutral", "text": "Your northern stars are displaced.", "next": "n3" },
+    "n3": { "speaker": "player", "text": "\"Compared to what?\"", "next": "n4" },
+    "n4": { "speaker": "faelen", "emotion": "sad", "text": "Home.", "next": "n5" },
+    "n5": { "speaker": "player", "text": "(She unfolds a hand-drawn star map. Half the constellations have no Earth names. Several are crossed out in red.)", "next": "n6" },
+    "n6": { "speaker": "faelen", "emotion": "neutral", "text": "These were watch stations. Each guarded a stable passage. When a seam changed, we knew before it became a gate.", "next": "n7" },
+    "n7": { "speaker": "player", "text": "\"We?\"", "next": "n8" },
+    "n8": { "speaker": "faelen", "emotion": "neutral", "text": "The Wardens of Ilyr. I held the eastern line.", "next": "n9" },
+    "n9": {
+      "speaker": "faelen", "emotion": "angry", "text": "You said I did not have to hide that I cared. You were wrong. A Warden's attachments are routes an enemy can walk.", "next": "n10",
+      "condition": { "requires_flags": [{ "flag": "FAELEN_APPROACH", "equals": "press" }] }
     },
-    "n1b": {
-      "speaker": "faelen",
-      "text": "You were right, that night with the tea. About the caring.",
-      "condition": { "requires_flags": [{ "flag": "FAELEN_APPROACH", "equals": "press" }] },
-      "next": "n2"
+    "n10": {
+      "speaker": "faelen", "emotion": "sad", "text": "You waited for me to answer. I have discovered that silence becomes heavier when someone agrees to carry it with you.", "next": "n11",
+      "condition": { "requires_flags": [{ "flag": "FAELEN_APPROACH", "equals": "patience" }] }
     },
-    "n2": {
-      "speaker": "player",
+    "n11": { "speaker": "player", "text": "\"Refugees don't usually arrive carrying maps of the roads behind them.\"", "next": "n12" },
+    "n12": { "speaker": "faelen", "emotion": "neutral", "text": "I was never a refugee.", "next": "n13" },
+    "n13": { "speaker": "faelen", "emotion": "sad", "text": "When Ilyr's line broke, I followed the black-antlered host through the wound. The creature we killed in the street was one of its outriders.", "next": "n14" },
+    "n14": { "speaker": "player", "text": "\"You've been hunting them alone ever since.\"", "next": "n15" },
+    "n15": { "speaker": "faelen", "emotion": "neutral", "text": "I have been finishing my duty.", "next": "n16" },
+    "n16": {
+      "speaker": "player", "text": "(A gust lifts the map. You catch one edge; her hand catches the other. For a moment, neither of you lets go.)",
       "choices": [
-        {
-          "choice_id": "ask_hunting",
-          "text": "\"What are you hunting?\"",
-          "next": "end",
-          "effects": { "set_flags": { "FAELEN_WARDEN_KNOWN": true }, "bond_delta": 10 }
-        },
-        {
-          "choice_id": "no_debt",
-          "text": "\"You don't owe me the story.\"",
-          "next": "end",
-          "effects": { "set_flags": { "FAELEN_WARDEN_KNOWN": true }, "bond_delta": 15 }
-        }
+        { "choice_id": "ask_hunt", "text": "\"What exactly are you hunting?\"", "next": "ask1", "effects": { "set_flags": { "FAELEN_WARDEN_KNOWN": true, "FAELEN_TRUTH_STYLE": "ask" }, "bond_delta": 15 } },
+        { "choice_id": "give_space", "text": "\"You don't owe me the rest tonight.\"", "next": "space1", "effects": { "set_flags": { "FAELEN_WARDEN_KNOWN": true, "FAELEN_TRUTH_STYLE": "space" }, "bond_delta": 10 } }
       ]
     },
+    "ask1": { "speaker": "faelen", "emotion": "angry", "text": "The one that opened the eastern line from the far side. It did not stumble into our world. It tested the seal until it learned where to cut.", "next": "ask2" },
+    "ask2": { "speaker": "player", "text": "\"You think something is testing Earth's gates too.\"", "next": "ask3" },
+    "ask3": { "speaker": "faelen", "emotion": "sad", "text": "I think your gates are not weather. And I think I led one of the storm's hunters here.", "next": "converge" },
+    "space1": { "speaker": "faelen", "emotion": "neutral", "text": "No. But you are owed a warning.", "next": "space2" },
+    "space2": { "speaker": "faelen", "emotion": "sad", "text": "Our seal was opened from the far side by something patient enough to study it. Earth's gates may be studied now.", "next": "space3" },
+    "space3": { "speaker": "player", "text": "\"And you think it followed you here.\"", "next": "space4" },
+    "space4": { "speaker": "faelen", "emotion": "neutral", "text": "I know it did.", "next": "converge" },
+    "converge": { "speaker": "player", "text": "(Below, the house windows glow one by one as the others wake. Faelen studies them instead of the stars.)", "next": "n17" },
+    "n17": { "speaker": "faelen", "emotion": "sad", "text": "I should have left after one night.", "next": "n18" },
+    "n18": { "speaker": "player", "text": "\"But you didn't.\"", "next": "n19" },
+    "n19": { "speaker": "faelen", "emotion": "flustered", "text": "No. I did not.", "next": "end" },
     "end": { "end_scene": true }
   }
 }

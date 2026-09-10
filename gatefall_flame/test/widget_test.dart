@@ -151,14 +151,25 @@ void main() {
     await tester.tap(find.text('Faelen — "This Is My War"'));
     await tester.pumpAndSettle();
 
+    var guard = 0;
+    while (find.text('What do you say?').evaluate().isEmpty && guard++ < 25) {
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+    }
     expect(find.text('What do you say?'), findsOneWidget);
-    expect(find.text('"Then we go together."'), findsOneWidget);
+    const join = '(Hand her the room key.) "You forgot this. We go together."';
+    expect(find.text(join), findsOneWidget);
 
-    await tester.tap(find.text('"Then we go together."'));
+    await tester.tap(find.text(join));
     await tester.pumpAndSettle();
 
     expect(game.state.flags['FAELEN_FRACTURE'], 'join');
 
+    guard = 0;
+    while (find.text('Continue').evaluate().isNotEmpty && guard++ < 25) {
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+    }
     await tester.tap(find.text('End of scene'));
     await tester.pumpAndSettle();
     expect(game.state.completedBeats, contains('faelen_b4_the_fracture'));

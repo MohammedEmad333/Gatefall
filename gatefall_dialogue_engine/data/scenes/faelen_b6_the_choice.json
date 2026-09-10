@@ -2,11 +2,46 @@
   "scene_id": "faelen_b6_the_choice",
   "start_node": "n1",
   "nodes": {
-    "n1": {
-      "speaker": "faelen",
-      "text": "Then I'll fight as one of you.",
-      "next": "end"
+    "n1": { "speaker": "player", "text": "(Every window in the house turns white at once.)", "next": "n2" },
+    "n2": { "speaker": "momo", "text": "The gate is not opening near us. It is opening around us.", "next": "n3" },
+    "n3": { "speaker": "player", "text": "(The walls groan. Beyond the glass, the street is gone—replaced by Ilyr's dead eastern watch, suspended in a sky without stars.)", "next": "n4" },
+    "n4": { "speaker": "faelen", "emotion": "sad", "text": "The eastern line.", "next": "n5" },
+    "n5": { "speaker": "player", "text": "(At the center of the ruin stands a figure crowned in black antlers. Eleven empty suits of Warden armor kneel around it.)", "next": "n6" },
+    "n6": { "speaker": "faelen", "emotion": "angry", "text": "It kept their armor.", "next": "n7" },
+    "n7": { "speaker": "player", "text": "(The front door tears from its hinges. Faelen steps into the breach before the splinters touch the floor.)", "next": "n8" },
+    "n8": { "speaker": "faelen", "emotion": "angry", "text": "Behind me. All of you.", "next": "n9" },
+    "n9": { "speaker": "player", "text": "(The antlered figure lowers its weapon. The empty Wardens rise in perfect silence.)", "next": "n10" },
+    "n10": { "speaker": "faelen", "emotion": "sad", "text": "It remembers my command. It will use them to hold me while it crosses.", "next": "n11" },
+    "n11": { "speaker": "player", "text": "\"Then give a different command.\"", "next": "n12" },
+    "n12": {
+      "speaker": "faelen", "emotion": "neutral", "text": "You once ordered me to retreat with the formation. I am about to disobey you.", "next": "n13",
+      "condition": { "requires_flags": [{ "flag": "FAELEN_COMMAND_STYLE", "equals": "order" }] }
     },
+    "n13": {
+      "speaker": "faelen", "emotion": "neutral", "text": "You trusted my call and asked me to leave you something to carry. I am giving you everything.", "next": "n14",
+      "condition": { "requires_flags": [{ "flag": "FAELEN_COMMAND_STYLE", "equals": "trust" }] }
+    },
+    "n14": { "speaker": "faelen", "emotion": "angry", "text": "Kess, break the right flank. Momo, call the false movements. Thora, keep the doorway standing.", "next": "n15" },
+    "n15": { "speaker": "faelen", "emotion": "neutral", "text": "You—with me. Not behind me.", "next": "n16" },
+    "n16": { "speaker": "player", "text": "(The old formation charges. Faelen does not meet it like a wall. She opens her guard and lets the strength of the whole house move through it.)", "next": "n17" },
+    "n17": { "speaker": "player", "text": "(Kess's strike becomes Faelen's turn. Momo's warning becomes her parry. Thora's shield becomes the ground beneath her feet. Your blade finds the seam.)", "next": "n18" },
+    "n18": { "speaker": "faelen", "emotion": "angry", "text": "Wardens—homeward.", "next": "n19" },
+    "n19": { "speaker": "player", "text": "(Eleven empty helms turn toward her. For one impossible heartbeat, they stand at her side. Then they drive their spears into the antlered figure.)", "next": "n20" },
+    "n20": { "speaker": "player", "text": "(The gate shatters. The house slams back into its own street. Dawn pours through the missing door.)", "next": "n21" },
+    "n21": { "speaker": "faelen", "emotion": "sad", "text": "Tirren. Sava. Pell. All of you... dismissed.", "next": "n22" },
+    "n22": { "speaker": "player", "text": "(The last points of Warden light disappear. Faelen bows her head, but she remains standing.)", "next": "n23" },
+    "n23": { "speaker": "faelen", "emotion": "neutral", "text": "My oath ended with them. I have spent three years pretending it did not, because I did not know who I was without it.", "next": "n24" },
+    "n24": { "speaker": "player", "text": "\"And now?\"", "choices": [
+      { "choice_id": "one_of_us", "text": "\"Fight as one of us.\"", "next": "one1", "effects": { "bond_delta": 15 } },
+      { "choice_id": "come_home", "text": "\"Come home, Faelen.\"", "next": "home1", "effects": { "bond_delta": 20 } }
+    ] },
+    "one1": { "speaker": "faelen", "emotion": "happy", "text": "Then I will fight as one of you—not ahead, and never alone.", "next": "converge" },
+    "home1": { "speaker": "faelen", "emotion": "flustered", "text": "I am home.", "next": "home2" },
+    "home2": { "speaker": "player", "text": "(She says it like a vow she chose for herself.)", "next": "converge" },
+    "converge": { "speaker": "thora", "text": "A beautiful revelation. Now, who is helping me replace that door?", "next": "n25" },
+    "n25": { "speaker": "kess", "text": "Faelen broke it with her dramatic character development. Faelen buys the door.", "next": "n26" },
+    "n26": { "speaker": "faelen", "emotion": "happy", "text": "Put it on my rent.", "next": "n27" },
+    "n27": { "speaker": "player", "text": "(For once, she sits at the table with her back to the open doorway.)", "next": "end" },
     "end": { "end_scene": true }
   }
 }

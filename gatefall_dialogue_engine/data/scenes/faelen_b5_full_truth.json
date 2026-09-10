@@ -1,25 +1,55 @@
 {
   "scene_id": "faelen_b5_full_truth",
-  "start_node": "n1",
+  "start_node": "stop_open",
   "nodes": {
-    "n1": {
-      "speaker": "faelen",
-      "text": "I gave the order. They followed it. They died. I let you close anyway. It terrifies me.",
-      "choices": [
-        {
-          "choice_id": "not_disqualified",
-          "text": "\"The past doesn't disqualify you from being loved.\"",
-          "next": "end",
-          "effects": { "set_flags": { "FAELEN_CONFESSED": true }, "bond_delta": 20 }
-        },
-        {
-          "choice_id": "stay_silent",
-          "text": "(Stay. Say nothing. Just don't leave.)",
-          "next": "end",
-          "effects": { "set_flags": { "FAELEN_CONFESSED": true }, "bond_delta": 15 }
-        }
-      ]
+    "stop_open": {
+      "speaker": "player", "text": "(The bellwether dies three streets from the house. By sunrise, black ash lies against the front step like dirty snow.)", "next": "join_open",
+      "condition": { "requires_flags": [{ "flag": "FAELEN_FRACTURE", "equals": "stop" }] }
     },
+    "join_open": {
+      "speaker": "player", "text": "(The bellwether dies beneath the transit station. Faelen carries you through the closing gate; you carry her the last two blocks home.)", "next": "n1",
+      "condition": { "requires_flags": [{ "flag": "FAELEN_FRACTURE", "equals": "join" }] }
+    },
+    "n1": { "speaker": "player", "text": "(You find her in the kitchen before dawn, scrubbing black blood from her hands. The water has long since run clear.)", "next": "n2" },
+    "n2": { "speaker": "player", "text": "\"Faelen.\"", "next": "n3" },
+    "n3": { "speaker": "faelen", "emotion": "neutral", "text": "It is dead. The trail is broken. The house is safe.", "next": "n4" },
+    "n4": { "speaker": "player", "text": "\"That isn't what I asked.\"", "next": "n5" },
+    "n5": { "speaker": "faelen", "emotion": "angry", "text": "You asked nothing.", "next": "n6" },
+    "n6": { "speaker": "player", "text": "\"Then tell me what you're trying to wash off.\"", "next": "n7" },
+    "n7": { "speaker": "player", "text": "(Her hands stop beneath the tap.)", "next": "n8" },
+    "n8": { "speaker": "faelen", "emotion": "sad", "text": "There were forty-two Wardens at the eastern line. I commanded eleven.", "next": "n9" },
+    "n9": { "speaker": "faelen", "emotion": "sad", "text": "The first seal failed. We had time to withdraw. Then I saw the bellwether beyond the breach and believed killing it would stop the host.", "next": "n10" },
+    "n10": { "speaker": "faelen", "emotion": "sad", "text": "I ordered my line forward.", "next": "n11" },
+    "n11": { "speaker": "player", "text": "(Rain worries at the kitchen window. Somewhere upstairs, the old pipes knock.)", "next": "n12" },
+    "n12": { "speaker": "faelen", "emotion": "sad", "text": "Tirren was nineteen. He lied about his age to enlist. Sava had a daughter who drew birds on every letter. Pell complained about my tea and drank it every morning.", "next": "n13" },
+    "n13": { "speaker": "faelen", "emotion": "sad", "text": "I gave the order. They trusted me. The gate changed shape behind us, and all eleven died buying me a path through.", "next": "n14" },
+    "n14": { "speaker": "player", "text": "\"So you decided surviving was the crime.\"", "next": "n15" },
+    "n15": { "speaker": "faelen", "emotion": "angry", "text": "Do not make it smaller so I can bear it.", "next": "n16" },
+    "n16": { "speaker": "player", "text": "\"I'm not. I'm saying eleven people chose to save you, and you've spent every day since trying to overrule them.\"", "next": "n17" },
+    "n17": {
+      "speaker": "faelen", "emotion": "sad", "text": "You tear answers out of wounds and call it honesty.", "next": "n18",
+      "condition": { "requires_flags": [{ "flag": "FAELEN_APPROACH", "equals": "press" }] }
+    },
+    "n18": {
+      "speaker": "faelen", "emotion": "sad", "text": "You gave me silence until I could fill it. I hated you for making it safe enough to speak.", "next": "n19",
+      "condition": { "requires_flags": [{ "flag": "FAELEN_APPROACH", "equals": "patience" }] }
+    },
+    "n19": { "speaker": "faelen", "emotion": "sad", "text": "I know every reason I should leave. I had them arranged like weapons.", "next": "n20" },
+    "n20": { "speaker": "faelen", "emotion": "flustered", "text": "Then you kept handing me ordinary things. A chair at the table. My cup beside yours. Someone expecting me back.", "next": "n21" },
+    "n21": { "speaker": "faelen", "emotion": "sad", "text": "I let you close. I wanted you close. And wanting it frightens me more than any creature I have hunted.", "choices": [
+      { "choice_id": "not_disqualified", "text": "\"What happened does not disqualify you from being loved. Neither does being afraid.\"", "next": "love1", "effects": { "set_flags": { "FAELEN_CONFESSED": true }, "bond_delta": 20 } },
+      { "choice_id": "stay_silent", "text": "(Turn off the tap. Take her wet, shaking hand and stay.)", "next": "quiet1", "effects": { "set_flags": { "FAELEN_CONFESSED": true }, "bond_delta": 15 } }
+    ] },
+    "love1": { "speaker": "faelen", "emotion": "flustered", "text": "Loved.", "next": "love2" },
+    "love2": { "speaker": "player", "text": "\"Yes. I wasn't being subtle.\"", "next": "love3" },
+    "love3": { "speaker": "faelen", "emotion": "flustered", "text": "You have never been subtle in your life.", "next": "converge" },
+    "quiet1": { "speaker": "player", "text": "(Her fingers close around yours by degrees, as if each one requires a separate act of courage.)", "next": "quiet2" },
+    "quiet2": { "speaker": "faelen", "emotion": "sad", "text": "You are staying.", "next": "quiet3" },
+    "quiet3": { "speaker": "player", "text": "(You stay.)", "next": "converge" },
+    "converge": { "speaker": "player", "text": "(The sky pales. Nobody lets go.)", "next": "n22" },
+    "n22": { "speaker": "faelen", "emotion": "neutral", "text": "Pell was right about the tea.", "next": "n23" },
+    "n23": { "speaker": "player", "text": "\"Terrible?\"", "next": "n24" },
+    "n24": { "speaker": "faelen", "emotion": "happy", "text": "Undrinkable.", "next": "end" },
     "end": { "end_scene": true }
   }
 }

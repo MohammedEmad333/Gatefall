@@ -2,29 +2,35 @@
   "scene_id": "faelen_b2_proving_ground",
   "start_node": "n1",
   "nodes": {
-    "n1": {
-      "speaker": "faelen",
-      "text": "Get behind me.",
-      "next": "n2"
-    },
-    "n2": {
-      "speaker": "player",
-      "text": "(She takes the hit meant for the party and refuses healing until everyone else is safe.)",
+    "n1": { "speaker": "player", "text": "(The gate core dies with a sound like ice breaking. The monsters do not.)", "next": "n2" },
+    "n2": { "speaker": "momo", "text": "Behind us—there are more behind us!", "next": "n3" },
+    "n3": { "speaker": "faelen", "emotion": "angry", "text": "Tight formation. Back to the core. Do not give them a seam.", "next": "n4" },
+    "n4": { "speaker": "player", "text": "(A hooked limb punches through Faelen's guard and into her side. She traps it there, using her own body to hold the creature still.)", "next": "n5" },
+    "n5": { "speaker": "faelen", "emotion": "angry", "text": "Now.", "next": "n6" },
+    "n6": { "speaker": "player", "text": "(Your blade finds the exposed throat. Momo's light takes the next beast. Silence arrives all at once.)", "next": "n7" },
+    "n7": { "speaker": "player", "text": "\"Sit down. Let me see the wound.\"", "next": "n8" },
+    "n8": { "speaker": "faelen", "emotion": "neutral", "text": "Check Momo first.", "next": "n9" },
+    "n9": { "speaker": "momo", "text": "I am not bleeding.", "next": "n10" },
+    "n10": { "speaker": "faelen", "emotion": "angry", "text": "Shock does not always bleed.", "next": "n11" },
+    "n11": { "speaker": "player", "text": "(Faelen turns away and begins stitching her own side with hands that are almost steady.)", "next": "n12" },
+    "n12": { "speaker": "player", "text": "\"You knew that hit would land. You took it anyway.\"", "next": "n13" },
+    "n13": {
+      "speaker": "faelen", "emotion": "neutral", "text": "It was the correct exchange.",
       "choices": [
-        {
-          "choice_id": "order_retreat",
-          "text": "\"Next time, you fall back when I say.\"",
-          "next": "end",
-          "effects": { "set_flags": { "FAELEN_COMMAND_STYLE": "order" }, "bond_delta": 10 }
-        },
-        {
-          "choice_id": "trust_her",
-          "text": "\"I trust you to make the call.\"",
-          "next": "end",
-          "effects": { "set_flags": { "FAELEN_COMMAND_STYLE": "trust" }, "bond_delta": 15 }
-        }
+        { "choice_id": "order_retreat", "text": "\"Next time I call a retreat, you retreat with us. That's an order.\"", "next": "order1", "effects": { "set_flags": { "FAELEN_COMMAND_STYLE": "order" }, "bond_delta": 10 } },
+        { "choice_id": "trust_call", "text": "\"I trust your call. Trust us to carry part of the cost.\"", "next": "trust1", "effects": { "set_flags": { "FAELEN_COMMAND_STYLE": "trust" }, "bond_delta": 15 } }
       ]
     },
+    "order1": { "speaker": "faelen", "emotion": "angry", "text": "You do not command me.", "next": "order2" },
+    "order2": { "speaker": "player", "text": "\"Then call it the price of fighting on my team. Nobody gets left behind—even on purpose.\"", "next": "order3" },
+    "order3": { "speaker": "faelen", "emotion": "neutral", "text": "Your formation discipline is appalling. Your rule is not.", "next": "converge" },
+    "trust1": { "speaker": "faelen", "emotion": "sad", "text": "Trust is what put me in front of the blow.", "next": "trust2" },
+    "trust2": { "speaker": "player", "text": "\"No. Fear did. You were afraid we'd fail if you didn't pay for all of us.\"", "next": "trust3" },
+    "trust3": { "speaker": "faelen", "emotion": "neutral", "text": "...Next time, I will leave you something to carry.", "next": "converge" },
+    "converge": { "speaker": "player", "text": "(She allows you to finish the last stitch. Her jaw stays clenched, but she does not take the needle back.)", "next": "n14" },
+    "n14": { "speaker": "faelen", "emotion": "neutral", "text": "The technique I used—the challenge, the anchored guard. I can teach you how to fight behind it.", "next": "n15" },
+    "n15": { "speaker": "player", "text": "\"When you're healed.\"", "next": "n16" },
+    "n16": { "speaker": "faelen", "emotion": "flustered", "text": "At dawn, then.", "next": "end" },
     "end": { "end_scene": true }
   }
 }

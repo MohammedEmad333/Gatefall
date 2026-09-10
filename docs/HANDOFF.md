@@ -194,7 +194,7 @@ Across tiers, against the progression a player actually has when each opens:
 
 - Dart + Flutter (3.47.2 / Dart 3.13.2) are available in the build environment. `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (116/116 as of v2.0.0). The game has been played end to end in Chromium against a real `flutter build web` with no console errors, but **still never run on a phone or emulator** — expect to sanity-check touch targets and safe areas on a first real device run.
 - **There is no art.** Every screen is type, rule lines and colour. That is a deliberate placeholder, not a style decision — see the open question below.
-- **The scenes are stubs.** Every beat's dialogue exists and plays, but most scenes are 2-6 nodes: enough to prove the schema and the renderer, nowhere near enough to carry a route emotionally. Writing real scenes is now the highest-value content work, and it needs no code changes.
+- **Faelen's route is fully written; the other four routes are still stubs.** Her seven scenes now establish the black-antlered host, Ilyr's eastern line, the eleven Wardens she lost, and the house-centered resolution of her oath. Her early approach and command choices receive conditional callbacks, and each major branch has its own aftermath. Kess, Momo, Thora, and Dana remain at 2-6 nodes per beat and should be expanded to the same standard.
 - `Row` was renamed to **`BattleRow`** in the Dart code to avoid colliding with Flutter's `Row` widget; the elements enum is likewise **`GateElement`**, not `Element`, to avoid colliding with Flutter's own `Element` (widget tree node) class.
 - **`gatefall_flame/data/` is a manual mirror** of `gatefall_dialogue_engine/data/` — Flutter can't bundle assets from a pure-Dart path dependency. Nothing copies it automatically, but `game_test.dart` now **fails if the two ever drift**, so at least the mirror can't go stale silently.
 - **4× speed is an addition, not a locked decision.** The locked list names 2× only. 4× unlocks at ten clears because a 5-10 minute raid loop needs a second speed step once a player has cleared the same gate a dozen times. It is a presentation rate — the simulation still steps at `tickSeconds` — so it cannot affect balance. Easy to remove if unwanted.
@@ -347,11 +347,12 @@ In the order that adds the most to the game as it now stands.
    those is a constant in `data/house.dart`, `data/gate.dart` or
    `data/combat_config.dart`.
 
-2. **Write real scenes.** This is now the highest-value work in the project
-   and it needs no code. The renderer, the schema, the flags, the branching
-   and the endings all work; most scenes are 2-6 nodes of placeholder. Start
-   with one complete route — Faelen's, since her art exists — and let it set
-   the length and voice standard for the rest.
+2. **Write the remaining real scenes.** Faelen's complete seven-beat route is
+   now the length and voice standard: staged action, 20-34 nodes per beat,
+   branch-specific aftermath, and callbacks that remember earlier choices.
+   Expand Kess, Momo, Thora, and Dana next; their current scenes remain 2-6
+   nodes of placeholder. The renderer, schema, flags, and endings already work,
+   so this is content work rather than a code change.
 
 3. **Tune the ascended kits against real play.** *(Shipped in v2.0.0 — see
    "Version 2" below.)* All five exist and are simulation-tested, but the

@@ -2,44 +2,32 @@
   "scene_id": "faelen_b1_the_wall",
   "start_node": "n1",
   "nodes": {
-    "n1": {
-      "speaker": "faelen",
-      "text": "You're up early.",
-      "next": "n2"
-    },
-    "n2": {
-      "speaker": "player",
-      "text": "(You find her leaving tea outside Momo's door after her nightmare.)",
-      "next": "n3"
-    },
-    "n3": {
-      "speaker": "faelen",
-      "text": "Don't mistake this for kindness. Someone has to keep this house functioning.",
+    "n1": { "speaker": "player", "text": "(A floorboard complains at four in the morning. You follow the sound into the hall.)", "next": "n2" },
+    "n2": { "speaker": "player", "text": "(Faelen is kneeling outside Momo's door with a cup of bitter tea. Beside it: the little lamp Momo said she could not afford.)", "next": "n3" },
+    "n3": { "speaker": "faelen", "emotion": "neutral", "text": "You're loud when you think you're being quiet.", "next": "n4" },
+    "n4": { "speaker": "player", "text": "\"And you're generous when you think nobody's awake.\"", "next": "n5" },
+    "n5": { "speaker": "faelen", "emotion": "angry", "text": "She has not slept in two nights. Exhausted mages miscast. This is maintenance.", "next": "n6" },
+    "n6": { "speaker": "player", "text": "(The door opens a finger's width. Momo takes the cup. Her whisper barely reaches the hall.)", "next": "n7" },
+    "n7": { "speaker": "momo", "text": "Thank you, Faelen.", "next": "n8" },
+    "n8": { "speaker": "player", "text": "(Faelen waits until the lock clicks again before she rises.)", "next": "n9" },
+    "n9": {
+      "speaker": "faelen", "emotion": "neutral", "text": "Do not mistake usefulness for kindness.",
       "choices": [
-        {
-          "choice_id": "press",
-          "text": "\"You don't have to hide that you care.\"",
-          "next": "n4_press",
-          "effects": { "set_flags": { "FAELEN_APPROACH": "press" }, "bond_delta": 15 }
-        },
-        {
-          "choice_id": "patience",
-          "text": "(Say nothing. Just nod.)",
-          "next": "n4_patience",
-          "effects": { "set_flags": { "FAELEN_APPROACH": "patience" }, "bond_delta": 10 }
-        }
+        { "choice_id": "press", "text": "\"You don't have to hide that you care.\"", "next": "press1", "effects": { "set_flags": { "FAELEN_APPROACH": "press" }, "bond_delta": 15 } },
+        { "choice_id": "patience", "text": "(Let the excuse stand. Help her gather the empty cups.)", "next": "patience1", "effects": { "set_flags": { "FAELEN_APPROACH": "patience" }, "bond_delta": 10 } }
       ]
     },
-    "n4_press": {
-      "speaker": "faelen",
-      "text": "...Tch. You see too much.",
-      "next": "end"
-    },
-    "n4_patience": {
-      "speaker": "faelen",
-      "text": "...Thank you. For not asking.",
-      "next": "end"
-    },
+    "press1": { "speaker": "faelen", "emotion": "angry", "text": "Care makes poor armor.", "next": "press2" },
+    "press2": { "speaker": "player", "text": "\"It's not supposed to be armor.\"", "next": "press3" },
+    "press3": { "speaker": "faelen", "emotion": "sad", "text": "Everything is armor, if you intend to survive it.", "next": "converge" },
+    "patience1": { "speaker": "player", "text": "(You stack the cups. She watches you leave her lie untouched.)", "next": "patience2" },
+    "patience2": { "speaker": "faelen", "emotion": "neutral", "text": "You are not going to ask why I was awake.", "next": "patience3" },
+    "patience3": { "speaker": "player", "text": "\"You know where to find me when you want to answer.\"", "next": "patience4" },
+    "patience4": { "speaker": "faelen", "emotion": "sad", "text": "That is a dangerous amount of patience.", "next": "converge" },
+    "converge": { "speaker": "player", "text": "(At breakfast, Momo's new lamp is on. Faelen sharpens her spear with her back to everyone.)", "next": "n10" },
+    "n10": { "speaker": "faelen", "emotion": "neutral", "text": "The stair rail is loose. I'll repair it after patrol.", "next": "n11" },
+    "n11": { "speaker": "player", "text": "\"More maintenance?\"", "next": "n12" },
+    "n12": { "speaker": "faelen", "emotion": "flustered", "text": "Eat your breakfast.", "next": "end" },
     "end": { "end_scene": true }
   }
 }

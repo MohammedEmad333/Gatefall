@@ -2,26 +2,25 @@
   "scene_id": "faelen_b0_recruitment",
   "start_node": "n1",
   "nodes": {
-    "n1": {
-      "speaker": "player",
-      "text": "(You find her standing over a fallen stranger, outnumbered, bleeding, refusing to fall.)",
-      "next": "n2"
-    },
-    "n2": {
-      "speaker": "faelen",
-      "text": "I don't need shelter.",
-      "next": "n3"
-    },
-    "n3": {
-      "speaker": "player",
-      "text": "(She collapses two steps later. You catch her before the ground does.)",
-      "next": "n4"
-    },
-    "n4": {
-      "speaker": "faelen",
-      "text": "...One night. I'll be gone by morning.",
-      "next": "end"
-    },
+    "n1": { "speaker": "player", "text": "(The gate should have collapsed inward. Instead, it tears sideways across the street, peeling brick from the buildings like bark.)", "next": "n2" },
+    "n2": { "speaker": "player", "text": "(Your new mana is barely enough to keep your hands from shaking. Somewhere beyond the dust, steel rings once. Then again.)", "next": "n3" },
+    "n3": { "speaker": "faelen", "emotion": "angry", "text": "Down.", "next": "n4" },
+    "n4": { "speaker": "player", "text": "(A spear passes over your shoulder. The creature behind you folds around it: too many joints, a crown of black antlers, no eyes.)", "next": "n5" },
+    "n5": { "speaker": "faelen", "emotion": "angry", "text": "If you can stand, move the civilian. If you can fight, guard my left. Decide now.", "next": "n6" },
+    "n6": { "speaker": "player", "text": "(You drag the fallen courier behind an overturned car, then raise the cheap blade you bought this morning.)", "next": "n7" },
+    "n7": { "speaker": "player", "text": "(The elf fights like a door barred against a storm. Every step costs her blood. Every step holds.)", "next": "n8" },
+    "n8": { "speaker": "faelen", "emotion": "angry", "text": "When it lunges, cut beneath the jaw. Do not chase the wound.", "next": "n9" },
+    "n9": { "speaker": "player", "text": "(It lunges. You cut. Her spear drives through the opening, and the creature comes apart in a rain of ash.)", "next": "n10" },
+    "n10": { "speaker": "faelen", "emotion": "sad", "text": "Black antlers... It crossed after me.", "next": "n11" },
+    "n11": { "speaker": "player", "text": "\"You know what that was?\"", "next": "n12" },
+    "n12": { "speaker": "faelen", "emotion": "neutral", "text": "I know it is dead. That is enough for tonight.", "next": "n13" },
+    "n13": { "speaker": "player", "text": "(She turns toward the ruined gate. Two steps later, one knee strikes the pavement.)", "next": "n14" },
+    "n14": { "speaker": "faelen", "emotion": "angry", "text": "Do not touch me.", "next": "n15" },
+    "n15": { "speaker": "player", "text": "\"Then bleed on your own after we get indoors. My building is across the street.\"", "next": "n16" },
+    "n16": { "speaker": "faelen", "emotion": "neutral", "text": "I don't need shelter.", "next": "n17" },
+    "n17": { "speaker": "player", "text": "(She collapses before she can take a third step. You catch her. Her hand stays locked around the spear.)", "next": "n18" },
+    "n18": { "speaker": "faelen", "emotion": "sad", "text": "One night. At dawn, I leave.", "next": "n19" },
+    "n19": { "speaker": "player", "text": "(Dawn finds her asleep in the chair beside the front door, boots on, spear within reach. She does not leave.)", "next": "end" },
     "end": { "end_scene": true }
   }
 }

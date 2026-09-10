@@ -745,6 +745,10 @@ void main() {
       final engine = DialogueEngine(
           scene: scene, state: g.state, characterId: 'faelen');
 
+      var guard = 0;
+      while (!engine.currentNode.isBranch && guard++ < 50) {
+        engine.advance();
+      }
       expect(engine.currentNode.isBranch, isTrue);
       final choices = engine.visibleChoices();
       expect(choices.map((c) => c.choiceId),
@@ -754,6 +758,9 @@ void main() {
       engine.choose('release');
       expect(g.state.flags['FAELEN_FRACTURE'], 'release');
       expect(g.bondPoints('faelen'), lessThan(before));
+      while (!engine.isEnd && guard++ < 75) {
+        engine.advance();
+      }
       expect(engine.isEnd, isTrue);
     });
 
@@ -771,20 +778,26 @@ void main() {
         final id = route.characterId;
         final beat = route.beats.firstWhere((b) => b.order == 4);
         final scene = await CompanionRoutes.loadScene(beat.sceneRef);
-        final start = scene.nodes[scene.startNode]!;
+        final engine = DialogueEngine(
+            scene: scene, state: g.state, characterId: id);
+        var guard = 0;
+        while (!engine.currentNode.isBranch && guard++ < 50) {
+          engine.advance();
+        }
+        final fracture = engine.currentNode;
 
-        final ids = start.choices.map((c) => c.choiceId).toList();
+        final ids = fracture.choices.map((c) => c.choiceId).toList();
         expect(ids, hasLength(3), reason: '$id: the Fracture is a 3-way');
         expect(ids, containsAll(['stop', 'release']),
             reason: '$id: every Fracture keeps "stop" and "release"');
 
         final flagKey = '${id.toUpperCase()}_FRACTURE';
-        for (final c in start.choices) {
+        for (final c in fracture.choices) {
           expect(c.effects.setFlags[flagKey], c.choiceId,
               reason: '$id: choice "${c.choiceId}" must write $flagKey');
         }
         expect(
-            start.choices
+            fracture.choices
                 .firstWhere((c) => c.choiceId == 'release')
                 .effects
                 .bondDelta,
