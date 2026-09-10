@@ -1,15 +1,128 @@
-YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éí×öN‹Z–‹­¦ëeŠw¬Õ¥µÁ½ÉĞ€Á…­…”é™±ÕÑÑ•È½µ…Ñ•É¥…°¹‘…ÉĞœì()¥µÁ½ÉĞ€œ¸¸½…ÉĞ½…Ñ•}…ÉĞ¹‘…ÉĞœì)¥µÁ½ÉĞ€œ¸¸½…Õ‘¥¼½Í™à¹‘…ÉĞœì)¥µÁ½ÉĞ€œ¸¸½ÍÑ…Ñ”½…µ•}½¹ÑÉ½±±•È¹‘…ÉĞœì)¥µÁ½ÉĞ€¡…É…Ñ•ÉÍ}ÍÉ••¸¹‘…ÉĞœì)¥µÁ½ÉĞ€½µÁ…¹¥½¹Í}ÍÉ••¸¹‘…ÉĞœì)¥µÁ½ÉĞ€…Ñ•}ÍÉ••¸¹‘…ÉĞœì)¥µÁ½ÉĞ€¡½µ•}ÍÉ••¸¹‘…ÉĞœì)¥µÁ½ÉĞ€Ñ¡•µ”¹‘…ÉĞœì((¼¼¼½ÕÈÑ…‰ÌèÑ¡”!½ÕÍ”€¡½±…¹ÕÉÉ•¹ĞÍÑ½Éä¤°Ñ¡”…Ñ”€¡½µ‰…Ğ¤°Ñ¡”(¼¼¼A…ÉÑä€¡Á½İ•È…¹™½Éµ…Ñ¥½¸¤°…¹¡…É…Ñ•ÉÌ€¡ÁÉ½™¥±•Ì…¹ÍÑ½Éä…É¡¥Ù”¤¸)±…ÍÌ…Ñ•™…±±M¡•±°•áÑ•¹‘ÌMÑ…Ñ•™Õ±]¥‘•Ğì(€™¥¹…°…µ•½¹ÑÉ½±±•È…µ”ì(€½¹ÍĞ…Ñ•™…±±M¡•±°¡íÍÕÁ•È¹­•ä°É•ÅÕ¥É•Ñ¡¥Ì¹…µ•ô¤ì((€½Ù•ÉÉ¥‘”(€MÑ…Ñ”ñ…Ñ•™…±±M¡•±°øÉ•…Ñ•MÑ…Ñ” ¤€ôø}…Ñ•™…±±M¡•±±MÑ…Ñ” ¤ì)ô()±…ÍÌ}…Ñ•™…±±M¡•±±MÑ…Ñ”•áÑ•¹‘ÌMÑ…Ñ”ñ…Ñ•™…±±M¡•±°øì(€¥¹Ğ}¥¹‘•à€ô€Àì((€€¼¼¼]¡¥ ‰•¥ÌÁ±…å¥¹œ¸Q¡”¡½ÕÍ”…¹Ñ¡”…Ñ•Ì…É”Ñ¡”Ñİ¼¡…±Ù•Ì½˜(€€¼¼¼Ñ¡”…µ”°…¹Ñ¡•ä•Ğ½¹”•… ìÑ¡”Á…ÉÑäÍÉ••¸¥Ì‰½½­­••Á¥¹œ‘½¹”(€€¼¼¼…Ğ¡½µ”°Í¼¥Ğ­••ÁÌÑ¡”¡½ÕÍ”Ì¸(€µ‰¥•¹”•Ğ}…µ‰¥•¹”€ôø(€€€€€}¥¹‘•à€ôô€Ä€üµ‰¥•¹”¹…Ñ”€èµ‰¥•¹”¹¡½ÕÍ”ì((€½Ù•ÉÉ¥‘”(€Ù½¥¥¹¥ÑMÑ…Ñ” ¤ì(€€€ÍÕÁ•È¹¥¹¥ÑMÑ…Ñ” ¤ì(€€€İ¥‘•Ğ¹…µ”¹…‘‘1¥ÍÑ•¹•È¡}½¹…µ•¡…¹•¤ì(€€€]¥‘•ÑÍ	¥¹‘¥¹œ¹¥¹ÍÑ…¹”(€€€€€€€€¹…‘‘A½ÍÑÉ…µ•…±±‰…¬ ¡|¤€ôøÕ‘¥¼¹¥¹ÍÑ…¹”¹…µ‰¥•¹”¡}…µ‰¥•¹”¤¤ì(€ô((€½Ù•ÉÉ¥‘”(€Ù½¥‘¥ÍÁ½Í” ¤ì(€€€İ¥‘•Ğ¹…µ”¹É•µ½Ù•1¥ÍÑ•¹•È¡}½¹…µ•¡…¹•¤ì(€€€ÍÕÁ•È¹‘¥ÍÁ½Í” ¤ì(€ô((€Ù½¥}½¹…µ•¡…¹• ¤ì(€€€¥˜€¡µ½Õ¹Ñ•¤Í•ÑMÑ…Ñ”  ¤íô¤ì(€ô((€½Ù•ÉÉ¥‘”(€]¥‘•Ğ‰Õ¥±¡	Õ¥±‘½¹Ñ•áĞ½¹Ñ•áĞ¤ì(€€€™¥¹…°…µ”€ôİ¥‘•Ğ¹…µ”ì(€€€™¥¹…°ÍÑ½Éå]…¥Ñ¥¹œ€ô…µ”¹Á•¹‘¥¹MÑ½Éå	•…ÑÌ¹¥Í;ö¶‰ËkºwµçH
-KˆÚ[ˆ˜]šYØ][Û˜\ŠˆZYÚˆŒ‹ˆÙ[XİY[™^ˆÚ[™^ˆÛ‘\İ[˜][Û”Ù[XİYˆ
-JHÂˆ]Y[Ëš[œİ[˜ÙK››İQÙ\İ\™J
-NÂˆ]Y[Ëš[œİ[˜ÙKœ^JHOHÚ[™^ÈÙZU\ˆÙœYÙJNÂˆÙ]İ]J
+import 'package:flutter/material.dart';
 
-HOˆÚ[™^HJNÂˆ]Y[Ëš[œİ[˜ÙK˜[XšY[˜ÙJØ[XšY[˜ÙJNÂˆKˆ\İ[˜][ÛœÎˆÂˆ˜]šYØ][Û‘\İ[˜][ÛŠˆXÛÛˆ˜YÙJˆ\ÓX™[š\ÚX›NˆİÜUØZ][™Ëˆ˜XÚÙÜ›İ[™ÛÛÜˆÛÛˆÚ[ˆÛÛœİXÛÛŠXÛÛœËšÛYWÛİ][™YÛÛÜˆ›Û™Q[JKˆ
-KˆÙ[XİYXÛÛˆÛÛœİXÛÛŠXÛÛœËšÛYKÛÛÜˆ›Û™JKˆX™[ˆ	Òİ\ÙIËˆ
-KˆÛÛœİ˜]šYØ][Û‘\İ[˜][ÛŠˆXÛÛˆXÛÛŠXÛÛœË˜›\—ØÚ\˜İ[\—Ûİ][™YÛÛÜˆ›Û™Q[JKˆÙ[XİYXÛÛˆXÛÛŠXÛÛœË˜›\—ØÚ\˜İ[\‹ÛÛÜˆ›Û™JKˆX™[ˆ	ÑØ]\ÉËˆ
-KˆÛÛœİ˜]šYØ][Û‘\İ[˜][ÛŠˆXÛÛˆXÛÛŠXÛÛœË™Ü›İ\×Ûİ][™YÛÛÜˆ›Û™Q[JKˆÙ[XİYXÛÛˆXÛÛŠXÛÛœË™Ü›İ\ËÛÛÜˆ›Û™JKˆX™[ˆ	Ô\IËˆ
-KˆÛÛœİ˜]šYØ][Û‘\İ[˜][ÛŠˆXÛÛˆXÛÛŠXÛÛœËœ[ÜWÛİ][™KÛÛÜˆ›Û™Q[JKˆÙ[XİYXÛÛˆXÛÛŠXÛÛœËœ[ÜKÛÛÜˆ›Û™JKˆX™[ˆ	ĞÚ\˜Xİ\œÉËˆ
-KˆKˆ
-Kˆ
-Kˆ
-Kˆ
-NÂˆBŸB
+import '../art/gate_art.dart';
+import '../audio/sfx.dart';
+import '../state/game_controller.dart';
+import 'characters_screen.dart';
+import 'companions_screen.dart';
+import 'gate_screen.dart';
+import 'home_screen.dart';
+import 'theme.dart';
+
+/// Four tabs: the House (Gold and current story), the Gate (combat), the
+/// Party (power and formation), and Characters (profiles and story archive).
+class GatefallShell extends StatefulWidget {
+  final GameController game;
+  const GatefallShell({super.key, required this.game});
+
+  @override
+  State<GatefallShell> createState() => _GatefallShellState();
+}
+
+class _GatefallShellState extends State<GatefallShell> {
+  int _index = 0;
+
+  /// Which bed is playing. The house and the gates are the two halves of
+  /// the game, and they get one each; the party screen is bookkeeping done
+  /// at home, so it keeps the house's.
+  Ambience get _ambience =>
+      _index == 1 ? Ambience.gate : Ambience.house;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.game.addListener(_onGameChanged);
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => Audio.instance.ambience(_ambience));
+  }
+
+  @override
+  void dispose() {
+    widget.game.removeListener(_onGameChanged);
+    super.dispose();
+  }
+
+  void _onGameChanged() {
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final game = widget.game;
+    final storyWaiting = game.pendingStoryBeats.isNotEmpty ||
+        (game.act >= 3 && game.gateAnswer == null);
+
+    return Scaffold(
+      // One Listener over the whole app: browsers refuse to start audio
+      // before a gesture, and this is the first one we are guaranteed to
+      // see wherever the player happens to tap.
+      body: Listener(
+        onPointerDown: (_) => Audio.instance.noteGesture(),
+        child: AmbientBackdrop(
+          element: _index == 1 ? game.board.firstOrNull?.element : null,
+          child: SafeArea(
+            child: IndexedStack(
+              index: _index,
+              children: [
+                HomeScreen(game: game),
+                GateScreen(game: game),
+                CompanionsScreen(game: game),
+                CharactersScreen(game: game),
+              ],
+            ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          border: Border(top: BorderSide(color: riftDim)),
+          color: night2,
+        ),
+        child: NavigationBarTheme(
+          data: NavigationBarThemeData(
+            backgroundColor: Colors.transparent,
+            indicatorColor: rift.withValues(alpha: .25),
+            labelTextStyle: WidgetStateProperty.all(
+                const TextStyle(color: boneDim, fontSize: 11)),
+          ),
+          child: NavigationBar(
+            height: 62,
+            selectedIndex: _index,
+            onDestinationSelected: (i) {
+              Audio.instance.noteGesture();
+              Audio.instance.play(i == _index ? Sfx.uiTap : Sfx.page);
+              setState(() => _index = i);
+              Audio.instance.ambience(_ambience);
+            },
+            destinations: [
+              NavigationDestination(
+                icon: Badge(
+                  isLabelVisible: storyWaiting,
+                  backgroundColor: gold,
+                  child: const Icon(Icons.home_outlined, color: boneDim),
+                ),
+                selectedIcon: const Icon(Icons.home, color: bone),
+                label: 'House',
+              ),
+              const NavigationDestination(
+                icon: Icon(Icons.blur_circular_outlined, color: boneDim),
+                selectedIcon: Icon(Icons.blur_circular, color: bone),
+                label: 'Gates',
+              ),
+              const NavigationDestination(
+                icon: Icon(Icons.groups_outlined, color: boneDim),
+                selectedIcon: Icon(Icons.groups, color: bone),
+                label: 'Party',
+              ),
+              const NavigationDestination(
+                icon: Icon(Icons.people_outline, color: boneDim),
+                selectedIcon: Icon(Icons.people, color: bone),
+                label: 'Characters',
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
