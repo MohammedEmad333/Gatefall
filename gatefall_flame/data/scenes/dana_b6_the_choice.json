@@ -1,7 +1,1024 @@
 {
-  "scene_id": "dana_b6_the_choice", "start_node": "n1",
+  "scene_id": "dana_b6_the_choice",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "dana", "text": "...I choose the house. Whatever that makes me now.", "next": "end" },
-    "end": { "end_scene": true }
+    "n1": {
+      "speaker": "player",
+      "text": "(Dana's hearing is at nine.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(The gate opens at eight fifty-two.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "dana",
+      "text": "“You have got to be kidding me.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "momo",
+      "text": "“I'm not.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "(A tear opens across the street outside the municipal building.)",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "dana",
+      "text": "“My hearing is inside.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "kess",
+      "text": "“Reschedule?”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "dana",
+      "text": "“They'll call failure to appear.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "player",
+      "text": "“There is a gate in the lobby.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "dana",
+      "text": "“They may still call failure to appear.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "faelen",
+      "text": "“Human institutions are fascinating.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "dana",
+      "text": "“Not now.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "(Civilians pour out. One structural beam collapses behind them.)",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "dana",
+      "text": "“East stairwell.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "player",
+      "text": "“What?”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "dana",
+      "text": "“Emergency plans. This building uses east as secondary evacuation.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "player",
+      "text": "“You memorized it?”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "dana",
+      "text": "“I used to work here.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "player",
+      "text": "(She runs toward the entrance.)",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "“Dana!”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "dana",
+      "text": "“There are people inside who don't know the west corridor is blocked.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "faelen",
+      "text": "“You cannot fight.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "dana",
+      "text": "“I can count doors.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "player",
+      "text": "(The party goes with her.)",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "player",
+      "text": "(Inside, the gate has turned the records floor into a maze of floating walls and white Sever-static.)",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "momo",
+      "text": "“This element—”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "“Sever.”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "momo",
+      "text": "“Yes.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "dana",
+      "text": "“Human mana.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "player",
+      "text": "“Stay behind us.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "dana",
+      "text": "“I have spent three years behind all of you.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "“That wasn't an invitation.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "dana",
+      "text": "“Door twelve.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "(She kicks it open. Three clerks are trapped inside.)",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "dana",
+      "text": "“East stairs. Follow the green line.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "clerk",
+      "text": "“Dana?”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "dana",
+      "text": "“Move.”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "player",
+      "text": "(The floor shifts.)",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "momo",
+      "text": "“Collapse in ten.”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "dana",
+      "text": "“How many left?”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "clerk",
+      "text": "“Archive team. Four, maybe five.”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "dana",
+      "text": "“Of course.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "“Dana.”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "dana",
+      "text": "“I know.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "player",
+      "text": "“You are choosing.”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "dana",
+      "text": "“Yes.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "player",
+      "text": "“Good.”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "dana",
+      "text": "“I hate you.”",
+      "next": "stop_cb1"
+    },
+    "stop_cb1": {
+      "speaker": "player",
+      "text": "“You stayed inside the system.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_FRACTURE",
+            "equals": "stop"
+          }
+        ]
+      },
+      "next": "stop_cb2"
+    },
+    "stop_cb2": {
+      "speaker": "dana",
+      "text": "“Technically suspended.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_FRACTURE",
+            "equals": "stop"
+          }
+        ]
+      },
+      "next": "stop_cb3"
+    },
+    "stop_cb3": {
+      "speaker": "player",
+      "text": "“Still counts.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_FRACTURE",
+            "equals": "stop"
+          }
+        ]
+      },
+      "next": "stand_cb1"
+    },
+    "stand_cb1": {
+      "speaker": "player",
+      "text": "“You stood with us.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_FRACTURE",
+            "equals": "stand"
+          }
+        ]
+      },
+      "next": "stand_cb2"
+    },
+    "stand_cb2": {
+      "speaker": "dana",
+      "text": "“Bad career move.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_FRACTURE",
+            "equals": "stand"
+          }
+        ]
+      },
+      "next": "stand_cb3"
+    },
+    "stand_cb3": {
+      "speaker": "player",
+      "text": "“Still here.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_FRACTURE",
+            "equals": "stand"
+          }
+        ]
+      },
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "(The archive team is trapped behind a Sever barrier.)",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "faelen",
+      "text": "“I cannot cut it.”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "kess",
+      "text": "“My Ember slides off.”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "thora",
+      "text": "“Stone does not hold.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "momo",
+      "text": "“It is keyed to human mana.”",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "player",
+      "text": "“I'll try.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "player",
+      "text": "(Your Sever hits the barrier.)",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "player",
+      "text": "(It opens a handspan, then snaps shut.)",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "dana",
+      "text": "“Again.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "player",
+      "text": "“It isn't enough.”",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "dana",
+      "text": "“Because you're forcing one point.”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "player",
+      "text": "“What?”",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "dana",
+      "text": "“Look at the wall.”",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "player",
+      "text": "(She points at six repeating lines in the barrier.)",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "dana",
+      "text": "“It's structured.”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "kess",
+      "text": "“It's a magic spreadsheet.”",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "dana",
+      "text": "“Finally, something I'm qualified for.”",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "player",
+      "text": "“You still don't have mana.”",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "dana",
+      "text": "“I know.”",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "player",
+      "text": "(The barrier pulses.)",
+      "next": "n69"
+    },
+    "n69": {
+      "speaker": "momo",
+      "text": "“Seven seconds.”",
+      "next": "n70"
+    },
+    "n70": {
+      "speaker": "dana",
+      "text": "“Faelen, hit the first seam when I say.”",
+      "next": "n71"
+    },
+    "n71": {
+      "speaker": "faelen",
+      "text": "“It rejects Verdant.”",
+      "next": "n72"
+    },
+    "n72": {
+      "speaker": "dana",
+      "text": "“I know.”",
+      "next": "n73"
+    },
+    "n73": {
+      "speaker": "dana",
+      "text": "“Kess, second.”",
+      "next": "n74"
+    },
+    "n74": {
+      "speaker": "kess",
+      "text": "“Love a doomed plan.”",
+      "next": "n75"
+    },
+    "n75": {
+      "speaker": "dana",
+      "text": "“Thora, brace the floor.”",
+      "next": "n76"
+    },
+    "n76": {
+      "speaker": "thora",
+      "text": "“Done.”",
+      "next": "n77"
+    },
+    "n77": {
+      "speaker": "dana",
+      "text": "“Momo, call the pulse.”",
+      "next": "n78"
+    },
+    "n78": {
+      "speaker": "momo",
+      "text": "“Three.”",
+      "next": "n79"
+    },
+    "n79": {
+      "speaker": "dana",
+      "text": "“Player, Sever through all of it.”",
+      "next": "n80"
+    },
+    "n80": {
+      "speaker": "player",
+      "text": "“All of what?”",
+      "next": "n81"
+    },
+    "n81": {
+      "speaker": "dana",
+      "text": "“The relationships.”",
+      "next": "n82"
+    },
+    "n82": {
+      "speaker": "player",
+      "text": "“What?”",
+      "next": "n83"
+    },
+    "n83": {
+      "speaker": "dana",
+      "text": "“Just trust me.”",
+      "next": "n84"
+    },
+    "n84": {
+      "speaker": "momo",
+      "text": "“Two.”",
+      "next": "n85"
+    },
+    "n85": {
+      "speaker": "dana",
+      "text": "“Now.”",
+      "next": "n86"
+    },
+    "n86": {
+      "speaker": "player",
+      "text": "(Faelen strikes.)",
+      "next": "n87"
+    },
+    "n87": {
+      "speaker": "player",
+      "text": "(Kess follows.)",
+      "next": "n88"
+    },
+    "n88": {
+      "speaker": "player",
+      "text": "(Thora anchors.)",
+      "next": "n89"
+    },
+    "n89": {
+      "speaker": "player",
+      "text": "(Momo calls the gap.)",
+      "next": "n90"
+    },
+    "n90": {
+      "speaker": "player",
+      "text": "(You drive Sever through the pattern connecting all four impacts.)",
+      "next": "n91"
+    },
+    "n91": {
+      "speaker": "player",
+      "text": "(The barrier opens.)",
+      "next": "n92"
+    },
+    "n92": {
+      "speaker": "dana",
+      "text": "“Move!”",
+      "next": "n93"
+    },
+    "n93": {
+      "speaker": "player",
+      "text": "(The archive team crosses.)",
+      "next": "n94"
+    },
+    "n94": {
+      "speaker": "momo",
+      "text": "“Dana.”",
+      "next": "n95"
+    },
+    "n95": {
+      "speaker": "player",
+      "text": "(The barrier snaps back.)",
+      "next": "n96"
+    },
+    "n96": {
+      "speaker": "player",
+      "text": "(Dana is on the wrong side.)",
+      "next": "n97"
+    },
+    "n97": {
+      "speaker": "dana",
+      "text": "“Of course.”",
+      "next": "n98"
+    },
+    "n98": {
+      "speaker": "player",
+      "text": "“Dana!”",
+      "next": "n99"
+    },
+    "n99": {
+      "speaker": "dana",
+      "text": "“Get them out.”",
+      "next": "n100"
+    },
+    "n100": {
+      "speaker": "player",
+      "text": "“No.”",
+      "next": "n101"
+    },
+    "n101": {
+      "speaker": "dana",
+      "text": "“That is an order.”",
+      "next": "n102"
+    },
+    "n102": {
+      "speaker": "player",
+      "text": "“You resigned.”",
+      "next": "n103"
+    },
+    "n103": {
+      "speaker": "dana",
+      "text": "“Damn it.”",
+      "next": "n104"
+    },
+    "n104": {
+      "speaker": "player",
+      "text": "(A white line appears across Dana's palm.)",
+      "next": "n105"
+    },
+    "n105": {
+      "speaker": "dana",
+      "text": "“What—”",
+      "next": "n106"
+    },
+    "n106": {
+      "speaker": "momo",
+      "text": "“Mana.”",
+      "next": "n107"
+    },
+    "n107": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "n108"
+    },
+    "n108": {
+      "speaker": "momo",
+      "text": "“Yes.”",
+      "next": "n109"
+    },
+    "n109": {
+      "speaker": "dana",
+      "text": "“This is not a convenient time.”",
+      "next": "n110"
+    },
+    "n110": {
+      "speaker": "kess",
+      "text": "“Awakening usually isn't.”",
+      "next": "n111"
+    },
+    "n111": {
+      "speaker": "player",
+      "text": "(The white line splits into threads.)",
+      "next": "n112"
+    },
+    "n112": {
+      "speaker": "player",
+      "text": "(One connects to Faelen's guard.)",
+      "next": "n113"
+    },
+    "n113": {
+      "speaker": "player",
+      "text": "(One to Kess's Ember.)",
+      "next": "n114"
+    },
+    "n114": {
+      "speaker": "player",
+      "text": "(One to Momo's Gloam.)",
+      "next": "n115"
+    },
+    "n115": {
+      "speaker": "player",
+      "text": "(One to Thora's Stone.)",
+      "next": "n116"
+    },
+    "n116": {
+      "speaker": "player",
+      "text": "(One to your Sever.)",
+      "next": "n117"
+    },
+    "n117": {
+      "speaker": "dana",
+      "text": "“I can see the case.”",
+      "next": "n118"
+    },
+    "n118": {
+      "speaker": "player",
+      "text": "“The what?”",
+      "next": "n119"
+    },
+    "n119": {
+      "speaker": "dana",
+      "text": "“All of it.”",
+      "next": "n120"
+    },
+    "n120": {
+      "speaker": "dana",
+      "text": "“Who is holding what.”",
+      "next": "n121"
+    },
+    "n121": {
+      "speaker": "dana",
+      "text": "“Where the pressure moves.”",
+      "next": "n122"
+    },
+    "n122": {
+      "speaker": "dana",
+      "text": "“What changes if one person moves.”",
+      "next": "n123"
+    },
+    "n123": {
+      "speaker": "kess",
+      "text": "“That is the least magical way anyone has ever described magic.”",
+      "next": "n124"
+    },
+    "n124": {
+      "speaker": "dana",
+      "text": "“Shut up.”",
+      "next": "n125"
+    },
+    "n125": {
+      "speaker": "momo",
+      "text": "“Pulse in five.”",
+      "next": "n126"
+    },
+    "n126": {
+      "speaker": "dana",
+      "text": "“Faelen, transfer guard to me on three.”",
+      "next": "n127"
+    },
+    "n127": {
+      "speaker": "faelen",
+      "text": "“Can you hold it?”",
+      "next": "n128"
+    },
+    "n128": {
+      "speaker": "dana",
+      "text": "“No idea.”",
+      "next": "n129"
+    },
+    "n129": {
+      "speaker": "dana",
+      "text": "“Kess, take the opening after.”",
+      "next": "n130"
+    },
+    "n130": {
+      "speaker": "kess",
+      "text": "“Now you're speaking my language.”",
+      "next": "n131"
+    },
+    "n131": {
+      "speaker": "dana",
+      "text": "“Thora, feed protection back when I drop.”",
+      "next": "n132"
+    },
+    "n132": {
+      "speaker": "thora",
+      "text": "“With pleasure.”",
+      "next": "n133"
+    },
+    "n133": {
+      "speaker": "dana",
+      "text": "“Momo, keep me early.”",
+      "next": "n134"
+    },
+    "n134": {
+      "speaker": "momo",
+      "text": "“I've got you.”",
+      "next": "n135"
+    },
+    "n135": {
+      "speaker": "dana",
+      "text": "“Player.”",
+      "next": "n136"
+    },
+    "n136": {
+      "speaker": "player",
+      "text": "“Yeah?”",
+      "next": "n137"
+    },
+    "n137": {
+      "speaker": "dana",
+      "text": "“Stay connected.”",
+      "next": "n138"
+    },
+    "n138": {
+      "speaker": "player",
+      "text": "(Casework activates.)",
+      "next": "n139"
+    },
+    "n139": {
+      "speaker": "player",
+      "text": "(Dana does not become a tank, striker, caster, or healer.)",
+      "next": "n140"
+    },
+    "n140": {
+      "speaker": "player",
+      "text": "(She becomes the thing between roles: a bridge that routes timing, protection, openings, and force where they are needed.)",
+      "next": "n141"
+    },
+    "n141": {
+      "speaker": "player",
+      "text": "(The Sever barrier fails.)",
+      "next": "n142"
+    },
+    "n142": {
+      "speaker": "player",
+      "text": "(Dana crosses.)",
+      "next": "n143"
+    },
+    "n143": {
+      "speaker": "player",
+      "text": "(The gate core appears.)",
+      "next": "n144"
+    },
+    "n144": {
+      "speaker": "dana",
+      "text": "“Everyone?”",
+      "next": "n145"
+    },
+    "n145": {
+      "speaker": "faelen",
+      "text": "“Ready.”",
+      "next": "n146"
+    },
+    "n146": {
+      "speaker": "kess",
+      "text": "“Obviously.”",
+      "next": "n147"
+    },
+    "n147": {
+      "speaker": "momo",
+      "text": "“Four seconds.”",
+      "next": "n148"
+    },
+    "n148": {
+      "speaker": "thora",
+      "text": "“With you.”",
+      "next": "n149"
+    },
+    "n149": {
+      "speaker": "player",
+      "text": "“Your call.”",
+      "next": "n150"
+    },
+    "n150": {
+      "speaker": "dana",
+      "text": "(Looks at the party.)",
+      "next": "n151"
+    },
+    "n151": {
+      "speaker": "dana",
+      "text": "“My call.”",
+      "next": "n152"
+    },
+    "n152": {
+      "speaker": "dana",
+      "text": "“Now.”",
+      "next": "n153"
+    },
+    "n153": {
+      "speaker": "player",
+      "text": "(The core breaks.)",
+      "next": "n154"
+    },
+    "n154": {
+      "speaker": "player",
+      "text": "(Outside, the hearing officer is waiting behind the emergency line.)",
+      "next": "n155"
+    },
+    "n155": {
+      "speaker": "officer",
+      "text": "“Ms. Vale.”",
+      "next": "n156"
+    },
+    "n156": {
+      "speaker": "dana",
+      "text": "“Dana.”",
+      "next": "n157"
+    },
+    "n157": {
+      "speaker": "officer",
+      "text": "“You were scheduled upstairs.”",
+      "next": "n158"
+    },
+    "n158": {
+      "speaker": "dana",
+      "text": "“I was busy.”",
+      "next": "n159"
+    },
+    "n159": {
+      "speaker": "officer",
+      "text": "“I see that.”",
+      "next": "n160"
+    },
+    "n160": {
+      "speaker": "dana",
+      "text": "(Looks at the House residents around her.)",
+      "next": "n161"
+    },
+    "n161": {
+      "speaker": "officer",
+      "text": "“Are you representing the property?”",
+      "next": "n162"
+    },
+    "n162": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "n163"
+    },
+    "n163": {
+      "speaker": "player",
+      "text": "(Pause.)",
+      "next": "n164"
+    },
+    "n164": {
+      "speaker": "dana",
+      "text": "“I'm part of it.”",
+      "choices": [
+        {
+          "choice_id": "choose",
+          "text": "“Say it again.”",
+          "next": "choose1",
+          "effects": {
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "home",
+          "text": "“Then let's go home.”",
+          "next": "home1",
+          "effects": {
+            "bond_delta": 15
+          }
+        }
+      ]
+    },
+    "choose1": {
+      "speaker": "dana",
+      "text": "“You are unbearable.”",
+      "next": "choose2"
+    },
+    "choose2": {
+      "speaker": "player",
+      "text": "“Say it.”",
+      "next": "choose3"
+    },
+    "choose3": {
+      "speaker": "dana",
+      "text": "(Looks directly at the officer.)",
+      "next": "choose4"
+    },
+    "choose4": {
+      "speaker": "dana",
+      "text": "“I choose the House.”",
+      "next": "n165"
+    },
+    "home1": {
+      "speaker": "dana",
+      "text": "“Your hearing strategy is terrible.”",
+      "next": "home2"
+    },
+    "home2": {
+      "speaker": "player",
+      "text": "“Not my hearing.”",
+      "next": "home3"
+    },
+    "home3": {
+      "speaker": "dana",
+      "text": "(Looks at the party.)",
+      "next": "home4"
+    },
+    "home4": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "home5"
+    },
+    "home5": {
+      "speaker": "dana",
+      "text": "“Not anymore.”",
+      "next": "n165"
+    },
+    "n165": {
+      "speaker": "player",
+      "text": "(That night, Dana hangs her lanyard on the hook inside her room.)",
+      "next": "n166"
+    },
+    "n166": {
+      "speaker": "player",
+      "text": "“Keeping it?”",
+      "next": "n167"
+    },
+    "n167": {
+      "speaker": "dana",
+      "text": "“Of course.”",
+      "next": "n168"
+    },
+    "n168": {
+      "speaker": "player",
+      "text": "“Thought the rules were armor.”",
+      "next": "n169"
+    },
+    "n169": {
+      "speaker": "dana",
+      "text": "“They are.”",
+      "next": "n170"
+    },
+    "n170": {
+      "speaker": "player",
+      "text": "“Still need armor?”",
+      "next": "n171"
+    },
+    "n171": {
+      "speaker": "dana",
+      "text": "“Yes.”",
+      "next": "n172"
+    },
+    "n172": {
+      "speaker": "dana",
+      "text": "“I just stopped pretending armor is a home.”",
+      "next": "n173"
+    },
+    "n173": {
+      "speaker": "thora",
+      "text": "“Dinner.”",
+      "next": "n174"
+    },
+    "n174": {
+      "speaker": "dana",
+      "text": "“Coming.”",
+      "next": "n175"
+    },
+    "n175": {
+      "speaker": "player",
+      "text": "(She leaves the lanyard on the hook.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }
