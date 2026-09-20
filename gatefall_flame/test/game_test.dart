@@ -722,11 +722,13 @@ void main() {
           scene: scene, state: g.state, characterId: 'faelen');
 
       var guard = 0;
-      while (!engine.isEnd && guard++ < 50) {
+      final maxSteps = scene.nodes.length + 1;
+      while (!engine.isEnd && guard++ < maxSteps) {
         expect(engine.currentNode.isBranch, isFalse);
         engine.advance();
       }
-      expect(engine.isEnd, isTrue);
+      expect(engine.isEnd, isTrue,
+          reason: 'linear scene did not terminate within its node count');
 
       g.completeBeat(beat.beatId);
       expect(g.state.completedBeats, contains(beat.beatId));
@@ -746,10 +748,14 @@ void main() {
           scene: scene, state: g.state, characterId: 'faelen');
 
       var guard = 0;
-      while (!engine.currentNode.isBranch && guard++ < 50) {
+      final maxSteps = scene.nodes.length + 1;
+      while (!engine.currentNode.isBranch &&
+          !engine.isEnd &&
+          guard++ < maxSteps) {
         engine.advance();
       }
-      expect(engine.currentNode.isBranch, isTrue);
+      expect(engine.currentNode.isBranch, isTrue,
+          reason: 'Faelen Fracture did not reach its branch');
       final choices = engine.visibleChoices();
       expect(choices.map((c) => c.choiceId),
           containsAll(['stop', 'join', 'release']));
@@ -758,10 +764,12 @@ void main() {
       engine.choose('release');
       expect(g.state.flags['FAELEN_FRACTURE'], 'release');
       expect(g.bondPoints('faelen'), lessThan(before));
-      while (!engine.isEnd && guard++ < 75) {
+      guard = 0;
+      while (!engine.isEnd && guard++ < maxSteps) {
         engine.advance();
       }
-      expect(engine.isEnd, isTrue);
+      expect(engine.isEnd, isTrue,
+          reason: 'Faelen Fracture branch did not terminate');
     });
 
     test('every route\'s Fracture offers the same three-way grammar',
@@ -781,9 +789,14 @@ void main() {
         final engine = DialogueEngine(
             scene: scene, state: g.state, characterId: id);
         var guard = 0;
-        while (!engine.currentNode.isBranch && guard++ < 50) {
+        final maxSteps = scene.nodes.length + 1;
+        while (!engine.currentNode.isBranch &&
+            !engine.isEnd &&
+            guard++ < maxSteps) {
           engine.advance();
         }
+        expect(engine.currentNode.isBranch, isTrue,
+            reason: '$id: Fracture scene ended or looped before its choice');
         final fracture = engine.currentNode;
 
         final ids = fracture.choices.map((c) => c.choiceId).toList();
