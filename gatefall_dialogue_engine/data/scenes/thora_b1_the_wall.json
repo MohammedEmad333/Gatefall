@@ -1,16 +1,357 @@
 {
-  "scene_id": "thora_b1_the_wall", "start_node": "n1",
+  "scene_id": "thora_b1_the_wall",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "player", "text": "(You find her holding a small carved token, grief plain on her face — gone the instant she notices you.)", "next": "n2" },
-    "n2": { "speaker": "thora", "text": "It's nothing. Are you hungry? Let me make something.",
+    "n1": {
+      "speaker": "player",
+      "text": "(You wake before dawn to the smell of bread.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(Thora is not in the kitchen.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "(You find her on the back steps, holding a small carved token in both hands.)",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "player",
+      "text": "(The expression on her face disappears the moment she hears you.)",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "thora",
+      "text": "“You're awake.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "“So are you.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "thora",
+      "text": "“Bread needed turning.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "player",
+      "text": "“The bread is inside.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "thora",
+      "text": "“Yes.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "player",
+      "text": "“What is that?”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "thora",
+      "text": "“Nothing.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "(She closes her fist around the token.)",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "thora",
+      "text": "“Are you hungry?”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "player",
+      "text": "“Thora.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "thora",
+      "text": "“I can make eggs.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "“It's five in the morning.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "thora",
+      "text": "“Eggs remain legal before sunrise.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "“Dana verify that?”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "thora",
+      "text": "“Dana's opinions on breakfast law are weak.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "(The joke lands. The grief does not leave.)",
       "choices": [
-        { "choice_id": "press", "text": "\"You don't have to hide it from me.\"", "next": "n3_press",
-          "effects": { "set_flags": { "THORA_APPROACH": "press" }, "bond_delta": 15 } },
-        { "choice_id": "patience", "text": "(Let her change the subject. Accept the food.)", "next": "n3_patience",
-          "effects": { "set_flags": { "THORA_APPROACH": "patience" }, "bond_delta": 10 } }
-      ] },
-    "n3_press": { "speaker": "thora", "text": "...It was my clan's. One of the few things that crossed with me.", "next": "end" },
-    "n3_patience": { "speaker": "thora", "text": "...Thank you for not pushing.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "press",
+          "text": "“You don't have to hide it from me.”",
+          "next": "press1",
+          "effects": {
+            "set_flags": {
+              "THORA_APPROACH": "press"
+            },
+            "bond_delta": 15
+          }
+        },
+        {
+          "choice_id": "patience",
+          "text": "(Sit beside her without asking again.)",
+          "next": "patience1",
+          "effects": {
+            "set_flags": {
+              "THORA_APPROACH": "patience"
+            },
+            "bond_delta": 10
+          }
+        }
+      ]
+    },
+    "press1": {
+      "speaker": "thora",
+      "text": "“I am not hiding.”",
+      "next": "press2"
+    },
+    "press2": {
+      "speaker": "player",
+      "text": "“You offered me eggs as a defensive maneuver.”",
+      "next": "press3"
+    },
+    "press3": {
+      "speaker": "thora",
+      "text": "“Eggs are versatile.”",
+      "next": "press4"
+    },
+    "press4": {
+      "speaker": "player",
+      "text": "“Thora.”",
+      "next": "press5"
+    },
+    "press5": {
+      "speaker": "thora",
+      "text": "(Her shoulders drop.)",
+      "next": "press6"
+    },
+    "press6": {
+      "speaker": "thora",
+      "text": "“It belonged to my clan.”",
+      "next": "press7"
+    },
+    "press7": {
+      "speaker": "player",
+      "text": "“A badge?”",
+      "next": "press8"
+    },
+    "press8": {
+      "speaker": "thora",
+      "text": "“No.”",
+      "next": "press9"
+    },
+    "press9": {
+      "speaker": "thora",
+      "text": "“A table marker.”",
+      "next": "press10"
+    },
+    "press10": {
+      "speaker": "player",
+      "text": "“A what?”",
+      "next": "press11"
+    },
+    "press11": {
+      "speaker": "thora",
+      "text": "“We carved one for each household. Put them on the long table during gatherings so no one forgot who was missing.”",
+      "next": "press12"
+    },
+    "press12": {
+      "speaker": "player",
+      "text": "“And now?”",
+      "next": "press13"
+    },
+    "press13": {
+      "speaker": "thora",
+      "text": "“Now it is very good at its job.”",
+      "next": "n21"
+    },
+    "patience1": {
+      "speaker": "player",
+      "text": "(You sit.)",
+      "next": "patience2"
+    },
+    "patience2": {
+      "speaker": "thora",
+      "text": "“You are going to ask.”",
+      "next": "patience3"
+    },
+    "patience3": {
+      "speaker": "player",
+      "text": "“Not if you don't want me to.”",
+      "next": "patience4"
+    },
+    "patience4": {
+      "speaker": "thora",
+      "text": "“That is irritating.”",
+      "next": "patience5"
+    },
+    "patience5": {
+      "speaker": "player",
+      "text": "“Why?”",
+      "next": "patience6"
+    },
+    "patience6": {
+      "speaker": "thora",
+      "text": "“Because now I have to decide.”",
+      "next": "patience7"
+    },
+    "patience7": {
+      "speaker": "player",
+      "text": "“Take your time.”",
+      "next": "patience8"
+    },
+    "patience8": {
+      "speaker": "thora",
+      "text": "(She opens her hand.)",
+      "next": "patience9"
+    },
+    "patience9": {
+      "speaker": "thora",
+      "text": "“It was my clan's.”",
+      "next": "patience10"
+    },
+    "patience10": {
+      "speaker": "thora",
+      "text": "“A table marker. We carved one for every household.”",
+      "next": "patience11"
+    },
+    "patience11": {
+      "speaker": "player",
+      "text": "“For gatherings?”",
+      "next": "patience12"
+    },
+    "patience12": {
+      "speaker": "thora",
+      "text": "“For remembering.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "player",
+      "text": "“How many crossed with you?”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "thora",
+      "text": "“Enough.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "player",
+      "text": "“How many stayed with you?”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "thora",
+      "text": "(Silence.)",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "thora",
+      "text": "“Not enough.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "player",
+      "text": "“You don't have to—”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "thora",
+      "text": "“Good.”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "player",
+      "text": "(She stands.)",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "thora",
+      "text": "“The bread.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "player",
+      "text": "“Right.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "player",
+      "text": "(At breakfast, Thora serves everyone before taking a plate.)",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "(When she finally does, it is the smallest piece.)",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "player",
+      "text": "“Take another.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "thora",
+      "text": "“I am fine.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "“You baked twelve.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "thora",
+      "text": "“For twelve people.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "kess",
+      "text": "“There are six of us.”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "thora",
+      "text": "“Then some of you should be hungrier.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "(She smiles.)",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "player",
+      "text": "(The carved token is in her pocket.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }
