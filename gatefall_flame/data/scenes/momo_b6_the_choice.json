@@ -1,7 +1,723 @@
 {
-  "scene_id": "momo_b6_the_choice", "start_node": "n1",
+  "scene_id": "momo_b6_the_choice",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "momo", "text": "I see it before it happens now. I'm not the danger anymore. I'm the warning.", "next": "end" },
-    "end": { "end_scene": true }
+    "n1": {
+      "speaker": "momo",
+      "text": "“Wake up.”",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(You are awake before your eyes open.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "“How long?”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "momo",
+      "text": "“Six minutes.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "“Where?”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "momo",
+      "text": "“Here.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "(That is new.)",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "momo",
+      "text": "“Not the House.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "momo",
+      "text": "“Under it.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "player",
+      "text": "(Everyone is moving before the explanation finishes.)",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "faelen",
+      "text": "“Evacuate?”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "“Momo?”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "momo",
+      "text": "“If we leave, it opens into the street.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "dana",
+      "text": "“And if we stay?”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "momo",
+      "text": "“It opens where I tell it to.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "player",
+      "text": "“You can do that?”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "momo",
+      "text": "“I can see where it's trying.”",
+      "next": "hold_cb1"
+    },
+    "hold_cb1": {
+      "speaker": "player",
+      "text": "“Formation.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_TRUST",
+            "equals": "hold"
+          }
+        ]
+      },
+      "next": "hold_cb2"
+    },
+    "hold_cb2": {
+      "speaker": "momo",
+      "text": "(Breathes once.) “Formation.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_TRUST",
+            "equals": "hold"
+          }
+        ]
+      },
+      "next": "free_cb1"
+    },
+    "free_cb1": {
+      "speaker": "player",
+      "text": "“Lead us.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_TRUST",
+            "equals": "free"
+          }
+        ]
+      },
+      "next": "free_cb2"
+    },
+    "free_cb2": {
+      "speaker": "momo",
+      "text": "“I was hoping you'd say that.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_TRUST",
+            "equals": "free"
+          }
+        ]
+      },
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "(The basement wall sweats black light.)",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "momo",
+      "text": "“Not there.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "thora",
+      "text": "“I see nothing.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "momo",
+      "text": "“Three steps left.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "player",
+      "text": "(The first tear appears exactly where she points.)",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "momo",
+      "text": "“Do not strike it.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "kess",
+      "text": "“Counterpoint: striking things is going great for me lately.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "momo",
+      "text": "“It wants impact.”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "faelen",
+      "text": "“Why?”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "momo",
+      "text": "“To stabilize.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "player",
+      "text": "“How do you know?”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "momo",
+      "text": "“Because I can feel what it expects.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "(The tear twitches toward Faelen's raised blade.)",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "momo",
+      "text": "“Down.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "faelen",
+      "text": "(Lowers it.)",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "(The tear weakens.)",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "dana",
+      "text": "“It reacts to prediction.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "momo",
+      "text": "“It reacts to intention.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "(A second seam begins behind Kess.)",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "momo",
+      "text": "“Kess. Two steps forward. Don't turn around.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "kess",
+      "text": "“This is deeply upsetting.”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "momo",
+      "text": "“Now.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "(Kess moves. The seam misses her.)",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "momo",
+      "text": "“Thora, shield high.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "thora",
+      "text": "“From what?”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "momo",
+      "text": "“Three.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "momo",
+      "text": "“Two.”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "momo",
+      "text": "“One.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "(Something strikes the shield from a tear that did not exist a heartbeat earlier.)",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "thora",
+      "text": "“Oh.”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "momo",
+      "text": "“Again.”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "player",
+      "text": "(The room becomes impossible geometry: seams appearing where she says, attacks arriving where she warned, the party moving before danger becomes visible.)",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "player",
+      "text": "(For once, Momo is not reacting to the gate.)",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "player",
+      "text": "(The gate is reacting to her.)",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "momo",
+      "text": "“Core is not below us.”",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "player",
+      "text": "“Where?”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "momo",
+      "text": "“Other side of the wall.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "dana",
+      "text": "“That's the street.”",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "momo",
+      "text": "“The other other side.”",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "player",
+      "text": "(She touches the wall.)",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "momo",
+      "text": "“There's a corridor between openings.”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "faelen",
+      "text": "“A transit layer.”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "momo",
+      "text": "“You know it?”",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "faelen",
+      "text": "“I suspected.”",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "momo",
+      "text": "“Something is using it.”",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "player",
+      "text": "“The thing hunting you?”",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "momo",
+      "text": "“Maybe.”",
+      "next": "n69"
+    },
+    "n69": {
+      "speaker": "momo",
+      "text": "“Maybe many things.”",
+      "next": "n70"
+    },
+    "n70": {
+      "speaker": "player",
+      "text": "(A pressure spike hits hard enough to make every light burst.)",
+      "next": "n71"
+    },
+    "n71": {
+      "speaker": "momo",
+      "text": "“Everyone down.”",
+      "next": "n72"
+    },
+    "n72": {
+      "speaker": "player",
+      "text": "(You move before understanding.)",
+      "next": "n73"
+    },
+    "n73": {
+      "speaker": "player",
+      "text": "(A black line crosses the room at neck height.)",
+      "next": "n74"
+    },
+    "n74": {
+      "speaker": "kess",
+      "text": "“Okay. New rule. We always listen to Momo.”",
+      "next": "n75"
+    },
+    "n75": {
+      "speaker": "momo",
+      "text": "“I have several older rules I'd like retroactively adopted.”",
+      "next": "n76"
+    },
+    "n76": {
+      "speaker": "player",
+      "text": "“Later.”",
+      "next": "n77"
+    },
+    "n77": {
+      "speaker": "momo",
+      "text": "“Right.”",
+      "next": "n78"
+    },
+    "n78": {
+      "speaker": "momo",
+      "text": "“Core in eight.”",
+      "next": "n79"
+    },
+    "n79": {
+      "speaker": "player",
+      "text": "“Call it.”",
+      "next": "n80"
+    },
+    "n80": {
+      "speaker": "momo",
+      "text": "“Seven.”",
+      "next": "n81"
+    },
+    "n81": {
+      "speaker": "momo",
+      "text": "“Faelen, draw left.”",
+      "next": "n82"
+    },
+    "n82": {
+      "speaker": "momo",
+      "text": "“Thora, brace.”",
+      "next": "n83"
+    },
+    "n83": {
+      "speaker": "momo",
+      "text": "“Kess, wait.”",
+      "next": "n84"
+    },
+    "n84": {
+      "speaker": "kess",
+      "text": "“Cruel.”",
+      "next": "n85"
+    },
+    "n85": {
+      "speaker": "momo",
+      "text": "“Player—Sever on my mark.”",
+      "next": "n86"
+    },
+    "n86": {
+      "speaker": "player",
+      "text": "“You're sure?”",
+      "next": "n87"
+    },
+    "n87": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n88"
+    },
+    "n88": {
+      "speaker": "momo",
+      "text": "“But I see it.”",
+      "next": "n89"
+    },
+    "n89": {
+      "speaker": "momo",
+      "text": "“Now.”",
+      "next": "n90"
+    },
+    "n90": {
+      "speaker": "player",
+      "text": "(The party moves as one.)",
+      "next": "n91"
+    },
+    "n91": {
+      "speaker": "player",
+      "text": "(The core appears inside the path Momo predicted.)",
+      "next": "n92"
+    },
+    "n92": {
+      "speaker": "player",
+      "text": "(It breaks before the gate fully stabilizes.)",
+      "next": "n93"
+    },
+    "n93": {
+      "speaker": "player",
+      "text": "(Silence.)",
+      "next": "n94"
+    },
+    "n94": {
+      "speaker": "momo",
+      "text": "“I did that.”",
+      "next": "n95"
+    },
+    "n95": {
+      "speaker": "player",
+      "text": "“You warned us.”",
+      "next": "n96"
+    },
+    "n96": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n97"
+    },
+    "n97": {
+      "speaker": "momo",
+      "text": "“I guided you.”",
+      "next": "n98"
+    },
+    "n98": {
+      "speaker": "player",
+      "text": "“Yeah.”",
+      "next": "n99"
+    },
+    "n99": {
+      "speaker": "momo",
+      "text": "(She starts laughing. Quietly at first, then hard enough to cry.)",
+      "choices": [
+        {
+          "choice_id": "warning",
+          "text": "“You were never the danger. You were the first person who could hear it coming.”",
+          "next": "warn1",
+          "effects": {
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "oracle",
+          "text": "“Then stop hiding from the thing only you can see. Show us.”",
+          "next": "oracle1",
+          "effects": {
+            "bond_delta": 15
+          }
+        }
+      ]
+    },
+    "warn1": {
+      "speaker": "momo",
+      "text": "“I don't know if that's true.”",
+      "next": "warn2"
+    },
+    "warn2": {
+      "speaker": "player",
+      "text": "“Which part?”",
+      "next": "warn3"
+    },
+    "warn3": {
+      "speaker": "momo",
+      "text": "“The 'never.'”",
+      "next": "warn4"
+    },
+    "warn4": {
+      "speaker": "player",
+      "text": "“Fair.”",
+      "next": "warn5"
+    },
+    "warn5": {
+      "speaker": "momo",
+      "text": "“But today?”",
+      "next": "warn6"
+    },
+    "warn6": {
+      "speaker": "player",
+      "text": "“Today you were the warning.”",
+      "next": "n100"
+    },
+    "oracle1": {
+      "speaker": "momo",
+      "text": "“Oracle sounds dramatic.”",
+      "next": "oracle2"
+    },
+    "oracle2": {
+      "speaker": "kess",
+      "text": "“Great brand, though.”",
+      "next": "oracle3"
+    },
+    "oracle3": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "oracle4"
+    },
+    "oracle4": {
+      "speaker": "player",
+      "text": "“What would you call it?”",
+      "next": "oracle5"
+    },
+    "oracle5": {
+      "speaker": "momo",
+      "text": "“Paying attention.”",
+      "next": "n100"
+    },
+    "n100": {
+      "speaker": "faelen",
+      "text": "“The corridor you sensed.”",
+      "next": "n101"
+    },
+    "n101": {
+      "speaker": "momo",
+      "text": "“I know.”",
+      "next": "n102"
+    },
+    "n102": {
+      "speaker": "faelen",
+      "text": "“It may connect more gates than we thought.”",
+      "next": "n103"
+    },
+    "n103": {
+      "speaker": "momo",
+      "text": "“I know.”",
+      "next": "n104"
+    },
+    "n104": {
+      "speaker": "faelen",
+      "text": "“And whatever uses it may have noticed Earth before Earth noticed it.”",
+      "next": "n105"
+    },
+    "n105": {
+      "speaker": "momo",
+      "text": "(Looks toward the repaired basement wall.)",
+      "next": "n106"
+    },
+    "n106": {
+      "speaker": "momo",
+      "text": "“Then we should notice back.”",
+      "next": "n107"
+    },
+    "n107": {
+      "speaker": "player",
+      "text": "“We?”",
+      "next": "n108"
+    },
+    "n108": {
+      "speaker": "momo",
+      "text": "“We.”",
+      "next": "n109"
+    },
+    "n109": {
+      "speaker": "player",
+      "text": "(Upstairs, Momo moves her travel bag away from the door.)",
+      "next": "n110"
+    },
+    "n110": {
+      "speaker": "player",
+      "text": "“Where are you putting it?”",
+      "next": "n111"
+    },
+    "n111": {
+      "speaker": "momo",
+      "text": "“Storage.”",
+      "next": "n112"
+    },
+    "n112": {
+      "speaker": "player",
+      "text": "“That's serious.”",
+      "next": "n113"
+    },
+    "n113": {
+      "speaker": "momo",
+      "text": "“Don't make this emotional.”",
+      "next": "n114"
+    },
+    "n114": {
+      "speaker": "kess",
+      "text": "“Too late. I clipped it.”",
+      "next": "n115"
+    },
+    "n115": {
+      "speaker": "momo",
+      "text": "“I am going to move out.”",
+      "next": "n116"
+    },
+    "n116": {
+      "speaker": "player",
+      "text": "“No, you're not.”",
+      "next": "n117"
+    },
+    "n117": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n118"
+    },
+    "n118": {
+      "speaker": "momo",
+      "text": "“I'm not.”",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }
