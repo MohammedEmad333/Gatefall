@@ -1,16 +1,532 @@
 {
-  "scene_id": "momo_b3_first_truth", "start_node": "n1",
+  "scene_id": "momo_b3_first_truth",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "momo", "text": "I can feel them before they open. Gates. It's why I move so much.", "next": "n2" },
-    "n2": { "speaker": "momo", "text": "I don't know why I'm like this. I just know it's not... normal.",
+    "n1": {
+      "speaker": "player",
+      "text": "(The library closes in twenty minutes. Momo chose the table farthest from the windows.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "momo",
+      "text": "“You didn't have to call this a date.”",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "“Kess said if two people leave the House voluntarily and spend Gold, it counts.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "momo",
+      "text": "“Kess is not a legal authority.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "“Don't tell her.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "momo",
+      "text": "(She hides a smile behind her book.)",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "“What are you reading?”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "momo",
+      "text": "“Municipal incident maps.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "player",
+      "text": "“Romantic.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "momo",
+      "text": "“I brought a novel too.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "player",
+      "text": "“You're reading the map.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "momo",
+      "text": "“The novel doesn't have dates.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "(Her notebook sits open beside the map. The addresses from Beat 1 are now pins.)",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "player",
+      "text": "“You've been comparing them.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "momo",
+      "text": "“Where I stayed. When pressure started. Where gates opened.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "“And?”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "momo",
+      "text": "“They don't line up cleanly.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "“That sounds good.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "momo",
+      "text": "“It should.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "“But?”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "momo",
+      "text": "“Some gates open before I arrive.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "(You wait.)",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "momo",
+      "text": "“Some open after I leave.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "momo",
+      "text": "“Some never open at all.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "player",
+      "text": "“So you're not causing them.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "momo",
+      "text": "“I didn't say that.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "“You just gave me three reasons to.”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "momo",
+      "text": "“I also have places where the pressure followed me across districts.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "“Pressure is not a gate.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "momo",
+      "text": "“That's what scares me.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "“What do you actually feel?”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "momo",
+      "text": "(She closes the map.)",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "momo",
+      "text": "“Attention.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "“From where?”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "momo",
+      "text": "“Wrong question.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "player",
+      "text": "“What's the right one?”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "momo",
+      "text": "“From which side.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "(The library hum feels suddenly louder.)",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "momo",
+      "text": "“In my world, Gloamkin notice thresholds.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "momo",
+      "text": "“Doorways. Shadows. Places where one thing becomes another.”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "momo",
+      "text": "“I was always sensitive.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "momo",
+      "text": "“After the Gatefall, sensitivity became... louder.”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "player",
+      "text": "“Did other Gloamkin feel it?”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "momo",
+      "text": "“Some.”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "momo",
+      "text": "“Not like me.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "player",
+      "text": "“So what are you?”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "momo",
+      "text": "“Not normal.”",
+      "next": "press_cb1"
+    },
+    "press_cb1": {
+      "speaker": "player",
+      "text": "“You keep using that phrase like it's a verdict.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "press_cb2"
+    },
+    "press_cb2": {
+      "speaker": "momo",
+      "text": "“You keep refusing to let me.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "patience_cb1"
+    },
+    "patience_cb1": {
+      "speaker": "momo",
+      "text": "“You're doing the waiting thing again.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb2"
+    },
+    "patience_cb2": {
+      "speaker": "player",
+      "text": "“Working?”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb3"
+    },
+    "patience_cb3": {
+      "speaker": "momo",
+      "text": "“Unfortunately.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
       "choices": [
-        { "choice_id": "ask", "text": "\"Do you think it's connected to why the gates started?\"", "next": "n3_ask",
-          "effects": { "set_flags": { "MOMO_SENSE_KNOWN": true }, "bond_delta": 15 } },
-        { "choice_id": "comfort", "text": "\"Whatever it is, it doesn't change anything for me.\"", "next": "n3_comfort",
-          "effects": { "set_flags": { "MOMO_SENSE_KNOWN": true }, "bond_delta": 10 } }
-      ] },
-    "n3_ask": { "speaker": "momo", "text": "...Maybe. I've never said that thought out loud before.", "next": "end" },
-    "n3_comfort": { "speaker": "momo", "text": "...Thank you. I needed to hear that.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "ask",
+          "text": "“Do you think your sense is connected to why the gates started?”",
+          "next": "ask1",
+          "effects": {
+            "set_flags": {
+              "MOMO_SENSE_KNOWN": true
+            },
+            "bond_delta": 15
+          }
+        },
+        {
+          "choice_id": "comfort",
+          "text": "“Whatever your sense is connected to, it doesn't decide what you are.”",
+          "next": "comfort1",
+          "effects": {
+            "set_flags": {
+              "MOMO_SENSE_KNOWN": true
+            },
+            "bond_delta": 10
+          }
+        }
+      ]
+    },
+    "ask1": {
+      "speaker": "momo",
+      "text": "“I think about it every day.”",
+      "next": "ask2"
+    },
+    "ask2": {
+      "speaker": "player",
+      "text": "“And?”",
+      "next": "ask3"
+    },
+    "ask3": {
+      "speaker": "momo",
+      "text": "“I don't know if I hear the gates...”",
+      "next": "ask4"
+    },
+    "ask4": {
+      "speaker": "momo",
+      "text": "“...or if something behind them hears me.”",
+      "next": "ask5"
+    },
+    "ask5": {
+      "speaker": "player",
+      "text": "“Have you told Faelen?”",
+      "next": "ask6"
+    },
+    "ask6": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "ask7"
+    },
+    "ask7": {
+      "speaker": "player",
+      "text": "“Why?”",
+      "next": "ask8"
+    },
+    "ask8": {
+      "speaker": "momo",
+      "text": "“Because Wardens know what to do with dangerous things.”",
+      "next": "ask9"
+    },
+    "ask9": {
+      "speaker": "faelen",
+      "text": "(From the next aisle.) “We ask them before deciding what they are.”",
+      "next": "ask10"
+    },
+    "ask10": {
+      "speaker": "momo",
+      "text": "(Nearly drops the book.)",
+      "next": "ask11"
+    },
+    "ask11": {
+      "speaker": "faelen",
+      "text": "“I was looking for military history.”",
+      "next": "ask12"
+    },
+    "ask12": {
+      "speaker": "player",
+      "text": "“In municipal records?”",
+      "next": "ask13"
+    },
+    "ask13": {
+      "speaker": "faelen",
+      "text": "“No.”",
+      "next": "ask14"
+    },
+    "ask14": {
+      "speaker": "momo",
+      "text": "“I'm going to die.”",
+      "next": "n49"
+    },
+    "comfort1": {
+      "speaker": "momo",
+      "text": "“You say that very confidently.”",
+      "next": "comfort2"
+    },
+    "comfort2": {
+      "speaker": "player",
+      "text": "“I'm improvising.”",
+      "next": "comfort3"
+    },
+    "comfort3": {
+      "speaker": "momo",
+      "text": "“That is less reassuring.”",
+      "next": "comfort4"
+    },
+    "comfort4": {
+      "speaker": "player",
+      "text": "“Still true.”",
+      "next": "comfort5"
+    },
+    "comfort5": {
+      "speaker": "momo",
+      "text": "(Her thumb traces the edge of the map.)",
+      "next": "comfort6"
+    },
+    "comfort6": {
+      "speaker": "momo",
+      "text": "“What if the answer is bad?”",
+      "next": "comfort7"
+    },
+    "comfort7": {
+      "speaker": "player",
+      "text": "“Then it's information.”",
+      "next": "comfort8"
+    },
+    "comfort8": {
+      "speaker": "momo",
+      "text": "“Not a sentence.”",
+      "next": "comfort9"
+    },
+    "comfort9": {
+      "speaker": "player",
+      "text": "“Not a sentence.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "(The closing announcement plays.)",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "momo",
+      "text": "“I like libraries.”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "player",
+      "text": "“I noticed.”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "momo",
+      "text": "“They're full of things that already happened.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "player",
+      "text": "“Safer than predictions?”",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "momo",
+      "text": "“Usually.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "player",
+      "text": "(She checks the pressure notebook before packing it.)",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "momo",
+      "text": "“Nothing nearby.”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "player",
+      "text": "“Good.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "momo",
+      "text": "(She looks surprised.)",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "player",
+      "text": "“What?”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "momo",
+      "text": "“I expected you to say 'see?'”",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "player",
+      "text": "“You'd hate that.”",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "momo",
+      "text": "“Yes.”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "player",
+      "text": "“Then let's go home.”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "momo",
+      "text": "(This time, she does not correct the word.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }
