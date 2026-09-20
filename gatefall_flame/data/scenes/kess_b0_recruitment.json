@@ -1,9 +1,219 @@
 {
-  "scene_id": "kess_b0_recruitment", "start_node": "n1",
+  "scene_id": "kess_b0_recruitment",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "player", "text": "(A fox-eared streamer corners you outside a fresh gate line, camera already rolling.)", "next": "n2" },
-    "n2": { "speaker": "kess", "text": "You're the landlord who took in a Warden? Perfect. I need content, you need rent. Let's talk.", "next": "n3" },
-    "n3": { "speaker": "player", "text": "(Somehow, by the end of the conversation, she has a room.)", "next": "end" },
-    "end": { "end_scene": true }
+    "n1": {
+      "speaker": "player",
+      "text": "(The Fracture gate is already collapsing when somebody steps backward through the evacuation tape with a phone held at arm’s length.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "kess",
+      "text": "—and that, chat, is why we do not stand under a sky-tear just because the lighting is incredible.",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "(Fox ears. Orange-red hair. A scorched jacket. A ring light clipped to a backpack that has been repaired with three different colors of tape.)",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "kess",
+      "text": "Okay. Hero shot. Look exhausted but not tragic.",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "Turn that off.",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "kess",
+      "text": "Oh, perfect. Boundaries. Love a professional.",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "(She flips the phone face-down before you can ask twice. The smile stays; the performance drops half a degree.)",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "kess",
+      "text": "You’re the landlord with the elf Warden.",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "player",
+      "text": "How do you know that?",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "kess",
+      "text": "I know three things before breakfast: gate clips, rent prices, and who in this city is willing to put Gatekin behind a door that locks.",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "player",
+      "text": "That sounds less like streaming and more like stalking.",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "kess",
+      "text": "Networking. Stalking has worse sponsorships.",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "(A warning siren chirps behind the barricade. One last wave-creature claws out of the dying tear before the response team notices.)",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "kess",
+      "text": "Hold that thought.",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "player",
+      "text": "(She moves first. Too fast. Ember flashes at her heels and she crosses the road in one reckless line.)",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "kess",
+      "text": "Hey! Root-face!",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "player",
+      "text": "(The creature turns toward her. Your blade catches it from the side. Her second strike lands before the ash reaches the pavement.)",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "kess",
+      "text": "See? Synergy. We’re already a brand.",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "player",
+      "text": "You baited it with your face.",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "kess",
+      "text": "My face has excellent engagement.",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "player",
+      "text": "(The phone in her pocket vibrates. She checks it instantly. For one second the grin disappears.)",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "Bad news?",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "kess",
+      "text": "Spam.",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "player",
+      "text": "You looked at it like it had a pulse.",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "kess",
+      "text": "And you look like somebody who owns empty square footage.",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "kess",
+      "text": "Here’s the deal. I pay rent. I don’t complain about pipes unless they are actively on fire. I can promote the building if you want, not promote it if you don’t, and I’m out of your fur before you can regret the decision.",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "Hair.",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "kess",
+      "text": "Right. Human. Tragic.",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "How temporary?",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "kess",
+      "text": "Temporary enough that neither of us has to make it weird.",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "player",
+      "text": "(That evening, she carries everything she owns upstairs in one trip because accepting a second trip would apparently be a moral failure.)",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "kess",
+      "text": "Studio’s small.",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "player",
+      "text": "It’s a bedroom.",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "kess",
+      "text": "Bedroom, studio, command center, revenue-generating asset.",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "(She puts the repaired ring light in the corner, checks the window latch twice, then sets her bag beside the bed without unpacking it.)",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "kess",
+      "text": "Don’t worry. I’m easy rent.",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "player",
+      "text": "You don’t have to earn the room tonight.",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "kess",
+      "text": "Sure I do.",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "(She smiles before you can ask what that means.)",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "kess",
+      "text": "Anyway. Welcome to the content house.",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "player",
+      "text": "You just moved in.",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "kess",
+      "text": "Exactly. First-mover advantage.",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }
