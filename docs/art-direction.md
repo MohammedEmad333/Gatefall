@@ -71,8 +71,8 @@ gacha splash art than to cel-shaded anime.
 
 The locked prompt below is written in Pony's `score_*` tag grammar and
 works on AniVerse (Pony XL) and on stock Pony V6 XL alike; if you switch
-checkpoints, re-confirm the neckline/coverage negatives still hold, since
-merges differ in how skimpy they default.
+checkpoints, re-confirm character identity and outfit consistency, since
+merges can shift how clothing and armor are interpreted.
 
 - Line/render style: semi-realistic/photoreal-leaning shading, glossy
   highlights, sharp focus, ultra detailed — not flat cel shading.
@@ -135,16 +135,16 @@ action; back row = ranged/support stance, more distance/guard).
   score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
   detailed, 1girl, solo, elf, pointed ears, full body, long
   silver-white hair, tied back, pale skin, detailed skin texture,
-  tired eyes, stoic expression, weathered leather and steel armor, worn cloak, cloak clasp shaped like
-  a closing gate, green glowing seams, photorealistic shading, glossy
+  tired eyes, stoic expression, weathered leather and steel armor,
+  high collar, worn cloak, cloak clasp shaped like a closing gate,
+  green glowing seams, photorealistic shading, glossy
   highlights, dramatic rim lighting, cinematic lighting, dark vignette
   background, blurred cityscape background, game character splash art,
   sharp focus
 
   Negative: chibi, deformed, extra limbs, extra fingers, blurry, lowres,
   watermark, signature, text, bad anatomy, flat lighting, cartoon, cel
-  shading, cutout
-  armor
+  shading
   ```
   Resolution: 832x1216. Checkpoint: AniVerse (Pony XL) — regenerated on
   this checkpoint; supersedes the original Pony Diffusion V6 XL pass.
@@ -183,8 +183,8 @@ action; back row = ranged/support stance, more distance/guard).
   full body, messy orange-red hair, amber eyes, tan skin, detailed
   skin texture, confident grin, cocky expression, dynamic pose,
   modern streetwear layered with scrappy improvised leather armor,
-  hooded jacket, fingerless gloves, covered
-  torso, orange glowing ember seams, glowing gate-shaped pendant,
+  hooded jacket, fingerless gloves, high collar, orange glowing ember
+  seams, glowing gate-shaped pendant,
   warm orange and red palette, photorealistic shading, glossy
   highlights, dramatic rim lighting, cinematic lighting, dark
   vignette background, blurred cityscape background, game character
@@ -192,9 +192,7 @@ action; back row = ranged/support stance, more distance/guard).
 
   Negative: chibi, deformed, extra limbs, extra fingers, extra tails,
   blurry, lowres, watermark, signature, text, bad anatomy, flat
-  lighting, cartoon, cel shading, bare
-  stomach, bare
-  shoulders
+  lighting, cartoon, cel shading
   ```
   Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
 
@@ -221,8 +219,7 @@ action; back row = ranged/support stance, more distance/guard).
   detailed skin texture, faint glowing violet void markings on skin,
   soft shadow haze around her, shy expression, downcast look,
   oversized layered hooded robe, protective layered clothing, high
-  collar, covered
-  torso, holding a small worn book, indigo and violet gloam accents,
+  collar, holding a small worn book, indigo and violet gloam accents,
   dark desaturated palette, photorealistic shading, glossy
   highlights, dramatic rim lighting, cinematic lighting, dark
   vignette background, blurred cityscape background, game character
@@ -230,8 +227,7 @@ action; back row = ranged/support stance, more distance/guard).
 
   Negative: chibi, deformed, extra limbs, extra fingers, blurry,
   lowres, watermark, signature, text, bad anatomy, flat lighting,
-  cartoon, cel shading, bare
-  shoulders, oversexualized, mature body
+  cartoon, cel shading, oversexualized, mature body
   ```
   Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
 
@@ -261,8 +257,7 @@ action; back row = ranged/support stance, more distance/guard).
 
   Negative: chibi, deformed, extra limbs, extra fingers, blurry,
   lowres, watermark, signature, text, bad anatomy, flat lighting,
-  cartoon, cel shading, bare
-  shoulders, skinny, frail
+  cartoon, cel shading, skinny, frail
   ```
   Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
 
@@ -286,8 +281,8 @@ action; back row = ranged/support stance, more distance/guard).
   detailed, 1girl, solo, human, full body, shoulder-length brown
   hair, tired eyes, guarded skeptical expression, realistic skin
   texture, plain office-casual clothing, buttoned blouse, blazer,
-  slacks, lanyard id badge, modest
-  clothing, holding a clipboard, muted neutral grey
+  slacks, lanyard id badge, high collar, holding a clipboard, muted
+  neutral grey
   and beige palette, no magic, photorealistic shading, glossy
   highlights, dramatic rim lighting, cinematic lighting, dark
   vignette background, blurred cityscape background, game character
@@ -295,9 +290,8 @@ action; back row = ranged/support stance, more distance/guard).
 
   Negative: chibi, deformed, extra limbs, extra fingers, blurry,
   lowres, watermark, signature, text, bad anatomy, flat lighting,
-  cartoon, cel shading, bare
-  shoulders, fantasy armor, glowing magic, elf ears, animal ears,
-  weapon
+  cartoon, cel shading, fantasy armor, glowing magic, elf ears,
+  animal ears, weapon
   ```
   Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
 
