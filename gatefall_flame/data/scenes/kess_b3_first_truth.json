@@ -1,16 +1,378 @@
 {
-  "scene_id": "kess_b3_first_truth", "start_node": "n1",
+  "scene_id": "kess_b3_first_truth",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "kess", "text": "Okay, don't judge the food — it's supposed to taste like home. It just... doesn't, quite.", "next": "n2" },
-    "n2": { "speaker": "kess", "text": "The streaming, the gigs — it's not really about the fame.",
+    "n1": {
+      "speaker": "player",
+      "text": "(Kess takes you to a night-market stall with three tables, no sign, and smoke thick enough to hide the street.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "kess",
+      "text": "Before you say anything: no, it does not look sanitary.",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "I wasn’t going to.",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "kess",
+      "text": "You made the face.",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "You hate when people say that.",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "kess",
+      "text": "Growth. I hate it.",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "(She orders for both of you in a language the vendor understands badly and she remembers perfectly.)",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "player",
+      "text": "You’re not filming.",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "kess",
+      "text": "Camera eats first on business hours.",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "player",
+      "text": "And this isn’t business?",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "kess",
+      "text": "Do not ruin the evening.",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "(The food arrives. Kess takes one bite and stops.)",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "Bad?",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "kess",
+      "text": "No.",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "kess",
+      "text": "Close.",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "To home?",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "kess",
+      "text": "Close enough to be annoying.",
+      "next": "press_cb"
+    },
+    "press_cb": {
+      "speaker": "kess",
+      "text": "And yes, before you use my own words against me, that makes it a big deal.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "patience_cb"
+    },
+    "patience_cb": {
+      "speaker": "kess",
+      "text": "You waited. So I’m trying the part where I talk before four in the morning.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "You said the streaming was content.",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "kess",
+      "text": "It is.",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "And the registry?",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "kess",
+      "text": "That too.",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "(She rolls the skewer between her fingers.)",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "kess",
+      "text": "Followers are eyes.",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "kess",
+      "text": "Sponsors are archive fees.",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "kess",
+      "text": "Side gigs are translators, access lists, favors, transit logs, people who know a person who maybe saw a fox tail in an intake center two countries away.",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "player",
+      "text": "So the whole machine—",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "kess",
+      "text": "Is a search.",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "player",
+      "text": "(For once she does not smile after the sentence.)",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "kess",
+      "text": "When our gate broke, we were together.",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "kess",
+      "text": "Then the seam folded.",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "kess",
+      "text": "One second I had hands on me. The next I woke up in an Earth intake hall with forty strangers and somebody writing ‘beastkin, female, approximate age’ on a clipboard.",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "No confirmed deaths.",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "kess",
+      "text": "No confirmed arrivals.",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "So you kept looking.",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "kess",
+      "text": "What else was I supposed to do?",
       "choices": [
-        { "choice_id": "ask", "text": "\"What's it really for?\"", "next": "n3_ask",
-          "effects": { "set_flags": { "KESS_SEARCH_KNOWN": true }, "bond_delta": 15 } },
-        { "choice_id": "gentle", "text": "\"You don't have to explain it tonight.\"", "next": "n3_gentle",
-          "effects": { "set_flags": { "KESS_SEARCH_KNOWN": true }, "bond_delta": 10 } }
-      ] },
-    "n3_ask": { "speaker": "kess", "text": "...I'm looking for my family. Every coin goes toward finding them.", "next": "end" },
-    "n3_gentle": { "speaker": "kess", "text": "...Thanks. I'll tell you when I'm ready.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "ask",
+          "text": "“How much of your life is the search allowed to take?”",
+          "next": "ask1",
+          "effects": {
+            "set_flags": {
+              "KESS_SEARCH_KNOWN": true
+            },
+            "bond_delta": 15
+          }
+        },
+        {
+          "choice_id": "gentle",
+          "text": "“You don’t have to make me believe they’re gone.”",
+          "next": "gentle1",
+          "effects": {
+            "set_flags": {
+              "KESS_SEARCH_KNOWN": true
+            },
+            "bond_delta": 10
+          }
+        }
+      ]
+    },
+    "ask1": {
+      "speaker": "kess",
+      "text": "All of it, if that’s what it costs.",
+      "next": "ask2"
+    },
+    "ask2": {
+      "speaker": "player",
+      "text": "That was too fast.",
+      "next": "ask3"
+    },
+    "ask3": {
+      "speaker": "kess",
+      "text": "Because I’ve had the answer for three years.",
+      "next": "ask4"
+    },
+    "ask4": {
+      "speaker": "player",
+      "text": "And if the answer is wrong?",
+      "next": "ask5"
+    },
+    "ask5": {
+      "speaker": "kess",
+      "text": "Then I’ll earn enough to afford a better one.",
+      "next": "ask6"
+    },
+    "ask6": {
+      "speaker": "player",
+      "text": "That isn’t how answers work.",
+      "next": "ask7"
+    },
+    "ask7": {
+      "speaker": "kess",
+      "text": "It is how money works.",
+      "next": "n36"
+    },
+    "gentle1": {
+      "speaker": "kess",
+      "text": "Good.",
+      "next": "gentle2"
+    },
+    "gentle2": {
+      "speaker": "kess",
+      "text": "Because I don’t.",
+      "next": "gentle3"
+    },
+    "gentle3": {
+      "speaker": "player",
+      "text": "I believe you don’t know.",
+      "next": "gentle4"
+    },
+    "gentle4": {
+      "speaker": "kess",
+      "text": "That is an extremely annoying distinction.",
+      "next": "gentle5"
+    },
+    "gentle5": {
+      "speaker": "player",
+      "text": "It leaves room for hope without making hope your job.",
+      "next": "gentle6"
+    },
+    "gentle6": {
+      "speaker": "player",
+      "text": "(Her ears flatten.)",
+      "next": "gentle7"
+    },
+    "gentle7": {
+      "speaker": "kess",
+      "text": "Hope has terrible hours.",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "player",
+      "text": "(The vendor brings another plate without being asked.)",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "kess",
+      "text": "I used to think the follower count was temporary.",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "kess",
+      "text": "Hit the number, buy the database. Hit the next number, pay the finder. Hit the next number, cross another city off.",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "And when you find them?",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "kess",
+      "text": "Then I stop.",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "player",
+      "text": "Streaming?",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "kess",
+      "text": "Everything.",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "What does Kess do after everything?",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "player",
+      "text": "(She looks at the food, then at you.)",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "kess",
+      "text": "Wow. Date was going great until that.",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "player",
+      "text": "(She pays before you can reach for your Gold.)",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "kess",
+      "text": "Come on. Last train.",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "player",
+      "text": "You know we can walk.",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "kess",
+      "text": "I know.",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "player",
+      "text": "(She takes the long route home anyway.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }
