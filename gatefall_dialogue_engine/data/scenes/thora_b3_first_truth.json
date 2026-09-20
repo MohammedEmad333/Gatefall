@@ -1,16 +1,507 @@
 {
-  "scene_id": "thora_b3_first_truth", "start_node": "n1",
+  "scene_id": "thora_b3_first_truth",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "thora", "text": "I led a clan, once. A healer, a mother to all of them.", "next": "n2" },
-    "n2": { "speaker": "thora", "text": "I couldn't save them all when we crossed. I still don't know why I lived and they didn't.",
+    "n1": {
+      "speaker": "player",
+      "text": "(Thora's idea of a date is apparently making enough food for twelve.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "“There are two of us.”",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "thora",
+      "text": "“There are never two of us.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "player",
+      "text": "“Everyone else is out.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "thora",
+      "text": "“They will return.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "“So this is meal prep.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "thora",
+      "text": "“This is romance with leftovers.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "player",
+      "text": "“I respect the efficiency.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "player",
+      "text": "(She hands you a knife.)",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "thora",
+      "text": "“No. Smaller pieces.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "player",
+      "text": "“You said that before I cut anything.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "thora",
+      "text": "“I saw your hands.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "“That feels discriminatory.”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "thora",
+      "text": "“It is experience.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "player",
+      "text": "(You cook.)",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "(For once, Thora stays seated while something simmers.)",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "player",
+      "text": "“The token.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "thora",
+      "text": "“You remembered.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "player",
+      "text": "“You keep it above your bed now.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "thora",
+      "text": "“So I do not have to hold it every night.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "player",
+      "text": "“Tell me about them.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "thora",
+      "text": "“My clan?”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "player",
+      "text": "“If you want.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "thora",
+      "text": "(She stirs once.)",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "thora",
+      "text": "“We were not soldiers.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "thora",
+      "text": "“People hear 'orc-kin clan' and imagine war paint.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "“What should I imagine?”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "thora",
+      "text": "“Laundry.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "“Laundry?”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "thora",
+      "text": "“Children under tables. Arguments about spice. Three cousins repairing the same roof incorrectly.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "thora",
+      "text": "“Old people pretending not to hear when asked to rest.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "“Sounds familiar.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "thora",
+      "text": "“Do not start.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "“I didn't.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "thora",
+      "text": "“You made the face.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "player",
+      "text": "“Kess has infected this House.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "thora",
+      "text": "(Smiles, then looks into the pot.)",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "thora",
+      "text": "“I was their healer.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "thora",
+      "text": "“And when my sister died, I became the one people asked first.”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "player",
+      "text": "“Leader?”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "thora",
+      "text": "“We did not use the word often.”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "thora",
+      "text": "“Mother, sometimes.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "“To all of them?”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "thora",
+      "text": "“Enough of them.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "player",
+      "text": "“What happened when the gate opened?”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "thora",
+      "text": "“It did not open cleanly.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "thora",
+      "text": "“Our settlement folded through in pieces.”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "thora",
+      "text": "“One room here. A street somewhere else. People caught between.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "“You crossed.”",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "thora",
+      "text": "“I pulled people through.”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "player",
+      "text": "“How many?”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "thora",
+      "text": "“Not enough.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "player",
+      "text": "“Thora.”",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "thora",
+      "text": "“I chose.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "player",
+      "text": "“What?”",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "thora",
+      "text": "“When the passage began closing, I chose who I could reach.”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "thora",
+      "text": "“I carried children first.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "thora",
+      "text": "“I left stronger adults behind because I thought they had a better chance.”",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "thora",
+      "text": "“They didn't.”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "player",
+      "text": "“You couldn't carry everyone.”",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "thora",
+      "text": "“A healer should not have to know that sentence.”",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "player",
+      "text": "“But you did.”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "thora",
+      "text": "“Yes.”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "player",
+      "text": "“And then?”",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "thora",
+      "text": "“Then the shelter took the children.”",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "thora",
+      "text": "“Families were split across intake centers.”",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "thora",
+      "text": "“People moved on.”",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "thora",
+      "text": "“And I kept feeding whoever was in front of me.”",
+      "next": "n69"
+    },
+    "n69": {
+      "speaker": "player",
+      "text": "“Because you couldn't feed the ones behind.”",
+      "next": "n70"
+    },
+    "n70": {
+      "speaker": "thora",
+      "text": "(Long silence.)",
       "choices": [
-        { "choice_id": "listen", "text": "\"That wasn't a failure. You did everything you could.\"", "next": "n3_listen",
-          "effects": { "set_flags": { "THORA_GRIEF_KNOWN": true }, "bond_delta": 15 } },
-        { "choice_id": "gentle", "text": "\"You don't owe anyone an explanation for surviving.\"", "next": "n3_gentle",
-          "effects": { "set_flags": { "THORA_GRIEF_KNOWN": true }, "bond_delta": 10 } }
-      ] },
-    "n3_listen": { "speaker": "thora", "text": "...You're kind to say so.", "next": "end" },
-    "n3_gentle": { "speaker": "thora", "text": "...I've never let myself think that.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "listen",
+          "text": "“You made impossible choices to save who you could. That was not a failure.”",
+          "next": "listen1",
+          "effects": {
+            "set_flags": {
+              "THORA_GRIEF_KNOWN": true
+            },
+            "bond_delta": 15
+          }
+        },
+        {
+          "choice_id": "gentle",
+          "text": "“You do not owe the dead an explanation for still being alive.”",
+          "next": "gentle1",
+          "effects": {
+            "set_flags": {
+              "THORA_GRIEF_KNOWN": true
+            },
+            "bond_delta": 10
+          }
+        }
+      ]
+    },
+    "listen1": {
+      "speaker": "thora",
+      "text": "“You say that like numbers change grief.”",
+      "next": "listen2"
+    },
+    "listen2": {
+      "speaker": "player",
+      "text": "“They don't.”",
+      "next": "listen3"
+    },
+    "listen3": {
+      "speaker": "player",
+      "text": "“But grief doesn't get to rewrite the choice into murder.”",
+      "next": "listen4"
+    },
+    "listen4": {
+      "speaker": "thora",
+      "text": "(Her grip tightens on the spoon.)",
+      "next": "listen5"
+    },
+    "listen5": {
+      "speaker": "thora",
+      "text": "“I chose.”",
+      "next": "listen6"
+    },
+    "listen6": {
+      "speaker": "player",
+      "text": "“To save people.”",
+      "next": "listen7"
+    },
+    "listen7": {
+      "speaker": "thora",
+      "text": "“...Yes.”",
+      "next": "n71"
+    },
+    "gentle1": {
+      "speaker": "thora",
+      "text": "“I have never thought of it as owing.”",
+      "next": "gentle2"
+    },
+    "gentle2": {
+      "speaker": "player",
+      "text": "“What do you call it?”",
+      "next": "gentle3"
+    },
+    "gentle3": {
+      "speaker": "thora",
+      "text": "“Responsibility.”",
+      "next": "gentle4"
+    },
+    "gentle4": {
+      "speaker": "player",
+      "text": "“For the rest of your life?”",
+      "next": "gentle5"
+    },
+    "gentle5": {
+      "speaker": "thora",
+      "text": "“If necessary.”",
+      "next": "gentle6"
+    },
+    "gentle6": {
+      "speaker": "player",
+      "text": "“That sounds like debt.”",
+      "next": "gentle7"
+    },
+    "gentle7": {
+      "speaker": "thora",
+      "text": "(Very quietly.) “Perhaps.”",
+      "next": "n71"
+    },
+    "n71": {
+      "speaker": "player",
+      "text": "(The pot boils over.)",
+      "next": "n72"
+    },
+    "n72": {
+      "speaker": "thora",
+      "text": "“Oh.”",
+      "next": "n73"
+    },
+    "n73": {
+      "speaker": "player",
+      "text": "“You let something burn.”",
+      "next": "n74"
+    },
+    "n74": {
+      "speaker": "thora",
+      "text": "“Boil.”",
+      "next": "n75"
+    },
+    "n75": {
+      "speaker": "player",
+      "text": "“Historic.”",
+      "next": "n76"
+    },
+    "n76": {
+      "speaker": "thora",
+      "text": "“Do not tell Kess.”",
+      "next": "n77"
+    },
+    "n77": {
+      "speaker": "kess",
+      "text": "(From the hall.) “Tell Kess what?”",
+      "next": "n78"
+    },
+    "n78": {
+      "speaker": "thora",
+      "text": "“Nothing.”",
+      "next": "n79"
+    },
+    "n79": {
+      "speaker": "player",
+      "text": "“It's nothing.”",
+      "next": "n80"
+    },
+    "n80": {
+      "speaker": "thora",
+      "text": "(Looks at you.)",
+      "next": "n81"
+    },
+    "n81": {
+      "speaker": "player",
+      "text": "(She laughs first.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

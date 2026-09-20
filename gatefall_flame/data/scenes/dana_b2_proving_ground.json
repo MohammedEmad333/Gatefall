@@ -1,16 +1,447 @@
 {
-  "scene_id": "dana_b2_proving_ground", "start_node": "n1",
+  "scene_id": "dana_b2_proving_ground",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "dana", "text": "My superiors want this house shut down. Officially, I'm here to enforce that.", "next": "n2" },
-    "n2": { "speaker": "player", "text": "(Unofficially, she's stalled the paperwork for weeks, risking her job to buy you time.)",
+    "n1": {
+      "speaker": "dana",
+      "text": "“My superiors want this House shut down.”",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "“Again?”",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "dana",
+      "text": "“This time officially.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "player",
+      "text": "“What changed?”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "dana",
+      "text": "“Occupancy.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "“We filed occupancy.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "dana",
+      "text": "“Combat deployment.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "player",
+      "text": "“What does that have to do with housing?”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "dana",
+      "text": "“Nothing.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "player",
+      "text": "“Then—”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "dana",
+      "text": "“That is why I am angry.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "(She drops a thick packet on the table.)",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "dana",
+      "text": "“Someone has decided the House is functioning as an unlicensed armed Gatekin collective.”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "kess",
+      "text": "“That sounds cooler than we are.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "faelen",
+      "text": "“No.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "kess",
+      "text": "“A little.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "dana",
+      "text": "“If the classification sticks, housing protections disappear and security statutes take over.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "“Can it stick?”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "dana",
+      "text": "“Not honestly.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "“That's not what I asked.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "dana",
+      "text": "“Yes.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "(Silence.)",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "dana",
+      "text": "“Officially, I am here to verify the classification.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "player",
+      "text": "“And unofficially?”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "dana",
+      "text": "“I have spent three weeks requesting clarifications nobody can answer.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "player",
+      "text": "“Stalling.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "dana",
+      "text": "“Due diligence.”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "player",
+      "text": "“Dana.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "dana",
+      "text": "“Stalling.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "player",
+      "text": "“What does that cost you?”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "dana",
+      "text": "“Nothing yet.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "“And later?”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "dana",
+      "text": "“If anyone compares timestamps, enough.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "“Job?”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "dana",
+      "text": "“Possibly.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "player",
+      "text": "“You don't have to—”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "dana",
+      "text": "“Do not say thank you yet.”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "player",
+      "text": "“Why?”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "dana",
+      "text": "“Because I am about to ask for every raid log, resident form, equipment record, injury report, and gate-clear receipt from the last six months.”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "kess",
+      "text": "“I take back the cool thing.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "dana",
+      "text": "“If I can bury the classification under evidence, I can make shutting you down more expensive than leaving you alone.”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "player",
+      "text": "“That's your heroic plan?”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "dana",
+      "text": "“Administrative friction.”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "player",
+      "text": "“Terrifying.”",
       "choices": [
-        { "choice_id": "thank", "text": "\"Thank you. Openly. I mean it.\"", "next": "n3_thank",
-          "effects": { "set_flags": { "DANA_COVER": "thanked" }, "bond_delta": 15 } },
-        { "choice_id": "deniability", "text": "\"I never saw any of this. You're clean.\"", "next": "n3_deniability",
-          "effects": { "set_flags": { "DANA_COVER": "deniable" }, "bond_delta": 10 } }
-      ] },
-    "n3_thank": { "speaker": "dana", "text": "...Don't. Someone might hear you.", "next": "end" },
-    "n3_deniability": { "speaker": "dana", "text": "...Smart. Keep it that way.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "thank",
+          "text": "“Thank you. Openly. I mean it.”",
+          "next": "thank1",
+          "effects": {
+            "set_flags": {
+              "DANA_COVER": "thanked"
+            },
+            "bond_delta": 15
+          }
+        },
+        {
+          "choice_id": "deniability",
+          "text": "“I never saw any of this. You're clean.”",
+          "next": "deny1",
+          "effects": {
+            "set_flags": {
+              "DANA_COVER": "deniable"
+            },
+            "bond_delta": 10
+          }
+        }
+      ]
+    },
+    "thank1": {
+      "speaker": "dana",
+      "text": "“Do not.”",
+      "next": "thank2"
+    },
+    "thank2": {
+      "speaker": "player",
+      "text": "“I mean it.”",
+      "next": "thank3"
+    },
+    "thank3": {
+      "speaker": "dana",
+      "text": "“Someone might hear you.”",
+      "next": "thank4"
+    },
+    "thank4": {
+      "speaker": "player",
+      "text": "“We're in the kitchen.”",
+      "next": "thank5"
+    },
+    "thank5": {
+      "speaker": "dana",
+      "text": "“Kess has microphones in the kitchen.”",
+      "next": "thank6"
+    },
+    "thank6": {
+      "speaker": "kess",
+      "text": "“Only two.”",
+      "next": "thank7"
+    },
+    "thank7": {
+      "speaker": "dana",
+      "text": "“Exactly.”",
+      "next": "thank8"
+    },
+    "thank8": {
+      "speaker": "player",
+      "text": "“Thank you.”",
+      "next": "thank9"
+    },
+    "thank9": {
+      "speaker": "dana",
+      "text": "(She looks at the packet instead of you.)",
+      "next": "thank10"
+    },
+    "thank10": {
+      "speaker": "dana",
+      "text": "“File the logs.”",
+      "next": "n45"
+    },
+    "deny1": {
+      "speaker": "dana",
+      "text": "“Good.”",
+      "next": "deny2"
+    },
+    "deny2": {
+      "speaker": "player",
+      "text": "“You were never here.”",
+      "next": "deny3"
+    },
+    "deny3": {
+      "speaker": "dana",
+      "text": "“I am here twice a week on official inspections.”",
+      "next": "deny4"
+    },
+    "deny4": {
+      "speaker": "player",
+      "text": "“Right.”",
+      "next": "deny5"
+    },
+    "deny5": {
+      "speaker": "dana",
+      "text": "“You are terrible at this.”",
+      "next": "deny6"
+    },
+    "deny6": {
+      "speaker": "player",
+      "text": "“But you're clean.”",
+      "next": "deny7"
+    },
+    "deny7": {
+      "speaker": "dana",
+      "text": "“Cleaner.”",
+      "next": "deny8"
+    },
+    "deny8": {
+      "speaker": "player",
+      "text": "“There's a difference?”",
+      "next": "deny9"
+    },
+    "deny9": {
+      "speaker": "dana",
+      "text": "“There is always a difference.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "player",
+      "text": "(For two weeks, the House becomes paperwork.)",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "player",
+      "text": "(Faelen's training notes become safety protocols.)",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "player",
+      "text": "(Momo's pressure logs become hazard mitigation.)",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "player",
+      "text": "(Kess's stream timestamps become proof of civilian activity.)",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "(Thora's pantry receipts become occupancy evidence.)",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "kess",
+      "text": "“This is the least flattering use of my analytics.”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "dana",
+      "text": "“Your audience saved the building.”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "kess",
+      "text": "“Clip that.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "player",
+      "text": "(The classification request is returned for insufficient basis.)",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "dana",
+      "text": "“Not denied.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "player",
+      "text": "“Returned.”",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "dana",
+      "text": "“They can try again.”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "player",
+      "text": "“But not today.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "player",
+      "text": "“Coffee?”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "dana",
+      "text": "“Good coffee?”",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "player",
+      "text": "“Thora coffee.”",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "dana",
+      "text": "“That was not my question.”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "thora",
+      "text": "“You drink what I make.”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "dana",
+      "text": "(Sits.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

@@ -1,16 +1,402 @@
 {
-  "scene_id": "momo_b2_proving_ground", "start_node": "n1",
+  "scene_id": "momo_b2_proving_ground",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "momo", "text": "It's here because of me. I have to draw it away—", "next": "n2" },
-    "n2": { "speaker": "player", "text": "(She tries to bolt mid-fight. You catch her before she gets herself hurt.)",
+    "n1": {
+      "speaker": "player",
+      "text": "(The gate should be collapsing.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "faelen",
+      "text": "“It is not.”",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "player",
+      "text": "“What?”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "momo",
+      "text": "“There's another pressure line.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "“Inside the gate?”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "momo",
+      "text": "“Behind us.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "player",
+      "text": "(A second seam opens along the route you used to enter.)",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "kess",
+      "text": "“That feels personal.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "momo",
+      "text": "(Momo goes white.)",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "momo",
+      "text": "“It is.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "“You don't know that.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "momo",
+      "text": "“I do.”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "player",
+      "text": "“How?”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "momo",
+      "text": "“Because it moved when I did.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "(The seam bends. Not toward the nearest fighter. Toward Momo.)",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "momo",
+      "text": "“It's here because of me.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "faelen",
+      "text": "“Back line. Hold.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "“Momo.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "momo",
+      "text": "“If I move away from you, it follows me.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "“Or it cuts you off.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "momo",
+      "text": "“Either way, less danger for everyone else.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "player",
+      "text": "(She turns and runs toward the open side corridor.)",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "player",
+      "text": "(The seam turns after her.)",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "kess",
+      "text": "“Oh, absolutely not.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "(You catch Momo at the junction before the dark can close around her.)",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "momo",
+      "text": "“Let go.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "“No.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "momo",
+      "text": "“You don't understand. This is the useful thing I can do.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "player",
+      "text": "“Disappear?”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "momo",
+      "text": "“Take it with me.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "player",
+      "text": "“And then?”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "momo",
+      "text": "(She does not answer.)",
       "choices": [
-        { "choice_id": "hold", "text": "\"Stay in formation. We handle this together.\"", "next": "n3_hold",
-          "effects": { "set_flags": { "MOMO_TRUST": "hold" }, "bond_delta": 10 } },
-        { "choice_id": "trust", "text": "\"I trust your instincts. Do what you need to.\"", "next": "n3_trust",
-          "effects": { "set_flags": { "MOMO_TRUST": "free" }, "bond_delta": 15 } }
-      ] },
-    "n3_hold": { "speaker": "momo", "text": "...Okay. I'll stay.", "next": "end" },
-    "n3_trust": { "speaker": "momo", "text": "...I won't run. I promise.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "hold",
+          "text": "“Stay in formation. If it wants you, it comes through all of us.”",
+          "next": "hold1",
+          "effects": {
+            "set_flags": {
+              "MOMO_TRUST": "hold"
+            },
+            "bond_delta": 10
+          }
+        },
+        {
+          "choice_id": "trust",
+          "text": "“I trust your sense. Lead us—don't leave us.”",
+          "next": "trust1",
+          "effects": {
+            "set_flags": {
+              "MOMO_TRUST": "free"
+            },
+            "bond_delta": 15
+          }
+        }
+      ]
+    },
+    "hold1": {
+      "speaker": "momo",
+      "text": "“You want it closer?”",
+      "next": "hold2"
+    },
+    "hold2": {
+      "speaker": "player",
+      "text": "“I want you closer.”",
+      "next": "hold3"
+    },
+    "hold3": {
+      "speaker": "momo",
+      "text": "“That is not tactically reassuring.”",
+      "next": "hold4"
+    },
+    "hold4": {
+      "speaker": "faelen",
+      "text": "“It is tactically correct.”",
+      "next": "hold5"
+    },
+    "hold5": {
+      "speaker": "player",
+      "text": "“See?”",
+      "next": "hold6"
+    },
+    "hold6": {
+      "speaker": "momo",
+      "text": "“You two agreeing is worse.”",
+      "next": "hold7"
+    },
+    "hold7": {
+      "speaker": "player",
+      "text": "“Stay.”",
+      "next": "hold8"
+    },
+    "hold8": {
+      "speaker": "momo",
+      "text": "(She closes her eyes.)",
+      "next": "hold9"
+    },
+    "hold9": {
+      "speaker": "momo",
+      "text": "“Okay.”",
+      "next": "n35"
+    },
+    "trust1": {
+      "speaker": "momo",
+      "text": "“Lead?”",
+      "next": "trust2"
+    },
+    "trust2": {
+      "speaker": "player",
+      "text": "“You felt it move.”",
+      "next": "trust3"
+    },
+    "trust3": {
+      "speaker": "momo",
+      "text": "“Yes.”",
+      "next": "trust4"
+    },
+    "trust4": {
+      "speaker": "player",
+      "text": "“Tell us where it moves next.”",
+      "next": "trust5"
+    },
+    "trust5": {
+      "speaker": "momo",
+      "text": "“What if I'm wrong?”",
+      "next": "trust6"
+    },
+    "trust6": {
+      "speaker": "player",
+      "text": "“Then we adjust.”",
+      "next": "trust7"
+    },
+    "trust7": {
+      "speaker": "momo",
+      "text": "“You make that sound simple.”",
+      "next": "trust8"
+    },
+    "trust8": {
+      "speaker": "player",
+      "text": "“Make it useful.”",
+      "next": "trust9"
+    },
+    "trust9": {
+      "speaker": "momo",
+      "text": "(She looks at the seam.)",
+      "next": "trust10"
+    },
+    "trust10": {
+      "speaker": "momo",
+      "text": "“Left. In four breaths.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "(Four breaths.)",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "player",
+      "text": "(The seam lashes left.)",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "faelen",
+      "text": "“Now.”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "player",
+      "text": "(The formation moves before the strike lands.)",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "momo",
+      "text": "“Again. Low. Behind Kess.”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "kess",
+      "text": "“I hate being forecast.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "momo",
+      "text": "“Duck.”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "kess",
+      "text": "(Ducks.)",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "(The dark passes over her head.)",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "kess",
+      "text": "“I love being forecast.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "player",
+      "text": "(For the first time, Momo is not fleeing the thing that follows her.)",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "player",
+      "text": "(She is reading it.)",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "momo",
+      "text": "“Core. Twelve seconds.”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "player",
+      "text": "“Everyone heard her.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "faelen",
+      "text": "“We did.”",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "player",
+      "text": "(The gate falls on eleven.)",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "momo",
+      "text": "(Afterward, Momo sits against the wall, shaking.)",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "player",
+      "text": "“You stayed.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "momo",
+      "text": "“I almost didn't.”",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "player",
+      "text": "“But you did.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "momo",
+      "text": "“...I did.”",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

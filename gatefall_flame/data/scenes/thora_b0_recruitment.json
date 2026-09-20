@@ -1,9 +1,364 @@
 {
-  "scene_id": "thora_b0_recruitment", "start_node": "n1",
+  "scene_id": "thora_b0_recruitment",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "player", "text": "(She's already rearranging your kitchen before you've agreed to anything.)", "next": "n2" },
-    "n2": { "speaker": "thora", "text": "This pantry is a disgrace. Sit. Eat. We'll discuss rent after.", "next": "n3" },
-    "n3": { "speaker": "player", "text": "(Somehow you're the one being taken in.)", "next": "end" },
-    "end": { "end_scene": true }
+    "n1": {
+      "speaker": "player",
+      "text": "(You meet Thora because she is carrying someone else's groceries.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(Not metaphorically. A Gatekin family from two streets over is arguing with a broken cart while a tall orc-kin woman has already stacked every bag across both arms.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "thora",
+      "text": "“Which building?”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "gatekin parent",
+      "text": "“We can manage.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "thora",
+      "text": "“I did not ask if you could.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "(She notices you looking.)",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "thora",
+      "text": "“You. Strong back?”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "player",
+      "text": "“Sometimes.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "thora",
+      "text": "“Good. Take the flour.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "player",
+      "text": "“I was actually—”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "thora",
+      "text": "“Flour.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "(You take the flour.)",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "(Twenty minutes later, somehow, she is standing in your kitchen.)",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "player",
+      "text": "“How did this happen?”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "kess",
+      "text": "“She followed the flour.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "thora",
+      "text": "“This pantry is a disgrace.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "player",
+      "text": "“You don't live here.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "thora",
+      "text": "“Clearly.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "player",
+      "text": "(She removes a can with no label, shakes it once, and looks personally betrayed.)",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "thora",
+      "text": "“What is this?”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "kess",
+      "text": "“Emergency dinner.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "thora",
+      "text": "“No.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "kess",
+      "text": "“No?”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "thora",
+      "text": "“No.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "player",
+      "text": "(The can goes into a bin.)",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "thora",
+      "text": "“Sit.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "“Why?”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "thora",
+      "text": "“You have gate ash on your collar and have not eaten.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "“How do you know?”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "thora",
+      "text": "“You smell like burned stone and bad decisions.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "kess",
+      "text": "“She'll fit in.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "(Thora is already tying back her hair.)",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "thora",
+      "text": "“Faelen. Knife.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "faelen",
+      "text": "“Which one?”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "thora",
+      "text": "“The sharp one.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "faelen",
+      "text": "“All of them are sharp.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "thora",
+      "text": "(Looks at you.) “At least someone here has standards.”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "player",
+      "text": "“You still don't live here.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "thora",
+      "text": "“We'll discuss rent after soup.”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "player",
+      "text": "“That's not how tenancy works.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "dana",
+      "text": "(From the doorway, arriving for an inspection.) “For once, the landlord is correct.”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "thora",
+      "text": "“You look hungry too.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "dana",
+      "text": "“I am not staying.”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "player",
+      "text": "(Dana stays.)",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "player",
+      "text": "(Dinner becomes six bowls, then seven when Momo appears at the stairwell.)",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "thora",
+      "text": "“Sit, little shadow.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "momo",
+      "text": "“I'm not very hungry.”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "thora",
+      "text": "“That is a statement about quantity, not attendance.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "(Momo sits.)",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "player",
+      "text": "“Where are you staying?”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "thora",
+      "text": "“Here and there.”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "player",
+      "text": "“Tonight?”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "thora",
+      "text": "“There is a bench at the transit hall.”",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "player",
+      "text": "“No.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "thora",
+      "text": "“No?”",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "player",
+      "text": "“We have a room.”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "thora",
+      "text": "“You have a room you cannot afford to furnish.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "player",
+      "text": "“You saw the upstairs?”",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "thora",
+      "text": "“Your second-floor railing is loose.”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "player",
+      "text": "“When did you—”",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "thora",
+      "text": "“And the back window does not seal.”",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "faelen",
+      "text": "“She is correct.”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "player",
+      "text": "“Do not encourage her.”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "thora",
+      "text": "“I can pay rent.”",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "player",
+      "text": "“You don't have to earn dinner first.”",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "thora",
+      "text": "“I know.”",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "player",
+      "text": "(She says it too quickly.)",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "thora",
+      "text": "“Now. Who wants seconds?”",
+      "next": "n69"
+    },
+    "n69": {
+      "speaker": "player",
+      "text": "(By midnight, the pantry is labeled.)",
+      "next": "n70"
+    },
+    "n70": {
+      "speaker": "player",
+      "text": "(By morning, the loose railing is fixed.)",
+      "next": "n71"
+    },
+    "n71": {
+      "speaker": "player",
+      "text": "(Thora has taken the smallest available room.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

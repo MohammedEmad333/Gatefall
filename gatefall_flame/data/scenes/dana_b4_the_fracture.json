@@ -1,15 +1,689 @@
 {
-  "scene_id": "dana_b4_the_fracture", "start_node": "n1",
+  "scene_id": "dana_b4_the_fracture",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "dana", "text": "Order came down. Shut the house or lose my job. I'm resigning first. Cleaner that way.",
+    "n1": {
+      "speaker": "dana",
+      "text": "“Order came down.”",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "“What order?”",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "dana",
+      "text": "(Places a sealed packet on the table.)",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "dana",
+      "text": "“Closure.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "kess",
+      "text": "“Again?”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "dana",
+      "text": "“Not classification.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "dana",
+      "text": "“Direct administrative closure.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "player",
+      "text": "“Basis?”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "dana",
+      "text": "“Accumulated risk.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "faelen",
+      "text": "“Meaning?”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "dana",
+      "text": "“Meaning somebody above my pay grade stopped pretending they needed a clean reason.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "“What happens?”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "dana",
+      "text": "“Residents redistributed.”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "thora",
+      "text": "“Separated?”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "dana",
+      "text": "“Likely.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "dana",
+      "text": "“I know.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "“Appeal.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "dana",
+      "text": "“Ten business days.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "“How long do we have?”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "dana",
+      "text": "“Forty-eight hours.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "kess",
+      "text": "“Very efficient injustice.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "dana",
+      "text": "“Yes.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "player",
+      "text": "“And you're here to enforce it.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "player",
+      "text": "“No?”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "dana",
+      "text": "“I resigned.”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "player",
+      "text": "(Silence.)",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "dana",
+      "text": "“Effective this morning.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "player",
+      "text": "“You what?”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "dana",
+      "text": "“They cannot make me close a House I no longer have jurisdiction over.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "“And somebody else comes tomorrow.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "dana",
+      "text": "“Yes.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "“So your plan is to disappear before the choice reaches you.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "dana",
+      "text": "“My plan is not to be the weapon.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "player",
+      "text": "“That's not the same thing.”",
+      "next": "thank_cb1"
+    },
+    "thank_cb1": {
+      "speaker": "player",
+      "text": "“You risked your job when it bought us time.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_COVER",
+            "equals": "thanked"
+          }
+        ]
+      },
+      "next": "thank_cb2"
+    },
+    "thank_cb2": {
+      "speaker": "player",
+      "text": "“Now that the risk is real, you're walking away.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_COVER",
+            "equals": "thanked"
+          }
+        ]
+      },
+      "next": "thank_cb3"
+    },
+    "thank_cb3": {
+      "speaker": "dana",
+      "text": "“That is not fair.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_COVER",
+            "equals": "thanked"
+          }
+        ]
+      },
+      "next": "deny_cb1"
+    },
+    "deny_cb1": {
+      "speaker": "player",
+      "text": "“You wanted deniability.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_COVER",
+            "equals": "deniable"
+          }
+        ]
+      },
+      "next": "deny_cb2"
+    },
+    "deny_cb2": {
+      "speaker": "dana",
+      "text": "“I needed it.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_COVER",
+            "equals": "deniable"
+          }
+        ]
+      },
+      "next": "deny_cb3"
+    },
+    "deny_cb3": {
+      "speaker": "player",
+      "text": "“And now you're making your whole life deniable.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_COVER",
+            "equals": "deniable"
+          }
+        ]
+      },
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "dana",
+      "text": "“What do you want from me?”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "player",
+      "text": "“A choice.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "dana",
+      "text": "“I made one.”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "player",
+      "text": "“You made yourself absent.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "dana",
+      "text": "“That keeps me from hurting you.”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "player",
+      "text": "“It also keeps you from standing with us.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "dana",
+      "text": "“I am human.”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "player",
+      "text": "“So am I.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "dana",
+      "text": "“You are Awakened.”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "player",
+      "text": "“That's not the part you meant.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "dana",
+      "text": "(Looks away.)",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "dana",
+      "text": "“If I stay, I become evidence.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "“Of what?”",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "dana",
+      "text": "“That this was never just a case.”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "player",
+      "text": "“Was it?”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "player",
+      "text": "“Then stop pretending leaving makes that cleaner.”",
       "choices": [
-        { "choice_id": "stop", "text": "\"Don't run from this. Fight it with us.\"", "next": "end",
-          "effects": { "set_flags": { "DANA_FRACTURE": "stop" }, "bond_delta": 20 } },
-        { "choice_id": "stand", "text": "\"Then we stand against the order together.\"", "next": "end",
-          "effects": { "set_flags": { "DANA_FRACTURE": "stand" }, "bond_delta": 20 } },
-        { "choice_id": "release", "text": "\"...Do what you need to do.\"", "next": "end",
-          "effects": { "set_flags": { "DANA_FRACTURE": "release" }, "bond_delta": -10 } }
-      ] },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "stop",
+          "text": "“Withdraw the resignation. Fight the order from inside the system.”",
+          "next": "stop1",
+          "effects": {
+            "set_flags": {
+              "DANA_FRACTURE": "stop"
+            },
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "stand",
+          "text": "“Keep the resignation. Stand with us anyway. We fight it from both sides.”",
+          "next": "stand1",
+          "effects": {
+            "set_flags": {
+              "DANA_FRACTURE": "stand"
+            },
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "release",
+          "text": "“If leaving is the only choice you can make without breaking... go.”",
+          "next": "rel1",
+          "effects": {
+            "set_flags": {
+              "DANA_FRACTURE": "release"
+            },
+            "bond_delta": -10
+          }
+        }
+      ]
+    },
+    "stop1": {
+      "speaker": "dana",
+      "text": "“They will fire me.”",
+      "next": "stop2"
+    },
+    "stop2": {
+      "speaker": "player",
+      "text": "“Maybe.”",
+      "next": "stop3"
+    },
+    "stop3": {
+      "speaker": "dana",
+      "text": "“They will bury every appeal under conflict-of-interest review.”",
+      "next": "stop4"
+    },
+    "stop4": {
+      "speaker": "player",
+      "text": "“Then make them write it down.”",
+      "next": "stop5"
+    },
+    "stop5": {
+      "speaker": "dana",
+      "text": "“You have learned exactly the wrong lesson from me.”",
+      "next": "stop6"
+    },
+    "stop6": {
+      "speaker": "player",
+      "text": "“I learned paperwork can be a weapon.”",
+      "next": "stop7"
+    },
+    "stop7": {
+      "speaker": "dana",
+      "text": "(Despite everything, she almost smiles.)",
+      "next": "stop8"
+    },
+    "stop8": {
+      "speaker": "player",
+      "text": "“Withdraw it.”",
+      "next": "stop9"
+    },
+    "stop9": {
+      "speaker": "dana",
+      "text": "“I hate you.”",
+      "next": "stop10"
+    },
+    "stop10": {
+      "speaker": "player",
+      "text": "“Form B-4?”",
+      "next": "stop11"
+    },
+    "stop11": {
+      "speaker": "dana",
+      "text": "“Shut up.”",
+      "next": "stop12"
+    },
+    "stop12": {
+      "speaker": "player",
+      "text": "(She opens her laptop.)",
+      "next": "pos1"
+    },
+    "stand1": {
+      "speaker": "dana",
+      "text": "“You want me unemployed and insubordinate.”",
+      "next": "stand2"
+    },
+    "stand2": {
+      "speaker": "player",
+      "text": "“I want you choosing something because you believe it.”",
+      "next": "stand3"
+    },
+    "stand3": {
+      "speaker": "dana",
+      "text": "“Belief is not a legal defense.”",
+      "next": "stand4"
+    },
+    "stand4": {
+      "speaker": "player",
+      "text": "“Good thing Kess has cameras.”",
+      "next": "stand5"
+    },
+    "stand5": {
+      "speaker": "kess",
+      "text": "“Finally respected for my craft.”",
+      "next": "stand6"
+    },
+    "stand6": {
+      "speaker": "dana",
+      "text": "“No livestreaming the hearing.”",
+      "next": "stand7"
+    },
+    "stand7": {
+      "speaker": "kess",
+      "text": "“Oppression.”",
+      "next": "stand8"
+    },
+    "stand8": {
+      "speaker": "dana",
+      "text": "(Looks around the table.)",
+      "next": "stand9"
+    },
+    "stand9": {
+      "speaker": "dana",
+      "text": "“If I do this, I am not your caseworker anymore.”",
+      "next": "stand10"
+    },
+    "stand10": {
+      "speaker": "thora",
+      "text": "“Good.”",
+      "next": "stand11"
+    },
+    "stand11": {
+      "speaker": "dana",
+      "text": "“That was fast.”",
+      "next": "stand12"
+    },
+    "stand12": {
+      "speaker": "thora",
+      "text": "“You can still eat.”",
+      "next": "pos1"
+    },
+    "pos1": {
+      "speaker": "player",
+      "text": "(The next forty-eight hours are war conducted through printers.)",
+      "next": "pos2"
+    },
+    "pos2": {
+      "speaker": "dana",
+      "text": "“Emergency stay request.”",
+      "next": "pos3"
+    },
+    "pos3": {
+      "speaker": "player",
+      "text": "“Filed.”",
+      "next": "pos4"
+    },
+    "pos4": {
+      "speaker": "dana",
+      "text": "“Resident affidavits.”",
+      "next": "pos5"
+    },
+    "pos5": {
+      "speaker": "kess",
+      "text": "“Uploaded.”",
+      "next": "pos6"
+    },
+    "pos6": {
+      "speaker": "dana",
+      "text": "“Independent hazard assessment.”",
+      "next": "pos7"
+    },
+    "pos7": {
+      "speaker": "momo",
+      "text": "“Signed.”",
+      "next": "pos8"
+    },
+    "pos8": {
+      "speaker": "dana",
+      "text": "“Building safety.”",
+      "next": "pos9"
+    },
+    "pos9": {
+      "speaker": "thora",
+      "text": "“Better than your office.”",
+      "next": "pos10"
+    },
+    "pos10": {
+      "speaker": "dana",
+      "text": "“I know.”",
+      "next": "pos11"
+    },
+    "pos11": {
+      "speaker": "player",
+      "text": "(The enforcement team arrives anyway.)",
+      "next": "pos12"
+    },
+    "pos12": {
+      "speaker": "dana",
+      "text": "“Do you have the signed displacement plan?”",
+      "next": "pos13"
+    },
+    "pos13": {
+      "speaker": "officer",
+      "text": "“We have closure authority.”",
+      "next": "pos14"
+    },
+    "pos14": {
+      "speaker": "dana",
+      "text": "“That was not my question.”",
+      "next": "pos15"
+    },
+    "pos15": {
+      "speaker": "officer",
+      "text": "“Dana.”",
+      "next": "pos16"
+    },
+    "pos16": {
+      "speaker": "dana",
+      "text": "“Do not use my first name to make a bad order feel humane.”",
+      "next": "pos17"
+    },
+    "pos17": {
+      "speaker": "player",
+      "text": "(The officer looks at the cameras, the residents, the paperwork, and the emergency stay timestamp.)",
+      "next": "pos18"
+    },
+    "pos18": {
+      "speaker": "officer",
+      "text": "“We'll return.”",
+      "next": "pos19"
+    },
+    "pos19": {
+      "speaker": "dana",
+      "text": "“I know.”",
+      "next": "pos20"
+    },
+    "pos20": {
+      "speaker": "player",
+      "text": "(The door closes.)",
+      "next": "pos21"
+    },
+    "pos21": {
+      "speaker": "dana",
+      "text": "(Her hands start shaking only after.)",
+      "next": "pos22"
+    },
+    "pos22": {
+      "speaker": "player",
+      "text": "“You stayed.”",
+      "next": "pos23"
+    },
+    "pos23": {
+      "speaker": "dana",
+      "text": "“For now.”",
+      "next": "pos24"
+    },
+    "pos24": {
+      "speaker": "player",
+      "text": "“For now counts.”",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    },
+    "rel1": {
+      "speaker": "dana",
+      "text": "“Thank you.”",
+      "next": "rel2"
+    },
+    "rel2": {
+      "speaker": "player",
+      "text": "“I hate that everybody says that when they leave.”",
+      "next": "rel3"
+    },
+    "rel3": {
+      "speaker": "dana",
+      "text": "“I don't know what else to say.”",
+      "next": "rel4"
+    },
+    "rel4": {
+      "speaker": "player",
+      "text": "“Stay.”",
+      "next": "rel5"
+    },
+    "rel5": {
+      "speaker": "dana",
+      "text": "“You already gave me the choice.”",
+      "next": "rel6"
+    },
+    "rel6": {
+      "speaker": "player",
+      "text": "“I know.”",
+      "next": "rel7"
+    },
+    "rel7": {
+      "speaker": "dana",
+      "text": "(She takes her mug from the kitchen shelf.)",
+      "next": "rel8"
+    },
+    "rel8": {
+      "speaker": "dana",
+      "text": "“Tell Thora I stole this.”",
+      "next": "rel9"
+    },
+    "rel9": {
+      "speaker": "player",
+      "text": "“She knows.”",
+      "next": "rel10"
+    },
+    "rel10": {
+      "speaker": "dana",
+      "text": "“Of course she does.”",
+      "next": "rel11"
+    },
+    "rel11": {
+      "speaker": "player",
+      "text": "(The next caseworker arrives two days later.)",
+      "next": "rel12"
+    },
+    "rel12": {
+      "speaker": "player",
+      "text": "(Dana's number no longer connects.)",
+      "next": "end_release"
+    },
+    "end_release": {
+      "end_scene": true
+    }
   }
 }

@@ -1,16 +1,407 @@
 {
-  "scene_id": "thora_b2_proving_ground", "start_node": "n1",
+  "scene_id": "thora_b2_proving_ground",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "thora", "text": "Stay behind me, all of you—", "next": "n2" },
-    "n2": { "speaker": "player", "text": "(She shields the whole party through the fight and collapses the moment it's over, having healed everyone but herself.)",
+    "n1": {
+      "speaker": "player",
+      "text": "(The raid goes wrong in a familiar way: everybody is alive.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(Thora is the reason.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "thora",
+      "text": "“Kess, down.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "player",
+      "text": "(Mend closes the cut across Kess's shoulder.)",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "thora",
+      "text": "“Momo, behind me.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "(Stone takes the impact meant for the back line.)",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "faelen",
+      "text": "“Thora. Your left side.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "thora",
+      "text": "“Later.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "faelen",
+      "text": "“Now.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "thora",
+      "text": "“Faelen, guard the player.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "player",
+      "text": "“Thora.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "thora",
+      "text": "“Stay behind me.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "(The boss comes down hard enough to crack the floor.)",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "player",
+      "text": "(Thora catches it.)",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "player",
+      "text": "(Something in her armor does not.)",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "momo",
+      "text": "“She's hurt.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "thora",
+      "text": "“I know.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "kess",
+      "text": "“Then fix it.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "thora",
+      "text": "“You first.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "kess",
+      "text": "“I am fixed.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "thora",
+      "text": "“Then Momo.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "momo",
+      "text": "“I am also fixed.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "thora",
+      "text": "“Faelen?”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "faelen",
+      "text": "“If you ask me before healing yourself, I will hit you.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "thora",
+      "text": "“That seems medically unhelpful.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "player",
+      "text": "(She takes one more step.)",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "(Then drops to one knee.)",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "thora",
+      "text": "“Ah.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "“Ah?”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "thora",
+      "text": "“I may have misjudged.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "player",
+      "text": "(After the gate closes, Thora tries to stand before the bandage is tied.)",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "“Sit.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "thora",
+      "text": "“There are injuries to check.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "“They are checking you.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "thora",
+      "text": "“I am not accustomed to being the least useful person in a medical situation.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "kess",
+      "text": "“You're still the biggest.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "thora",
+      "text": "“Comforting.”",
       "choices": [
-        { "choice_id": "force", "text": "\"Heal yourself first next time. That's an order.\"", "next": "n3_force",
-          "effects": { "set_flags": { "THORA_TRIAGE": "force" }, "bond_delta": 10 } },
-        { "choice_id": "trust", "text": "\"I trust your judgment out there.\"", "next": "n3_trust",
-          "effects": { "set_flags": { "THORA_TRIAGE": "trust" }, "bond_delta": 15 } }
-      ] },
-    "n3_force": { "speaker": "thora", "text": "...As you say.", "next": "end" },
-    "n3_trust": { "speaker": "thora", "text": "...Careful. I might start believing that.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "force",
+          "text": "“Heal yourself first next time. That's an order.”",
+          "next": "force1",
+          "effects": {
+            "set_flags": {
+              "THORA_TRIAGE": "force"
+            },
+            "bond_delta": 10
+          }
+        },
+        {
+          "choice_id": "trust",
+          "text": "“I trust your triage. Include yourself in it.”",
+          "next": "trust1",
+          "effects": {
+            "set_flags": {
+              "THORA_TRIAGE": "trust"
+            },
+            "bond_delta": 15
+          }
+        }
+      ]
+    },
+    "force1": {
+      "speaker": "thora",
+      "text": "“You are ordering a healer to change triage priority.”",
+      "next": "force2"
+    },
+    "force2": {
+      "speaker": "player",
+      "text": "“Yes.”",
+      "next": "force3"
+    },
+    "force3": {
+      "speaker": "thora",
+      "text": "“Dangerous precedent.”",
+      "next": "force4"
+    },
+    "force4": {
+      "speaker": "player",
+      "text": "“So is collapsing.”",
+      "next": "force5"
+    },
+    "force5": {
+      "speaker": "thora",
+      "text": "“I did not collapse.”",
+      "next": "force6"
+    },
+    "force6": {
+      "speaker": "kess",
+      "text": "“You knelt with dramatic intent.”",
+      "next": "force7"
+    },
+    "force7": {
+      "speaker": "thora",
+      "text": "“Traitor.”",
+      "next": "force8"
+    },
+    "force8": {
+      "speaker": "player",
+      "text": "“Next time. Yourself first when you're critical.”",
+      "next": "force9"
+    },
+    "force9": {
+      "speaker": "thora",
+      "text": "(Long pause.)",
+      "next": "force10"
+    },
+    "force10": {
+      "speaker": "thora",
+      "text": "“As you say.”",
+      "next": "force11"
+    },
+    "force11": {
+      "speaker": "player",
+      "text": "“You hate that.”",
+      "next": "force12"
+    },
+    "force12": {
+      "speaker": "thora",
+      "text": "“Deeply.”",
+      "next": "n38"
+    },
+    "trust1": {
+      "speaker": "thora",
+      "text": "“You trust my judgment?”",
+      "next": "trust2"
+    },
+    "trust2": {
+      "speaker": "player",
+      "text": "“Yes.”",
+      "next": "trust3"
+    },
+    "trust3": {
+      "speaker": "thora",
+      "text": "“After that?”",
+      "next": "trust4"
+    },
+    "trust4": {
+      "speaker": "player",
+      "text": "“I trust you to update it.”",
+      "next": "trust5"
+    },
+    "trust5": {
+      "speaker": "thora",
+      "text": "“That is annoyingly reasonable.”",
+      "next": "trust6"
+    },
+    "trust6": {
+      "speaker": "player",
+      "text": "“You are part of the party.”",
+      "next": "trust7"
+    },
+    "trust7": {
+      "speaker": "thora",
+      "text": "“I am aware.”",
+      "next": "trust8"
+    },
+    "trust8": {
+      "speaker": "player",
+      "text": "“Then triage includes you.”",
+      "next": "trust9"
+    },
+    "trust9": {
+      "speaker": "thora",
+      "text": "(Looks at the bandage around her ribs.)",
+      "next": "trust10"
+    },
+    "trust10": {
+      "speaker": "thora",
+      "text": "“Careful.”",
+      "next": "trust11"
+    },
+    "trust11": {
+      "speaker": "player",
+      "text": "“Why?”",
+      "next": "trust12"
+    },
+    "trust12": {
+      "speaker": "thora",
+      "text": "“I might start believing you.”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "thora",
+      "text": "(On the walk home, Momo stumbles.)",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "thora",
+      "text": "(Thora reaches out automatically.)",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "thora",
+      "text": "“No?”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "momo",
+      "text": "“You lean on me.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "thora",
+      "text": "“Momo, I would flatten you.”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "momo",
+      "text": "“Emotionally, maybe.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "kess",
+      "text": "“Oh, she's learning jokes.”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "player",
+      "text": "(Thora laughs, then winces.)",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "momo",
+      "text": "“See?”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "thora",
+      "text": "“Fine.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "(She lets Momo take one arm and you take the other.)",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "player",
+      "text": "(Only for the last block.)",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "player",
+      "text": "(It is still a beginning.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

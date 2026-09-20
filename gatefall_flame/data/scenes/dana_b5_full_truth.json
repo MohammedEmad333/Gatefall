@@ -1,13 +1,606 @@
 {
-  "scene_id": "dana_b5_full_truth", "start_node": "n1",
+  "scene_id": "dana_b5_full_truth",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "dana", "text": "I stopped believing the two worlds could really mix. Believing it once cost me everything. This house made me hope again. That terrifies me more than the gates do.",
+    "n1": {
+      "speaker": "player",
+      "text": "(Dana is sitting in the kitchen in socks.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "“You know this is how residency starts.”",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "dana",
+      "text": "“My shoes are wet.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "player",
+      "text": "“Gateway behavior.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "dana",
+      "text": "“I can leave.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "“No.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "dana",
+      "text": "(Looks at you.)",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "player",
+      "text": "“Coffee?”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "dana",
+      "text": "“Good?”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "player",
+      "text": "“I bought the expensive one.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "dana",
+      "text": "“Then yes.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "(You make two cups.)",
+      "next": "press_cb1"
+    },
+    "press_cb1": {
+      "speaker": "dana",
+      "text": "“You were right.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "press_cb2"
+    },
+    "press_cb2": {
+      "speaker": "player",
+      "text": "“Dangerous opening.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "press_cb3"
+    },
+    "press_cb3": {
+      "speaker": "dana",
+      "text": "“I care more than I let on.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "press_cb4"
+    },
+    "press_cb4": {
+      "speaker": "player",
+      "text": "“I'm framing this.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "patience_cb1"
+    },
+    "patience_cb1": {
+      "speaker": "dana",
+      "text": "“You never used the relocation order against me.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb2"
+    },
+    "patience_cb2": {
+      "speaker": "player",
+      "text": "“You asked me not to see it.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb3"
+    },
+    "patience_cb3": {
+      "speaker": "dana",
+      "text": "“And you respected that.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb4"
+    },
+    "patience_cb4": {
+      "speaker": "player",
+      "text": "“Mostly.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "dana",
+      "text": "“I've been thinking about Annex Four.”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "player",
+      "text": "“Because of the closure order?”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "dana",
+      "text": "“Because I chose again.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "“And?”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "dana",
+      "text": "“Nobody died.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "“Low bar.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "dana",
+      "text": "“You'd be surprised.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "“Dana.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "dana",
+      "text": "“I spent years telling myself the lesson was procedure.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "dana",
+      "text": "“If I followed the rulebook, I could still care—just safely.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "player",
+      "text": "“Did it work?”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "dana",
+      "text": "“Yes.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "player",
+      "text": "“That was fast.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "dana",
+      "text": "“It kept me functional.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "“Not the same question.”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "dana",
+      "text": "“I know.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "(She removes the lanyard.)",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "dana",
+      "text": "“I stopped believing the two worlds could really mix.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "dana",
+      "text": "“Not sustainably.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "dana",
+      "text": "“Not without somebody paying for it.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "player",
+      "text": "“And the House?”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "dana",
+      "text": "“The House is infuriating.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "“Specific.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "dana",
+      "text": "“Faelen has emergency plans better than my office.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "dana",
+      "text": "“Kess has made three people find relatives through her audience.”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "dana",
+      "text": "“Momo's logs have prevented injuries.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "dana",
+      "text": "“Thora can get a traumatized teenager to eat in ten minutes.”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "dana",
+      "text": "“You keep surviving things that should make this arrangement impossible.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "player",
+      "text": "“So?”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "dana",
+      "text": "“So I started hoping.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "“That integration can work?”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "dana",
+      "text": "“That this can.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "player",
+      "text": "“This House?”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "dana",
+      "text": "“Us.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "player",
+      "text": "(The word hangs there.)",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "dana",
+      "text": "“I hate that word.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "“Us?”",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "dana",
+      "text": "“Hope.”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "dana",
+      "text": "“Gates are easier.”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "player",
+      "text": "“No, they're not.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "dana",
+      "text": "“You know what I mean.”",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "dana",
+      "text": "“A gate is danger.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "dana",
+      "text": "“You respond.”",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "dana",
+      "text": "“Hope asks you to build something that can be destroyed later.”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "player",
+      "text": "“And that terrifies you.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "dana",
+      "text": "“More than the gates do.”",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "player",
+      "text": "“Because you care.”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "dana",
+      "text": "“Because I care.”",
       "choices": [
-        { "choice_id": "brave", "text": "\"Hope is worth the risk. I'm not going anywhere.\"", "next": "end",
-          "effects": { "set_flags": { "DANA_CONFESSED": true }, "bond_delta": 20 } },
-        { "choice_id": "quiet", "text": "(Stay. Don't rush her past it.)", "next": "end",
-          "effects": { "set_flags": { "DANA_CONFESSED": true }, "bond_delta": 15 } }
-      ] },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "brave",
+          "text": "“Then be scared here. Hope is still worth choosing.”",
+          "next": "brave1",
+          "effects": {
+            "set_flags": {
+              "DANA_CONFESSED": true
+            },
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "quiet",
+          "text": "(Put your hand beside hers on the table, close enough to choose, not close enough to trap.)",
+          "next": "quiet1",
+          "effects": {
+            "set_flags": {
+              "DANA_CONFESSED": true
+            },
+            "bond_delta": 15
+          }
+        }
+      ]
+    },
+    "brave1": {
+      "speaker": "dana",
+      "text": "“That is an irresponsible slogan.”",
+      "next": "brave2"
+    },
+    "brave2": {
+      "speaker": "player",
+      "text": "“You can write a better one.”",
+      "next": "brave3"
+    },
+    "brave3": {
+      "speaker": "dana",
+      "text": "“I probably will.”",
+      "next": "brave4"
+    },
+    "brave4": {
+      "speaker": "player",
+      "text": "“Still staying?”",
+      "next": "brave5"
+    },
+    "brave5": {
+      "speaker": "dana",
+      "text": "“Tonight.”",
+      "next": "brave6"
+    },
+    "brave6": {
+      "speaker": "player",
+      "text": "“Counts.”",
+      "next": "brave7"
+    },
+    "brave7": {
+      "speaker": "dana",
+      "text": "“Stop saying that.”",
+      "next": "n61"
+    },
+    "quiet1": {
+      "speaker": "player",
+      "text": "(Your hands do not touch.)",
+      "next": "quiet2"
+    },
+    "quiet2": {
+      "speaker": "dana",
+      "text": "“You are doing the patience thing.”",
+      "next": "quiet3"
+    },
+    "quiet3": {
+      "speaker": "player",
+      "text": "“Maybe.”",
+      "next": "quiet4"
+    },
+    "quiet4": {
+      "speaker": "dana",
+      "text": "“I dislike how effective it is.”",
+      "next": "quiet5"
+    },
+    "quiet5": {
+      "speaker": "player",
+      "text": "“Noted.”",
+      "next": "quiet6"
+    },
+    "quiet6": {
+      "speaker": "dana",
+      "text": "(Her little finger moves first.)",
+      "next": "quiet7"
+    },
+    "quiet7": {
+      "speaker": "dana",
+      "text": "(Barely touches yours.)",
+      "next": "quiet8"
+    },
+    "quiet8": {
+      "speaker": "dana",
+      "text": "“Do not make this dramatic.”",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "thora",
+      "text": "(From the stairs.) “Dana?”",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "dana",
+      "text": "“Yes?”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "thora",
+      "text": "“Your room is ready.”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "dana",
+      "text": "“My what?”",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "player",
+      "text": "“Uh.”",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "thora",
+      "text": "“The small room by the office.”",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "dana",
+      "text": "“I did not ask for a room.”",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "thora",
+      "text": "“You have slept on the kitchen chair twice.”",
+      "next": "n69"
+    },
+    "n69": {
+      "speaker": "dana",
+      "text": "“That was work.”",
+      "next": "n70"
+    },
+    "n70": {
+      "speaker": "thora",
+      "text": "“Your toothbrush is in the downstairs bathroom.”",
+      "next": "n71"
+    },
+    "n71": {
+      "speaker": "dana",
+      "text": "(Looks at you.)",
+      "next": "n72"
+    },
+    "n72": {
+      "speaker": "player",
+      "text": "“I didn't say anything.”",
+      "next": "n73"
+    },
+    "n73": {
+      "speaker": "dana",
+      "text": "“You knew.”",
+      "next": "n74"
+    },
+    "n74": {
+      "speaker": "player",
+      "text": "“I suspected.”",
+      "next": "n75"
+    },
+    "n75": {
+      "speaker": "dana",
+      "text": "“This House is a privacy violation.”",
+      "next": "n76"
+    },
+    "n76": {
+      "speaker": "thora",
+      "text": "“Sheets are clean.”",
+      "next": "n77"
+    },
+    "n77": {
+      "speaker": "dana",
+      "text": "(Long silence.)",
+      "next": "n78"
+    },
+    "n78": {
+      "speaker": "dana",
+      "text": "“One night.”",
+      "next": "n79"
+    },
+    "n79": {
+      "speaker": "player",
+      "text": "“Classic.”",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

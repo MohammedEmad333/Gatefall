@@ -1,16 +1,402 @@
 {
-  "scene_id": "dana_b1_the_wall", "start_node": "n1",
+  "scene_id": "dana_b1_the_wall",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "player", "text": "(You catch her quietly burying a relocation order that would have split up two of your tenants.)", "next": "n2" },
-    "n2": { "speaker": "dana", "text": "I didn't see anything. Neither did you.",
+    "n1": {
+      "speaker": "player",
+      "text": "(Dana is at the dining table after midnight.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(No clipboard.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "“That feels illegal.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "dana",
+      "text": "“What?”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "“You without a clipboard.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "dana",
+      "text": "“It is in my bag.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "“Thank God.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "player",
+      "text": "(She is holding a relocation order.)",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "player",
+      "text": "“Who?”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "dana",
+      "text": "“No one.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "player",
+      "text": "“Dana.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "dana",
+      "text": "“Two Gatekin siblings in the next district.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "“Why do we have their order?”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "dana",
+      "text": "“We do not.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "player",
+      "text": "“It's on our table.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "dana",
+      "text": "“Temporary optical event.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "player",
+      "text": "(The order would send one sibling to a specialist shelter across the city and the other to an overflow block.)",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "“They'd be separated.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "dana",
+      "text": "“That is what the order says.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "“And?”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "dana",
+      "text": "“And the receiving shelter does not actually have the specialist bed they claimed.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "“So the order is wrong.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "dana",
+      "text": "“The order is valid.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "player",
+      "text": "“That wasn't my question.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "dana",
+      "text": "(She rubs her eyes.)",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "dana",
+      "text": "“If I mark the capacity mismatch tonight, the relocation pauses until review.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "“Then mark it.”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "dana",
+      "text": "“I already did.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "“So why are you here?”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "dana",
+      "text": "“Because the mismatch report is sitting in my queue instead of theirs.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "player",
+      "text": "“You buried it.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "dana",
+      "text": "“Delayed.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "player",
+      "text": "“Buried.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "dana",
+      "text": "“I did not see a relocation order tonight.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "“Dana—”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "dana",
+      "text": "“Neither did you.”",
       "choices": [
-        { "choice_id": "press", "text": "\"You care more than you let on.\"", "next": "n3_press",
-          "effects": { "set_flags": { "DANA_APPROACH": "press" }, "bond_delta": 15 } },
-        { "choice_id": "patience", "text": "(Let it go unremarked. File the paperwork.)", "next": "n3_patience",
-          "effects": { "set_flags": { "DANA_APPROACH": "patience" }, "bond_delta": 10 } }
-      ] },
-    "n3_press": { "speaker": "dana", "text": "...Don't make this a habit, landlord.", "next": "end" },
-    "n3_patience": { "speaker": "dana", "text": "...Appreciated.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "press",
+          "text": "“You care more than you let on.”",
+          "next": "press1",
+          "effects": {
+            "set_flags": {
+              "DANA_APPROACH": "press"
+            },
+            "bond_delta": 15
+          }
+        },
+        {
+          "choice_id": "patience",
+          "text": "(Fold the order, put it back in her bag, and say nothing.)",
+          "next": "patience1",
+          "effects": {
+            "set_flags": {
+              "DANA_APPROACH": "patience"
+            },
+            "bond_delta": 10
+          }
+        }
+      ]
+    },
+    "press1": {
+      "speaker": "dana",
+      "text": "“Do not turn this into a personality trait.”",
+      "next": "press2"
+    },
+    "press2": {
+      "speaker": "player",
+      "text": "“Too late.”",
+      "next": "press3"
+    },
+    "press3": {
+      "speaker": "dana",
+      "text": "“I corrected a bad capacity report.”",
+      "next": "press4"
+    },
+    "press4": {
+      "speaker": "player",
+      "text": "“At midnight. Off the clock.”",
+      "next": "press5"
+    },
+    "press5": {
+      "speaker": "dana",
+      "text": "“I was not off the clock.”",
+      "next": "press6"
+    },
+    "press6": {
+      "speaker": "player",
+      "text": "“You weren't carrying the clipboard.”",
+      "next": "press7"
+    },
+    "press7": {
+      "speaker": "dana",
+      "text": "“That is not legally significant.”",
+      "next": "press8"
+    },
+    "press8": {
+      "speaker": "player",
+      "text": "“You care.”",
+      "next": "press9"
+    },
+    "press9": {
+      "speaker": "dana",
+      "text": "(Long look.)",
+      "next": "press10"
+    },
+    "press10": {
+      "speaker": "dana",
+      "text": "“Do not make this a habit, landlord.”",
+      "next": "n37"
+    },
+    "patience1": {
+      "speaker": "player",
+      "text": "(You fold the paper.)",
+      "next": "patience2"
+    },
+    "patience2": {
+      "speaker": "dana",
+      "text": "“You're not going to say anything?”",
+      "next": "patience3"
+    },
+    "patience3": {
+      "speaker": "player",
+      "text": "“You said I didn't see it.”",
+      "next": "patience4"
+    },
+    "patience4": {
+      "speaker": "dana",
+      "text": "“That was not permission to become clever.”",
+      "next": "patience5"
+    },
+    "patience5": {
+      "speaker": "player",
+      "text": "“Too late.”",
+      "next": "patience6"
+    },
+    "patience6": {
+      "speaker": "dana",
+      "text": "(The corner of her mouth moves.)",
+      "next": "patience7"
+    },
+    "patience7": {
+      "speaker": "dana",
+      "text": "“Appreciated.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "player",
+      "text": "“What happens after review?”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "dana",
+      "text": "“I find them an actual placement together.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "“And if your supervisor asks why it sat in your queue?”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "dana",
+      "text": "“I am overworked.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "player",
+      "text": "“Are you?”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "dana",
+      "text": "“Extremely.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "“Because you keep coming here?”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "dana",
+      "text": "“Inspection burden.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "player",
+      "text": "“We're compliant.”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "dana",
+      "text": "“Suspiciously.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "player",
+      "text": "(Thora appears with a covered plate.)",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "thora",
+      "text": "“Yes.”",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "dana",
+      "text": "“I ate.”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "thora",
+      "text": "“When?”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "dana",
+      "text": "“Lunch.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "thora",
+      "text": "“It is one in the morning.”",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "dana",
+      "text": "“Technically still the same administrative day.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "player",
+      "text": "“That is the saddest thing you've ever said.”",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "dana",
+      "text": "“I regret helping anyone.”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "player",
+      "text": "(She eats the whole plate.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

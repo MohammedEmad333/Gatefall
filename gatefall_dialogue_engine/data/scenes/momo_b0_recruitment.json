@@ -1,10 +1,374 @@
 {
-  "scene_id": "momo_b0_recruitment", "start_node": "n1",
+  "scene_id": "momo_b0_recruitment",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "player", "text": "(You find her curled in a doorway three blocks from the nearest gate, flinching at every sound.)", "next": "n2" },
-    "n2": { "speaker": "momo", "text": "Please... don't. It's not safe. Wherever I stay, they come.", "next": "n3" },
-    "n3": { "speaker": "player", "text": "(You offer a room anyway.)", "next": "n4" },
-    "n4": { "speaker": "momo", "text": "...You shouldn't have. But — thank you.", "next": "end" },
-    "end": { "end_scene": true }
+    "n1": {
+      "speaker": "player",
+      "text": "(You notice the books before you notice the girl.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(Three paperbacks are stacked beneath the awning of a closed pharmacy, wrapped in a grocery bag to keep them dry. Beside them: one backpack, one blanket, one pair of shoes placed neatly enough to look temporary.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "momo",
+      "text": "“Please don't.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "player",
+      "text": "“I haven't said anything.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "momo",
+      "text": "“I know.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "(She is curled into the doorway with her knees to her chest. Small. Dark hair. Violet eyes reflecting light that is not there.)",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "momo",
+      "text": "“That's why I'm asking before you do.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "player",
+      "text": "“Before I do what?”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "momo",
+      "text": "“Offer.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "player",
+      "text": "“A room?”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "momo",
+      "text": "(She flinches at the word.)",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "“You don't know where.”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "momo",
+      "text": "“It doesn't matter.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "momo",
+      "text": "“Wherever I stay too long, something opens.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "“A gate.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "momo",
+      "text": "“Sometimes.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "“Sometimes?”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "momo",
+      "text": "“Sometimes only a seam. Sometimes enough for things to notice.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "“And you think you cause them.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "momo",
+      "text": "“I think the difference between cause and invite matters less when something is eating the wall.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "(A bus passes. Momo's head snaps toward the intersection before the sound reaches you.)",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "momo",
+      "text": "“We should move.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "player",
+      "text": "“Why?”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "momo",
+      "text": "“Pressure.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "player",
+      "text": "“What pressure?”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "momo",
+      "text": "“The kind you don't feel.”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "player",
+      "text": "(She is already gathering the books.)",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "momo",
+      "text": "“Please.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "player",
+      "text": "“How long?”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "momo",
+      "text": "“Twenty minutes. Maybe thirty.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "“For a gate?”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "momo",
+      "text": "“Yes.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "“You're sure?”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "momo",
+      "text": "“I'm never sure until it hurts.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "player",
+      "text": "(You call it in anyway.)",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "player",
+      "text": "(Twenty-three minutes later, a hairline tear opens across the tram wire two blocks away.)",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "momo",
+      "text": "“I'm sorry.”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "player",
+      "text": "“You warned them.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "momo",
+      "text": "“It still happened.”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "player",
+      "text": "“And if you hadn't been here?”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "momo",
+      "text": "(She has no answer for that.)",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "player",
+      "text": "“The room offer stands.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "player",
+      "text": "“Temporary.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "momo",
+      "text": "“That's worse.”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "player",
+      "text": "“Why?”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "momo",
+      "text": "“Because temporary things are allowed to become important by accident.”",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "player",
+      "text": "(Rain starts again.)",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "momo",
+      "text": "“You don't understand.”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "player",
+      "text": "“Probably not.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "player",
+      "text": "“But I understand wet books.”",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "momo",
+      "text": "(She looks down at the grocery bag around them.)",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "player",
+      "text": "“One night.”",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "momo",
+      "text": "“One night becomes two.”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "player",
+      "text": "“Then two becomes a conversation.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "momo",
+      "text": "“And if a gate opens?”",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "player",
+      "text": "“Then at least we'll have twenty minutes.”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "momo",
+      "text": "(For the first time, she almost smiles.)",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "momo",
+      "text": "“You shouldn't do this.”",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "player",
+      "text": "“I get that a lot.”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "player",
+      "text": "(At the House, Momo chooses the chair farthest from every door and nearest the window.)",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "thora",
+      "text": "“Soup?”",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "momo",
+      "text": "“No, thank you.”",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "kess",
+      "text": "“Blanket?”",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "momo",
+      "text": "“No, thank you.”",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "faelen",
+      "text": "“Exit plan?”",
+      "next": "n69"
+    },
+    "n69": {
+      "speaker": "momo",
+      "text": "(Momo looks at her.)",
+      "next": "n70"
+    },
+    "n70": {
+      "speaker": "faelen",
+      "text": "“Second stairwell sticks. Window opens fully. Roof access is not locked.”",
+      "next": "n71"
+    },
+    "n71": {
+      "speaker": "momo",
+      "text": "“...Thank you.”",
+      "next": "n72"
+    },
+    "n72": {
+      "speaker": "player",
+      "text": "(That night, the backpack stays zipped.)",
+      "next": "n73"
+    },
+    "n73": {
+      "speaker": "player",
+      "text": "(The books do not.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

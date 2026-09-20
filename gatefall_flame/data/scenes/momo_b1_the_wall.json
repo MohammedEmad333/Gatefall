@@ -1,17 +1,342 @@
 {
-  "scene_id": "momo_b1_the_wall", "start_node": "n1",
+  "scene_id": "momo_b1_the_wall",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "momo", "text": "The gate two blocks over — it's going to open in an hour. I'm sorry, I should have said sooner.", "next": "n2" },
-    "n2": { "speaker": "player", "text": "(The house evacuates in time. She apologizes for the warning that saved everyone.)", "next": "n3" },
-    "n3": { "speaker": "momo", "text": "I'm sorry. I didn't mean to cause—",
+    "n1": {
+      "speaker": "player",
+      "text": "(Momo is standing in the kitchen at dawn with both hands wrapped around a cold cup of tea.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "momo",
+      "text": "“I need everyone awake.”",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "“How soon?”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "momo",
+      "text": "“An hour.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "“Gate?”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "momo",
+      "text": "“Yes.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "momo",
+      "text": "“Two blocks east. Maybe the old laundromat.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "player",
+      "text": "“You've been up all night.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "momo",
+      "text": "“I was hoping it would go away.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "player",
+      "text": "“Why didn't you wake me?”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "momo",
+      "text": "“Because I wanted to be wrong.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "(The House evacuates. Dana gets the block flagged. Faelen walks the perimeter twice.)",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "(Forty-eight minutes later, glass bows inward along the laundromat windows.)",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "momo",
+      "text": "“Now.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "player",
+      "text": "(The gate tears open exactly where she said.)",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "(Nobody from the House is inside the danger radius.)",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "kess",
+      "text": "“You just beat the city alert by eleven minutes.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "momo",
+      "text": "“I'm sorry.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "kess",
+      "text": "“For being faster than municipal infrastructure?”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "momo",
+      "text": "“For it opening.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "player",
+      "text": "“Momo.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "momo",
+      "text": "“I slept here three nights.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "player",
+      "text": "“And?”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "momo",
+      "text": "“Three nights is usually when it starts.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "player",
+      "text": "“Usually?”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "momo",
+      "text": "“I keep records.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "“Of every place?”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "momo",
+      "text": "“Every place that mattered enough to leave.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "(She pulls a small notebook from her sleeve. Dates. Addresses. Distances. Times between arrival and first pressure.)",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "momo",
+      "text": "“I'm sorry. I should have said sooner.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "player",
+      "text": "“You did say.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "momo",
+      "text": "“Not everything.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "momo",
+      "text": "“I thought if I stayed quiet, maybe I'd get one more day.”",
       "choices": [
-        { "choice_id": "press", "text": "\"That wasn't your fault. You just saved us.\"", "next": "n4_press",
-          "effects": { "set_flags": { "MOMO_APPROACH": "press" }, "bond_delta": 15 } },
-        { "choice_id": "patience", "text": "(Just squeeze her hand. Let it be enough.)", "next": "n4_patience",
-          "effects": { "set_flags": { "MOMO_APPROACH": "patience" }, "bond_delta": 10 } }
-      ] },
-    "n4_press": { "speaker": "momo", "text": "...You really think so?", "next": "end" },
-    "n4_patience": { "speaker": "momo", "text": "...Okay.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "press",
+          "text": "“That wasn't your fault. Your warning is why nobody was there.”",
+          "next": "press1",
+          "effects": {
+            "set_flags": {
+              "MOMO_APPROACH": "press"
+            },
+            "bond_delta": 15
+          }
+        },
+        {
+          "choice_id": "patience",
+          "text": "(Take the cold cup from her hands, replace it with a warm one, and sit beside her.)",
+          "next": "patience1",
+          "effects": {
+            "set_flags": {
+              "MOMO_APPROACH": "patience"
+            },
+            "bond_delta": 10
+          }
+        }
+      ]
+    },
+    "press1": {
+      "speaker": "momo",
+      "text": "“You don't know that.”",
+      "next": "press2"
+    },
+    "press2": {
+      "speaker": "player",
+      "text": "“Neither do you.”",
+      "next": "press3"
+    },
+    "press3": {
+      "speaker": "momo",
+      "text": "“I have patterns.”",
+      "next": "press4"
+    },
+    "press4": {
+      "speaker": "player",
+      "text": "“You have correlation and terror.”",
+      "next": "press5"
+    },
+    "press5": {
+      "speaker": "momo",
+      "text": "“That sounded like Dana.”",
+      "next": "press6"
+    },
+    "press6": {
+      "speaker": "player",
+      "text": "“Don't insult me.”",
+      "next": "press7"
+    },
+    "press7": {
+      "speaker": "momo",
+      "text": "(A startled laugh escapes before she can stop it.)",
+      "next": "press8"
+    },
+    "press8": {
+      "speaker": "player",
+      "text": "“You saved people this morning.”",
+      "next": "press9"
+    },
+    "press9": {
+      "speaker": "momo",
+      "text": "“...You really think so?”",
+      "next": "n34"
+    },
+    "patience1": {
+      "speaker": "momo",
+      "text": "“You don't have to do that.”",
+      "next": "patience2"
+    },
+    "patience2": {
+      "speaker": "player",
+      "text": "“I know.”",
+      "next": "patience3"
+    },
+    "patience3": {
+      "speaker": "momo",
+      "text": "“People usually say something.”",
+      "next": "patience4"
+    },
+    "patience4": {
+      "speaker": "player",
+      "text": "“You've said enough for one morning.”",
+      "next": "patience5"
+    },
+    "patience5": {
+      "speaker": "momo",
+      "text": "(Steam fogs her glasses.)",
+      "next": "patience6"
+    },
+    "patience6": {
+      "speaker": "momo",
+      "text": "“If I say it later?”",
+      "next": "patience7"
+    },
+    "patience7": {
+      "speaker": "player",
+      "text": "“I'll still be here later.”",
+      "next": "patience8"
+    },
+    "patience8": {
+      "speaker": "momo",
+      "text": "“That's the part I'm bad at believing.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "(The city gate alarm finally sounds outside.)",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "momo",
+      "text": "“Late.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "player",
+      "text": "“You knew that too.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "momo",
+      "text": "“It's louder after it opens.”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "player",
+      "text": "“Then we're going to start listening before it does.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "momo",
+      "text": "“We?”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "player",
+      "text": "“We.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "player",
+      "text": "(She looks toward the stairs, where four people are getting ready because she warned them.)",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "momo",
+      "text": "“I'm sorry.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "“For what?”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "momo",
+      "text": "(Long pause.)",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "momo",
+      "text": "“I don't know.”",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

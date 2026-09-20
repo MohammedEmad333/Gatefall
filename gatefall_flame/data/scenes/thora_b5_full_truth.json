@@ -1,13 +1,532 @@
 {
-  "scene_id": "thora_b5_full_truth", "start_node": "n1",
+  "scene_id": "thora_b5_full_truth",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "thora", "text": "I care for everyone so I never have to be cared for. If I let myself be held, I'd have to admit I'm still here — and they're not.",
+    "n1": {
+      "speaker": "player",
+      "text": "(For three days after the shelter rescue, Thora does not cook.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(The House survives.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "kess",
+      "text": "“Barely.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "dana",
+      "text": "“We have takeout.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "kess",
+      "text": "“Exactly.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "(Thora is in bed because five separate people have threatened consequences if she stands.)",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "thora",
+      "text": "“This is absurd.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "momo",
+      "text": "“You said that twenty minutes ago.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "thora",
+      "text": "“It remains true.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "faelen",
+      "text": "“Drink.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "thora",
+      "text": "“I am capable of holding a cup.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "faelen",
+      "text": "“Then prove it.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "thora",
+      "text": "“You have all become intolerable.”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "player",
+      "text": "“You trained us.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "player",
+      "text": "(Everyone eventually leaves except you.)",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "thora",
+      "text": "“You too.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "player",
+      "text": "“No.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "thora",
+      "text": "“I need rest.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "player",
+      "text": "“Then rest.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "thora",
+      "text": "“Alone.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "player",
+      "text": "“No.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "thora",
+      "text": "(She glares. It would be more effective if she were not tucked under Momo's blanket.)",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "player",
+      "text": "“Why is this so hard?”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "thora",
+      "text": "“Because I am injured.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "player",
+      "text": "“Not the bed.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "thora",
+      "text": "“Then ask a better question.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "“Why can you love everyone in this House and treat being loved back like an emergency?”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "thora",
+      "text": "(Silence.)",
+      "next": "press_cb1"
+    },
+    "press_cb1": {
+      "speaker": "thora",
+      "text": "“You do enjoy saying the thing I am trying not to say.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "press_cb2"
+    },
+    "press_cb2": {
+      "speaker": "player",
+      "text": "“You keep giving me practice.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "patience_cb1"
+    },
+    "patience_cb1": {
+      "speaker": "thora",
+      "text": "“You could wait.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb2"
+    },
+    "patience_cb2": {
+      "speaker": "player",
+      "text": "“I can.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb3"
+    },
+    "patience_cb3": {
+      "speaker": "thora",
+      "text": "“That is worse.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "thora",
+      "text": "“I know how to care for people.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "player",
+      "text": "“Yes.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "thora",
+      "text": "“I know what to do when someone is frightened.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "thora",
+      "text": "“When someone is bleeding.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "thora",
+      "text": "“When someone cannot sleep.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "thora",
+      "text": "“When they need food, medicine, quiet, work, a hand on their shoulder.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "“And when it's you?”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "thora",
+      "text": "“I work.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "player",
+      "text": "“Why?”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "thora",
+      "text": "“Because if I stop, I remember.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "“The clan.”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "thora",
+      "text": "“All of them.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "thora",
+      "text": "“The ones I carried.”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "thora",
+      "text": "“The ones I chose not to.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "thora",
+      "text": "“The ones who survived Earth and no longer needed me.”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "thora",
+      "text": "“The ones I do not know how to find.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "player",
+      "text": "“Thora—”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "thora",
+      "text": "“If I am useful, surviving has a purpose.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "thora",
+      "text": "“If I am caring for someone, then I am paying forward what I failed to give them.”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "player",
+      "text": "“And if somebody cares for you?”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "thora",
+      "text": "(Her voice breaks.)",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "thora",
+      "text": "“Then I am just still here.”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "player",
+      "text": "“Yes.”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "thora",
+      "text": "“And they're not.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "player",
+      "text": "“Yes.”",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "thora",
+      "text": "“That is unbearable.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "player",
+      "text": "“Then don't bear it alone.”",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "thora",
+      "text": "“I do not know how.”",
       "choices": [
-        { "choice_id": "hold", "text": "\"Let me hold you up, for once.\"", "next": "end",
-          "effects": { "set_flags": { "THORA_CONFESSED": true }, "bond_delta": 20 } },
-        { "choice_id": "stay", "text": "(Just stay. Let her lean, this once.)", "next": "end",
-          "effects": { "set_flags": { "THORA_CONFESSED": true }, "bond_delta": 15 } }
-      ] },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "hold",
+          "text": "“Let me hold you up for once. You don't have to repay it.”",
+          "next": "hold1",
+          "effects": {
+            "set_flags": {
+              "THORA_CONFESSED": true
+            },
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "stay",
+          "text": "(Sit beside her and let her decide whether to lean.)",
+          "next": "stay1",
+          "effects": {
+            "set_flags": {
+              "THORA_CONFESSED": true
+            },
+            "bond_delta": 15
+          }
+        }
+      ]
+    },
+    "hold1": {
+      "speaker": "thora",
+      "text": "“No debt?”",
+      "next": "hold2"
+    },
+    "hold2": {
+      "speaker": "player",
+      "text": "“No debt.”",
+      "next": "hold3"
+    },
+    "hold3": {
+      "speaker": "thora",
+      "text": "“No favor later?”",
+      "next": "hold4"
+    },
+    "hold4": {
+      "speaker": "player",
+      "text": "“No.”",
+      "next": "hold5"
+    },
+    "hold5": {
+      "speaker": "thora",
+      "text": "“No meal owed?”",
+      "next": "hold6"
+    },
+    "hold6": {
+      "speaker": "player",
+      "text": "“Especially no meal.”",
+      "next": "hold7"
+    },
+    "hold7": {
+      "speaker": "thora",
+      "text": "“That part may be unreasonable.”",
+      "next": "hold8"
+    },
+    "hold8": {
+      "speaker": "player",
+      "text": "“Thora.”",
+      "next": "hold9"
+    },
+    "hold9": {
+      "speaker": "thora",
+      "text": "(She reaches for you.)",
+      "next": "hold10"
+    },
+    "hold10": {
+      "speaker": "player",
+      "text": "(For once, she is the one being held.)",
+      "next": "n57"
+    },
+    "stay1": {
+      "speaker": "player",
+      "text": "(You sit.)",
+      "next": "stay2"
+    },
+    "stay2": {
+      "speaker": "player",
+      "text": "(Five minutes.)",
+      "next": "stay3"
+    },
+    "stay3": {
+      "speaker": "player",
+      "text": "(Ten.)",
+      "next": "stay4"
+    },
+    "stay4": {
+      "speaker": "thora",
+      "text": "“You are very stubborn.”",
+      "next": "stay5"
+    },
+    "stay5": {
+      "speaker": "player",
+      "text": "“I live here.”",
+      "next": "stay6"
+    },
+    "stay6": {
+      "speaker": "thora",
+      "text": "“So do I.”",
+      "next": "stay7"
+    },
+    "stay7": {
+      "speaker": "player",
+      "text": "(She says it without thinking.)",
+      "next": "stay8"
+    },
+    "stay8": {
+      "speaker": "thora",
+      "text": "“...Oh.”",
+      "next": "stay9"
+    },
+    "stay9": {
+      "speaker": "player",
+      "text": "(Her head settles against your shoulder.)",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "thora",
+      "text": "“I will still cook tomorrow.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "player",
+      "text": "“I know.”",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "thora",
+      "text": "“And fix the stair.”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "player",
+      "text": "“After breakfast.”",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "thora",
+      "text": "“And check Momo's—”",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "player",
+      "text": "“Thora.”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "thora",
+      "text": "“Fine.”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "player",
+      "text": "“Rest.”",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "thora",
+      "text": "(Closes her eyes.)",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "thora",
+      "text": "“Stay until I fall asleep?”",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "player",
+      "text": "“Yes.”",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "thora",
+      "text": "“Good.”",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

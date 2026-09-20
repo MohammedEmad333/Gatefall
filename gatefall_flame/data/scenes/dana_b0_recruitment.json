@@ -1,9 +1,384 @@
 {
-  "scene_id": "dana_b0_recruitment", "start_node": "n1",
+  "scene_id": "dana_b0_recruitment",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "player", "text": "(A caseworker with a clipboard and zero patience for unregistered tenants shows up at your door.)", "next": "n2" },
-    "n2": { "speaker": "dana", "text": "This building is housing undocumented Gatekin. You have thirty days to file, or I shut it down.", "next": "n3" },
-    "n3": { "speaker": "player", "text": "(She keeps coming back long after the paperwork's filed.)", "next": "end" },
-    "end": { "end_scene": true }
+    "n1": {
+      "speaker": "player",
+      "text": "(The knock is too precise to be a neighbor.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(Three knocks. Pause. Two.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "dana",
+      "text": "“Landlord of record?”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "player",
+      "text": "“Depends who's asking.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "dana",
+      "text": "“Dana Vale. Municipal Gatekin Integration Office.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "player",
+      "text": "“That sounds expensive.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "dana",
+      "text": "“It is mostly fluorescent lighting.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "player",
+      "text": "(She steps inside before being invited, then stops exactly one pace past the threshold.)",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "dana",
+      "text": "“This building is housing undocumented Gatekin.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "“Undocumented or unregistered?”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "dana",
+      "text": "“Excellent. You already know enough vocabulary to be difficult.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "player",
+      "text": "“Thank you.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "dana",
+      "text": "“It was not praise.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "player",
+      "text": "(Kess leans over the upstairs railing.)",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "kess",
+      "text": "“Are we being raided?”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "dana",
+      "text": "“Inspected.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "kess",
+      "text": "“Worse.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "dana",
+      "text": "“Three current Gatekin residents?”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "“Four, depending on whether Thora has adopted the building.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "thora",
+      "text": "(From the kitchen.) “I heard that.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "dana",
+      "text": "“Of course you did.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "player",
+      "text": "(Dana checks the fire exits, room dimensions, window latches, registration forms, and one loose stair rail Thora fixed yesterday.)",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "dana",
+      "text": "“You have thirty days to file residence declarations, emergency plans, species-specific medical notes, and gate-exposure waivers.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "“Species-specific medical notes?”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "dana",
+      "text": "“Somebody once gave iron supplements to a species that stores iron in its liver.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "“Oh.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "dana",
+      "text": "“Yes. Paperwork exists because people improvise confidently.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "player",
+      "text": "“You don't like improvisation.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "dana",
+      "text": "“I like survivors.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "player",
+      "text": "(She says it too fast.)",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "dana",
+      "text": "“Thirty days.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "“And if we don't file?”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "dana",
+      "text": "“I shut the House down.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "kess",
+      "text": "“Can I quote you?”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "kess",
+      "text": "“Can I paraphrase you?”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "kess",
+      "text": "“Can I—”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "(Dana leaves.)",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "player",
+      "text": "(She returns the next morning.)",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "dana",
+      "text": "“You used the wrong intake form.”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "player",
+      "text": "“You said declaration B.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "dana",
+      "text": "“I said B-4.”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "player",
+      "text": "“You speak in hyphens.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "dana",
+      "text": "“Learn.”",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "player",
+      "text": "(She returns two days later with corrected forms already tabbed.)",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "player",
+      "text": "“You could have emailed these.”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "dana",
+      "text": "“Your attachment security is terrible.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "player",
+      "text": "“You checked?”",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "dana",
+      "text": "“I audited.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "player",
+      "text": "(She returns again after the forms are filed.)",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "player",
+      "text": "“We're compliant.”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "dana",
+      "text": "“Temporarily.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "player",
+      "text": "“So why are you here?”",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "dana",
+      "text": "“Follow-up.”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "player",
+      "text": "“For what?”",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "dana",
+      "text": "(Looks at the kitchen, where Thora is making coffee.)",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "dana",
+      "text": "“Post-compliance verification.”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "thora",
+      "text": "“Coffee?”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "player",
+      "text": "(Thora pours one anyway.)",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "dana",
+      "text": "“I do not accept gifts from regulated properties.”",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "thora",
+      "text": "“Then pay.”",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "dana",
+      "text": "“How much?”",
+      "next": "n69"
+    },
+    "n69": {
+      "speaker": "thora",
+      "text": "“Sit down.”",
+      "next": "n70"
+    },
+    "n70": {
+      "speaker": "dana",
+      "text": "“That is not a currency.”",
+      "next": "n71"
+    },
+    "n71": {
+      "speaker": "thora",
+      "text": "“It is here.”",
+      "next": "n72"
+    },
+    "n72": {
+      "speaker": "player",
+      "text": "(Dana sits.)",
+      "next": "n73"
+    },
+    "n73": {
+      "speaker": "player",
+      "text": "(Twenty minutes later, she is still holding the same cup.)",
+      "next": "n74"
+    },
+    "n74": {
+      "speaker": "kess",
+      "text": "“Your office know you live here now?”",
+      "next": "n75"
+    },
+    "n75": {
+      "speaker": "dana",
+      "text": "“I do not live here.”",
+      "next": "n76"
+    },
+    "n76": {
+      "speaker": "kess",
+      "text": "“You have a mug.”",
+      "next": "n77"
+    },
+    "n77": {
+      "speaker": "dana",
+      "text": "“It is evidence.”",
+      "next": "n78"
+    },
+    "n78": {
+      "speaker": "player",
+      "text": "(The mug stays.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

@@ -1,7 +1,692 @@
 {
-  "scene_id": "thora_b6_the_choice", "start_node": "n1",
+  "scene_id": "thora_b6_the_choice",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "thora", "text": "...Perhaps this can be my home too. Not just one I keep for others.", "next": "end" },
-    "end": { "end_scene": true }
+    "n1": {
+      "speaker": "player",
+      "text": "(The House alarm begins in the kitchen.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "kess",
+      "text": "“Why does the kitchen have an alarm?”",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "dana",
+      "text": "“Because Thora labeled the smoke detector ‘dramatic’ and installed a second one.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "thora",
+      "text": "“It has saved us twice.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "momo",
+      "text": "“Not smoke.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "(Stone dust rises from the floorboards.)",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "momo",
+      "text": "“Gate pressure.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "faelen",
+      "text": "“Below?”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "momo",
+      "text": "“Inside the foundation.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "thora",
+      "text": "“Everyone out.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "player",
+      "text": "“Thora.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "thora",
+      "text": "“I said everyone.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "“You included yourself?”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "thora",
+      "text": "(Looks annoyed.)",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "thora",
+      "text": "“Yes.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "“Good.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "player",
+      "text": "(The foundation splits before anyone reaches the door.)",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "(A Stone-aligned gate erupts upward, turning the first floor into a maze of pillars and crushed walls.)",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "thora",
+      "text": "“My kitchen.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "kess",
+      "text": "“Priorities.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "thora",
+      "text": "“Correct.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "(A Guardian hits the central support.)",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "dana",
+      "text": "“If that column goes, the stairwell goes.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "thora",
+      "text": "“I can hold it.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "player",
+      "text": "“No.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "thora",
+      "text": "“I said I can.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "“And then what?”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "thora",
+      "text": "(She knows exactly why you asked.)",
+      "next": "force_cb1"
+    },
+    "force_cb1": {
+      "speaker": "player",
+      "text": "“Your order.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_TRIAGE",
+            "equals": "force"
+          }
+        ]
+      },
+      "next": "force_cb2"
+    },
+    "force_cb2": {
+      "speaker": "thora",
+      "text": "“My what?”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_TRIAGE",
+            "equals": "force"
+          }
+        ]
+      },
+      "next": "force_cb3"
+    },
+    "force_cb3": {
+      "speaker": "player",
+      "text": "“Self-heal when you're critical.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_TRIAGE",
+            "equals": "force"
+          }
+        ]
+      },
+      "next": "force_cb4"
+    },
+    "force_cb4": {
+      "speaker": "thora",
+      "text": "“You are insufferable.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_TRIAGE",
+            "equals": "force"
+          }
+        ]
+      },
+      "next": "trust_cb1"
+    },
+    "trust_cb1": {
+      "speaker": "player",
+      "text": "“Update your triage.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_TRIAGE",
+            "equals": "trust"
+          }
+        ]
+      },
+      "next": "trust_cb2"
+    },
+    "trust_cb2": {
+      "speaker": "thora",
+      "text": "(Looks at the party.)",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_TRIAGE",
+            "equals": "trust"
+          }
+        ]
+      },
+      "next": "trust_cb3"
+    },
+    "trust_cb3": {
+      "speaker": "thora",
+      "text": "“Fine.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "THORA_TRIAGE",
+            "equals": "trust"
+          }
+        ]
+      },
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "thora",
+      "text": "“Faelen, column.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "faelen",
+      "text": "“On it.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "thora",
+      "text": "“Kess, clear the right side.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "kess",
+      "text": "“Already offended you had to ask.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "thora",
+      "text": "“Momo, call shifts.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "momo",
+      "text": "“Left wall in five.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "thora",
+      "text": "“Dana, civilians.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "dana",
+      "text": "“Moving.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "player",
+      "text": "“And me?”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "thora",
+      "text": "“With me.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "(The Guardian hits again.)",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "player",
+      "text": "(Thora catches the blow.)",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "player",
+      "text": "(Her HP drops hard.)",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "thora",
+      "text": "“Kess is bleeding.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "“So are you.”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "thora",
+      "text": "“Kess first.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "kess",
+      "text": "“No.”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "thora",
+      "text": "“What?”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "kess",
+      "text": "“Me later.”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "momo",
+      "text": "“Thora. Incoming right.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "(Faelen intercepts it.)",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "faelen",
+      "text": "“You are covered.”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "thora",
+      "text": "“I do not need—”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "dana",
+      "text": "“Too bad.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "player",
+      "text": "(Dana throws the emergency med-kit across the floor.)",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "player",
+      "text": "“Use it.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "thora",
+      "text": "“That kit is for—”",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "everyone",
+      "text": "“THORA.”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "thora",
+      "text": "(She actually startles.)",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "player",
+      "text": "(She heals herself.)",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "player",
+      "text": "(Something changes.)",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "player",
+      "text": "(Stone-light spreads from the wound outward—not consumed, reflected.)",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "momo",
+      "text": "“Again.”",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "player",
+      "text": "“What?”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "momo",
+      "text": "“Help her again.”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "faelen",
+      "text": "(Places a guard over Thora.)",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "player",
+      "text": "(The Stone-light intensifies.)",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "kess",
+      "text": "“Oh.”",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "thora",
+      "text": "“What is happening?”",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "player",
+      "text": "“You tell us.”",
+      "next": "n69"
+    },
+    "n69": {
+      "speaker": "thora",
+      "text": "(The Guardian strikes.)",
+      "next": "n70"
+    },
+    "n70": {
+      "speaker": "player",
+      "text": "(The protection given to Thora ripples back through the formation.)",
+      "next": "n71"
+    },
+    "n71": {
+      "speaker": "momo",
+      "text": "“Everyone's shielded.”",
+      "next": "n72"
+    },
+    "n72": {
+      "speaker": "thora",
+      "text": "“No.”",
+      "next": "n73"
+    },
+    "n73": {
+      "speaker": "thora",
+      "text": "(A slow smile.)",
+      "next": "n74"
+    },
+    "n74": {
+      "speaker": "thora",
+      "text": "“Again.”",
+      "next": "n75"
+    },
+    "n75": {
+      "speaker": "player",
+      "text": "“What?”",
+      "next": "n76"
+    },
+    "n76": {
+      "speaker": "thora",
+      "text": "“Help me.”",
+      "next": "n77"
+    },
+    "n77": {
+      "speaker": "player",
+      "text": "(No one wastes time being emotional about the sentence.)",
+      "next": "n78"
+    },
+    "n78": {
+      "speaker": "faelen",
+      "text": "“Guard.”",
+      "next": "n79"
+    },
+    "n79": {
+      "speaker": "dana",
+      "text": "“Med patch.”",
+      "next": "n80"
+    },
+    "n80": {
+      "speaker": "player",
+      "text": "“Sever cover.”",
+      "next": "n81"
+    },
+    "n81": {
+      "speaker": "momo",
+      "text": "“Impact in three.”",
+      "next": "n82"
+    },
+    "n82": {
+      "speaker": "kess",
+      "text": "“And then?”",
+      "next": "n83"
+    },
+    "n83": {
+      "speaker": "thora",
+      "text": "“Then I give it back.”",
+      "next": "n84"
+    },
+    "n84": {
+      "speaker": "player",
+      "text": "(Reciprocity erupts through the party.)",
+      "next": "n85"
+    },
+    "n85": {
+      "speaker": "player",
+      "text": "(What they give Thora returns stronger: protection into force, healing into endurance, trust into Stone.)",
+      "next": "n86"
+    },
+    "n86": {
+      "speaker": "thora",
+      "text": "“Now.”",
+      "next": "n87"
+    },
+    "n87": {
+      "speaker": "player",
+      "text": "(The Guardian breaks.)",
+      "next": "n88"
+    },
+    "n88": {
+      "speaker": "player",
+      "text": "(The gate collapses.)",
+      "next": "n89"
+    },
+    "n89": {
+      "speaker": "player",
+      "text": "(The kitchen does not.)",
+      "next": "n90"
+    },
+    "n90": {
+      "speaker": "thora",
+      "text": "(Looks around at cracked tile, broken shelves, flour everywhere.)",
+      "next": "n91"
+    },
+    "n91": {
+      "speaker": "thora",
+      "text": "“Oh, this is going to take all day.”",
+      "next": "n92"
+    },
+    "n92": {
+      "speaker": "player",
+      "text": "“We'll fix it.”",
+      "next": "n93"
+    },
+    "n93": {
+      "speaker": "thora",
+      "text": "“I will fix it.”",
+      "next": "n94"
+    },
+    "n94": {
+      "speaker": "player",
+      "text": "“We.”",
+      "next": "n95"
+    },
+    "n95": {
+      "speaker": "thora",
+      "text": "(Looks around at everyone.)",
+      "next": "n96"
+    },
+    "n96": {
+      "speaker": "thora",
+      "text": "“We.”",
+      "choices": [
+        {
+          "choice_id": "receive",
+          "text": "“Your home gets to take care of you too.”",
+          "next": "rec1",
+          "effects": {
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "build",
+          "text": "“Then let's rebuild your kitchen together.”",
+          "next": "build1",
+          "effects": {
+            "bond_delta": 15
+          }
+        }
+      ]
+    },
+    "rec1": {
+      "speaker": "thora",
+      "text": "“My home.”",
+      "next": "rec2"
+    },
+    "rec2": {
+      "speaker": "player",
+      "text": "“Yes.”",
+      "next": "rec3"
+    },
+    "rec3": {
+      "speaker": "thora",
+      "text": "(The words sit differently now.)",
+      "next": "rec4"
+    },
+    "rec4": {
+      "speaker": "thora",
+      "text": "“My home too.”",
+      "next": "n97"
+    },
+    "build1": {
+      "speaker": "thora",
+      "text": "“You will cut the vegetables incorrectly.”",
+      "next": "build2"
+    },
+    "build2": {
+      "speaker": "player",
+      "text": "“This is rebuilding.”",
+      "next": "build3"
+    },
+    "build3": {
+      "speaker": "thora",
+      "text": "“There will be vegetables.”",
+      "next": "build4"
+    },
+    "build4": {
+      "speaker": "player",
+      "text": "“Fine.”",
+      "next": "build5"
+    },
+    "build5": {
+      "speaker": "thora",
+      "text": "(Smiles.) “Then yes.”",
+      "next": "n97"
+    },
+    "n97": {
+      "speaker": "player",
+      "text": "(That night, dinner is late.)",
+      "next": "n98"
+    },
+    "n98": {
+      "speaker": "player",
+      "text": "(Everyone cooked.)",
+      "next": "n99"
+    },
+    "n99": {
+      "speaker": "player",
+      "text": "(It is objectively worse.)",
+      "next": "n100"
+    },
+    "n100": {
+      "speaker": "thora",
+      "text": "“This is terrible.”",
+      "next": "n101"
+    },
+    "n101": {
+      "speaker": "kess",
+      "text": "“You're welcome.”",
+      "next": "n102"
+    },
+    "n102": {
+      "speaker": "momo",
+      "text": "“I followed the recipe.”",
+      "next": "n103"
+    },
+    "n103": {
+      "speaker": "dana",
+      "text": "“The recipe assumed competence.”",
+      "next": "n104"
+    },
+    "n104": {
+      "speaker": "player",
+      "text": "(Thora eats first.)",
+      "next": "n105"
+    },
+    "n105": {
+      "speaker": "player",
+      "text": "(No one comments.)",
+      "next": "n106"
+    },
+    "n106": {
+      "speaker": "player",
+      "text": "(She takes seconds.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }
