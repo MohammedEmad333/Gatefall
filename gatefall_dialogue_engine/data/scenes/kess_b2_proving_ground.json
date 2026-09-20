@@ -1,16 +1,327 @@
 {
-  "scene_id": "kess_b2_proving_ground", "start_node": "n1",
+  "scene_id": "kess_b2_proving_ground",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "kess", "text": "I got this—", "next": "n2" },
-    "n2": { "speaker": "player", "text": "(She overextends chasing one more kill and gets swarmed. You pull her out with seconds to spare.)",
+    "n1": {
+      "speaker": "player",
+      "text": "(The fourth wave breaks badly.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "faelen",
+      "text": "Hold formation.",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "kess",
+      "text": "One runner.",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "player",
+      "text": "Kess—",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "kess",
+      "text": "I got this.",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "(She is already gone.)",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "(Ember cuts a line through the dark. She catches the fleeing creature before it reaches the ridge.)",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "kess",
+      "text": "See?",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "momo",
+      "text": "Kess. Left.",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "player",
+      "text": "(Three more shapes rise where the runner was leading her.)",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "kess",
+      "text": "Oh.",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "(Her first Dash kills one. The second creature catches her recovery. The third closes the route back.)",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "faelen",
+      "text": "Do not chase the wound.",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "kess",
+      "text": "Little busy!",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "player",
+      "text": "(You break the nearest flank. Faelen takes the hit meant for Kess. Momo’s bolt opens the path back.)",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "Move.",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "kess",
+      "text": "I can finish—",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "Move.",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "player",
+      "text": "(She retreats with the formation. For the rest of the wave, she does not speak.)",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "(After the gate closes, Kess sits on a concrete barrier while Thora wraps the burn along her ribs.)",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "thora",
+      "text": "If you pull away again, I will tie the bandage around the barrier too.",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "kess",
+      "text": "Threatening a patient. Incredible bedside manner.",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "thora",
+      "text": "You are not a patient. You are a recurring problem.",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "player",
+      "text": "You left the formation for one kill.",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "kess",
+      "text": "And got the kill.",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "player",
+      "text": "And Faelen took your hit.",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "kess",
+      "text": "She does that.",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "faelen",
+      "text": "Not for free.",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "(Kess looks away.)",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "kess",
+      "text": "I said I had it.",
       "choices": [
-        { "choice_id": "bench_her", "text": "\"You're benched next raid.\"", "next": "n3_bench",
-          "effects": { "set_flags": { "KESS_LEASH": "bench" }, "bond_delta": 10 } },
-        { "choice_id": "let_run", "text": "\"Run it your way. Just don't die.\"", "next": "n3_free",
-          "effects": { "set_flags": { "KESS_LEASH": "free" }, "bond_delta": 15 } }
-      ] },
-    "n3_bench": { "speaker": "kess", "text": "...Fine. FINE. I'll sit out. Once.", "next": "end" },
-    "n3_free": { "speaker": "kess", "text": "See? Told you I had it.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "bench_her",
+          "text": "“Next raid, you sit until you can trust a formation.”",
+          "next": "bench1",
+          "effects": {
+            "set_flags": {
+              "KESS_LEASH": "bench"
+            },
+            "bond_delta": 10
+          }
+        },
+        {
+          "choice_id": "let_run",
+          "text": "“I’m not putting a leash on you. Call the break before you take it.”",
+          "next": "free1",
+          "effects": {
+            "set_flags": {
+              "KESS_LEASH": "free"
+            },
+            "bond_delta": 15
+          }
+        }
+      ]
+    },
+    "bench1": {
+      "speaker": "kess",
+      "text": "You’re benching me for being too fast.",
+      "next": "bench2"
+    },
+    "bench2": {
+      "speaker": "player",
+      "text": "I’m benching you for making everyone else pay for it.",
+      "next": "bench3"
+    },
+    "bench3": {
+      "speaker": "kess",
+      "text": "I pay my own way.",
+      "next": "bench4"
+    },
+    "bench4": {
+      "speaker": "player",
+      "text": "That’s the problem.",
+      "next": "bench5"
+    },
+    "bench5": {
+      "speaker": "player",
+      "text": "(The joke she reaches for does not arrive.)",
+      "next": "bench6"
+    },
+    "bench6": {
+      "speaker": "kess",
+      "text": "Fine. One raid.",
+      "next": "bench7"
+    },
+    "bench7": {
+      "speaker": "player",
+      "text": "Until I know you’ll come back when we call.",
+      "next": "bench8"
+    },
+    "bench8": {
+      "speaker": "kess",
+      "text": "You always this controlling?",
+      "next": "bench9"
+    },
+    "bench9": {
+      "speaker": "faelen",
+      "text": "Yes.",
+      "next": "bench10"
+    },
+    "bench10": {
+      "speaker": "kess",
+      "text": "Great. Love the tenant culture.",
+      "next": "n31"
+    },
+    "free1": {
+      "speaker": "kess",
+      "text": "No leash?",
+      "next": "free2"
+    },
+    "free2": {
+      "speaker": "player",
+      "text": "No leash.",
+      "next": "free3"
+    },
+    "free3": {
+      "speaker": "player",
+      "text": "But if you see an opening, say it.",
+      "next": "free4"
+    },
+    "free4": {
+      "speaker": "kess",
+      "text": "So you can tell me no?",
+      "next": "free5"
+    },
+    "free5": {
+      "speaker": "player",
+      "text": "So we can make it bigger.",
+      "next": "free6"
+    },
+    "free6": {
+      "speaker": "kess",
+      "text": "That is disgustingly teamwork-shaped.",
+      "next": "free7"
+    },
+    "free7": {
+      "speaker": "player",
+      "text": "Try it once.",
+      "next": "free8"
+    },
+    "free8": {
+      "speaker": "kess",
+      "text": "And if it works?",
+      "next": "free9"
+    },
+    "free9": {
+      "speaker": "player",
+      "text": "You get to pretend it was your idea.",
+      "next": "free10"
+    },
+    "free10": {
+      "speaker": "kess",
+      "text": "Deal.",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "player",
+      "text": "(On the walk home, a stray gate-creature bolts from an alley.)",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "(Every muscle in her body leans forward.)",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "kess",
+      "text": "Runner. Right side.",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "Go.",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "(This time, she waits half a heartbeat for Momo’s angle and Faelen’s step.)",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "player",
+      "text": "(Then Ember flashes.)",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "kess",
+      "text": "Still got it.",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "player",
+      "text": "You called it.",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "kess",
+      "text": "Don’t make this emotional.",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }
