@@ -78,16 +78,10 @@ merges differ in how skimpy they default.
   highlights, sharp focus, ultra detailed — not flat cel shading.
 - Palette/lighting mood: dramatic rim lighting, cinematic lighting,
   dark vignette backgrounds (often a blurred fantasy-city backdrop).
-- Outfit language: practical fantasy armor/gear per character's
-  element and role; **moderate coverage, not skimpy** — Pony leans
-  toward deep cutouts/cleavage-forward armor by default (seen across
-  early test renders), so every prompt should nudge back toward
-  practical gear with tags like `high collar, closed neckline, full
-  coverage armor, modest clothing, covered torso` plus matching
-  negatives (`cleavage, exposed midriff, bare stomach, underboob,
-  cutout armor, low-cut`). The target isn't zero skin shown — Faelen's
-  locked look (below) keeps a soft neckline — just armor that reads as
-  battle-practical rather than decorative/fanservice-cut.
+- Outfit language: character-specific fantasy armor/gear, streetwear,
+  robes, or office clothing according to each character's role and
+  visual identity. Do not apply a global neckline or coverage rule;
+  let each individual design establish its own silhouette.
 - Crop: full-body "hero card" framing (not a tight bust/portrait crop)
   — see Faelen's locked prompt below.
 - Resolution: 832x1216 (SDXL portrait) worked well for this framing.
@@ -141,9 +135,7 @@ action; back row = ranged/support stance, more distance/guard).
   score_9, score_8_up, score_7_up, masterpiece, best quality, ultra
   detailed, 1girl, solo, elf, pointed ears, full body, long
   silver-white hair, tied back, pale skin, detailed skin texture,
-  tired eyes, stoic expression, weathered leather and steel armor,
-  high collar, closed neckline, full coverage armor, modest clothing,
-  practical armor, covered torso, worn cloak, cloak clasp shaped like
+  tired eyes, stoic expression, weathered leather and steel armor, worn cloak, cloak clasp shaped like
   a closing gate, green glowing seams, photorealistic shading, glossy
   highlights, dramatic rim lighting, cinematic lighting, dark vignette
   background, blurred cityscape background, game character splash art,
@@ -151,8 +143,8 @@ action; back row = ranged/support stance, more distance/guard).
 
   Negative: chibi, deformed, extra limbs, extra fingers, blurry, lowres,
   watermark, signature, text, bad anatomy, flat lighting, cartoon, cel
-  shading, cleavage, exposed midriff, bare stomach, underboob, cutout
-  armor, revealing clothing, low-cut, bare shoulders
+  shading, cutout
+  armor
   ```
   Resolution: 832x1216. Checkpoint: AniVerse (Pony XL) — regenerated on
   this checkpoint; supersedes the original Pony Diffusion V6 XL pass.
@@ -191,8 +183,7 @@ action; back row = ranged/support stance, more distance/guard).
   full body, messy orange-red hair, amber eyes, tan skin, detailed
   skin texture, confident grin, cocky expression, dynamic pose,
   modern streetwear layered with scrappy improvised leather armor,
-  hooded jacket, fingerless gloves, high collar, closed neckline,
-  full coverage armor, modest clothing, practical armor, covered
+  hooded jacket, fingerless gloves, covered
   torso, orange glowing ember seams, glowing gate-shaped pendant,
   warm orange and red palette, photorealistic shading, glossy
   highlights, dramatic rim lighting, cinematic lighting, dark
@@ -201,8 +192,8 @@ action; back row = ranged/support stance, more distance/guard).
 
   Negative: chibi, deformed, extra limbs, extra fingers, extra tails,
   blurry, lowres, watermark, signature, text, bad anatomy, flat
-  lighting, cartoon, cel shading, cleavage, exposed midriff, bare
-  stomach, underboob, cutout armor, revealing clothing, low-cut, bare
+  lighting, cartoon, cel shading, bare
+  stomach, bare
   shoulders
   ```
   Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
@@ -230,7 +221,7 @@ action; back row = ranged/support stance, more distance/guard).
   detailed skin texture, faint glowing violet void markings on skin,
   soft shadow haze around her, shy expression, downcast look,
   oversized layered hooded robe, protective layered clothing, high
-  collar, closed neckline, full coverage, modest clothing, covered
+  collar, covered
   torso, holding a small worn book, indigo and violet gloam accents,
   dark desaturated palette, photorealistic shading, glossy
   highlights, dramatic rim lighting, cinematic lighting, dark
@@ -239,8 +230,7 @@ action; back row = ranged/support stance, more distance/guard).
 
   Negative: chibi, deformed, extra limbs, extra fingers, blurry,
   lowres, watermark, signature, text, bad anatomy, flat lighting,
-  cartoon, cel shading, cleavage, exposed midriff, bare stomach,
-  underboob, cutout armor, revealing clothing, low-cut, bare
+  cartoon, cel shading, bare
   shoulders, oversexualized, mature body
   ```
   Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
@@ -263,8 +253,7 @@ action; back row = ranged/support stance, more distance/guard).
   muscular sturdy build, green skin, detailed skin texture, dark hair
   tied back, warm gentle smile, kind eyes, heavy earth-toned plate
   and leather armor, cloth apron over armor, healer's satchel, high
-  collar, closed neckline, full coverage armor, modest clothing,
-  practical armor, covered torso, amber glowing stone seams, glowing
+  collar, amber glowing stone seams, glowing
   gate-shaped clasp, warm earthy brown and ochre palette,
   photorealistic shading, glossy highlights, dramatic rim lighting,
   cinematic lighting, dark vignette background, blurred cityscape
@@ -272,8 +261,7 @@ action; back row = ranged/support stance, more distance/guard).
 
   Negative: chibi, deformed, extra limbs, extra fingers, blurry,
   lowres, watermark, signature, text, bad anatomy, flat lighting,
-  cartoon, cel shading, cleavage, exposed midriff, bare stomach,
-  underboob, cutout armor, revealing clothing, low-cut, bare
+  cartoon, cel shading, bare
   shoulders, skinny, frail
   ```
   Resolution: 832x1216. Checkpoint: AniVerse (Pony XL).
@@ -298,8 +286,8 @@ action; back row = ranged/support stance, more distance/guard).
   detailed, 1girl, solo, human, full body, shoulder-length brown
   hair, tired eyes, guarded skeptical expression, realistic skin
   texture, plain office-casual clothing, buttoned blouse, blazer,
-  slacks, lanyard id badge, high collar, closed neckline, modest
-  clothing, covered torso, holding a clipboard, muted neutral grey
+  slacks, lanyard id badge, modest
+  clothing, holding a clipboard, muted neutral grey
   and beige palette, no magic, photorealistic shading, glossy
   highlights, dramatic rim lighting, cinematic lighting, dark
   vignette background, blurred cityscape background, game character
@@ -307,8 +295,7 @@ action; back row = ranged/support stance, more distance/guard).
 
   Negative: chibi, deformed, extra limbs, extra fingers, blurry,
   lowres, watermark, signature, text, bad anatomy, flat lighting,
-  cartoon, cel shading, cleavage, exposed midriff, bare stomach,
-  underboob, cutout armor, revealing clothing, low-cut, bare
+  cartoon, cel shading, bare
   shoulders, fantasy armor, glowing magic, elf ears, animal ears,
   weapon
   ```
