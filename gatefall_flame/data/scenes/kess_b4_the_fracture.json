@@ -1,15 +1,589 @@
 {
-  "scene_id": "kess_b4_the_fracture", "start_node": "n1",
+  "scene_id": "kess_b4_the_fracture",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "kess", "text": "There's a lead. Real, maybe. I'm going tonight, alone, whatever it costs.",
+    "n1": {
+      "speaker": "player",
+      "text": "(At 1:42 a.m., Kess’s room is empty.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(Not empty like she is out. Empty like she has converted everything back into luggage.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "(The ring light is gone. The blankets are folded. The bag that spent months beside the bed is zipped.)",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "kess",
+      "text": "You’re early.",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "For what?",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "kess",
+      "text": "For the part where you try to talk me out of it.",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "(She is standing in the doorway with travel gear under her jacket and every coin pouch she owns clipped to her belt.)",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "kess",
+      "text": "I got a lead.",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "player",
+      "text": "A registry hit?",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "kess",
+      "text": "Better.",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "kess",
+      "text": "A transit broker has three fox-beastkin moving through an unregistered gate corridor before dawn.",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "Names?",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "kess",
+      "text": "No.",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "player",
+      "text": "World of origin?",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "kess",
+      "text": "Maybe.",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "Verified by?",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "kess",
+      "text": "Knew you’d do this.",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "Kess.",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "kess",
+      "text": "One of them matches the age. Another has my family’s trade mark stitched into a bag.",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "That could be anything.",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "kess",
+      "text": "It could be them.",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "How much did the broker ask?",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "kess",
+      "text": "Everything.",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "player",
+      "text": "(Silence.)",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "kess",
+      "text": "I can earn it again.",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "player",
+      "text": "Your room is packed.",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "kess",
+      "text": "If it’s them, I’m not coming back tonight.",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "player",
+      "text": "And if it isn’t?",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "kess",
+      "text": "Then I keep moving.",
+      "next": "bench_cb1"
+    },
+    "bench_cb1": {
+      "speaker": "player",
+      "text": "You’re doing the same thing you did in the gate. One target, no formation, everybody else pays for the opening.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_LEASH",
+            "equals": "bench"
+          }
+        ]
+      },
+      "next": "bench_cb2"
+    },
+    "bench_cb2": {
+      "speaker": "kess",
+      "text": "This is not a raid.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_LEASH",
+            "equals": "bench"
+          }
+        ]
+      },
+      "next": "bench_cb3"
+    },
+    "bench_cb3": {
+      "speaker": "player",
+      "text": "No. That makes it worse.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_LEASH",
+            "equals": "bench"
+          }
+        ]
+      },
+      "next": "free_cb1"
+    },
+    "free_cb1": {
+      "speaker": "player",
+      "text": "You promised you’d call the break before you took it.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_LEASH",
+            "equals": "free"
+          }
+        ]
+      },
+      "next": "free_cb2"
+    },
+    "free_cb2": {
+      "speaker": "kess",
+      "text": "I’m calling it.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_LEASH",
+            "equals": "free"
+          }
+        ]
+      },
+      "next": "free_cb3"
+    },
+    "free_cb3": {
+      "speaker": "player",
+      "text": "No. You’re announcing it after you packed.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_LEASH",
+            "equals": "free"
+          }
+        ]
+      },
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "kess",
+      "text": "I have spent three years getting close enough to this exact possibility to know what it costs.",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "player",
+      "text": "And the House?",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "kess",
+      "text": "What about it?",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "player",
+      "text": "You live here.",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "kess",
+      "text": "I pay rent here.",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "That isn’t the same thing.",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "kess",
+      "text": "It has to be.",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "player",
+      "text": "Why?",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "kess",
+      "text": "Because if this is home, leaving hurts.",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "(There it is.)",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "kess",
+      "text": "And if they’re out there while I’m eating dinner and fixing thumbnails and pretending this is enough—",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "kess",
+      "text": "—then what kind of person does that make me?",
       "choices": [
-        { "choice_id": "stop", "text": "\"I'm not letting you go alone.\"", "next": "end",
-          "effects": { "set_flags": { "KESS_FRACTURE": "stop" }, "bond_delta": 20 } },
-        { "choice_id": "join", "text": "\"Then I'm coming with you.\"", "next": "end",
-          "effects": { "set_flags": { "KESS_FRACTURE": "join" }, "bond_delta": 20 } },
-        { "choice_id": "release", "text": "\"...Go. I hope it's them.\"", "next": "end",
-          "effects": { "set_flags": { "KESS_FRACTURE": "release" }, "bond_delta": -10 } }
-      ] },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "stop",
+          "text": "(Take the broker address from her hand.) “The kind who verifies a lead before paying for it with her whole life.”",
+          "next": "stop1",
+          "effects": {
+            "set_flags": {
+              "KESS_FRACTURE": "stop"
+            },
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "join",
+          "text": "(Pick up your coat.) “Then we follow it together. You do not have to earn the right to ask for help.”",
+          "next": "join1",
+          "effects": {
+            "set_flags": {
+              "KESS_FRACTURE": "join"
+            },
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "release",
+          "text": "(Move out of the doorway.) “I won’t turn this House into another cage.”",
+          "next": "release1",
+          "effects": {
+            "set_flags": {
+              "KESS_FRACTURE": "release"
+            },
+            "bond_delta": -10
+          }
+        }
+      ]
+    },
+    "stop1": {
+      "speaker": "kess",
+      "text": "Give that back.",
+      "next": "stop2"
+    },
+    "stop2": {
+      "speaker": "player",
+      "text": "When Momo checks the corridor signature.",
+      "next": "stop3"
+    },
+    "stop3": {
+      "speaker": "kess",
+      "text": "You do not get to audit my family.",
+      "next": "stop4"
+    },
+    "stop4": {
+      "speaker": "player",
+      "text": "I get to stop you from paying a stranger everything because they learned which word makes you stop thinking.",
+      "next": "stop5"
+    },
+    "stop5": {
+      "speaker": "kess",
+      "text": "My family is not a word.",
+      "next": "stop6"
+    },
+    "stop6": {
+      "speaker": "player",
+      "text": "I know.",
+      "next": "stop7"
+    },
+    "stop7": {
+      "speaker": "kess",
+      "text": "Then move.",
+      "next": "stop8"
+    },
+    "stop8": {
+      "speaker": "momo",
+      "text": "It’s wrong.",
+      "next": "stop9"
+    },
+    "stop9": {
+      "speaker": "player",
+      "text": "(Momo stands at the end of the hall, barefoot, holding Kess’s forwarded gate coordinates.)",
+      "next": "stop10"
+    },
+    "stop10": {
+      "speaker": "momo",
+      "text": "The corridor opens near the location. Not at it.",
+      "next": "stop11"
+    },
+    "stop11": {
+      "speaker": "kess",
+      "text": "That doesn’t mean—",
+      "next": "stop12"
+    },
+    "stop12": {
+      "speaker": "momo",
+      "text": "No. It means we check before you go inside.",
+      "next": "stop13"
+    },
+    "stop13": {
+      "speaker": "kess",
+      "text": "(Doors open behind her. Nobody looks sleepy enough to be accidental.)",
+      "next": "stop14"
+    },
+    "stop14": {
+      "speaker": "kess",
+      "text": "I hate all of you.",
+      "next": "stop15"
+    },
+    "stop15": {
+      "speaker": "thora",
+      "text": "Eat something first.",
+      "next": "stop16"
+    },
+    "stop16": {
+      "speaker": "kess",
+      "text": "Especially you.",
+      "next": "positive1"
+    },
+    "join1": {
+      "speaker": "kess",
+      "text": "No.",
+      "next": "join2"
+    },
+    "join2": {
+      "speaker": "player",
+      "text": "You said it costs everything.",
+      "next": "join3"
+    },
+    "join3": {
+      "speaker": "player",
+      "text": "You forgot to price in me.",
+      "next": "join4"
+    },
+    "join4": {
+      "speaker": "kess",
+      "text": "That is not cute.",
+      "next": "join5"
+    },
+    "join5": {
+      "speaker": "player",
+      "text": "Good. We’re in a hurry.",
+      "next": "join6"
+    },
+    "join6": {
+      "speaker": "kess",
+      "text": "If this is a scam, I’m paying.",
+      "next": "join7"
+    },
+    "join7": {
+      "speaker": "player",
+      "text": "If it’s real?",
+      "next": "join8"
+    },
+    "join8": {
+      "speaker": "player",
+      "text": "(Her voice catches before she can joke around it.)",
+      "next": "join9"
+    },
+    "join9": {
+      "speaker": "kess",
+      "text": "If it’s real, I don’t know.",
+      "next": "join10"
+    },
+    "join10": {
+      "speaker": "player",
+      "text": "Then we find out together.",
+      "next": "join11"
+    },
+    "join11": {
+      "speaker": "faelen",
+      "text": "Not alone.",
+      "next": "join12"
+    },
+    "join12": {
+      "speaker": "player",
+      "text": "(Faelen is already armored. Momo has the gate map. Thora is carrying enough food for a siege.)",
+      "next": "join13"
+    },
+    "join13": {
+      "speaker": "kess",
+      "text": "You people are unbelievably bad at respecting dramatic exits.",
+      "next": "join14"
+    },
+    "join14": {
+      "speaker": "faelen",
+      "text": "Correct.",
+      "next": "positive1"
+    },
+    "positive1": {
+      "speaker": "player",
+      "text": "(By dawn, the broker is gone.)",
+      "next": "positive2"
+    },
+    "positive2": {
+      "speaker": "player",
+      "text": "(The corridor was real. The family was not.)",
+      "next": "positive3"
+    },
+    "positive3": {
+      "speaker": "player",
+      "text": "(What remains is an abandoned transfer point, a counterfeit trade mark, and three frightened Gatekin who paid the same price for three different promises.)",
+      "next": "positive4"
+    },
+    "positive4": {
+      "speaker": "kess",
+      "text": "No.",
+      "next": "positive5"
+    },
+    "positive5": {
+      "speaker": "player",
+      "text": "(She searches every bag anyway.)",
+      "next": "positive6"
+    },
+    "positive6": {
+      "speaker": "kess",
+      "text": "No.",
+      "next": "positive7"
+    },
+    "positive7": {
+      "speaker": "player",
+      "text": "(She checks the faces twice.)",
+      "next": "positive8"
+    },
+    "positive8": {
+      "speaker": "kess",
+      "text": "No.",
+      "next": "positive9"
+    },
+    "positive9": {
+      "speaker": "player",
+      "text": "(On the way home, she does not stream.)",
+      "next": "positive10"
+    },
+    "positive10": {
+      "speaker": "player",
+      "text": "(She carries the still-packed bag upstairs and leaves it in the middle of the room.)",
+      "next": "end"
+    },
+    "release1": {
+      "speaker": "kess",
+      "text": "Thank you.",
+      "next": "release2"
+    },
+    "release2": {
+      "speaker": "player",
+      "text": "I’m not saying it’s a good lead.",
+      "next": "release3"
+    },
+    "release3": {
+      "speaker": "kess",
+      "text": "I know.",
+      "next": "release4"
+    },
+    "release4": {
+      "speaker": "player",
+      "text": "I’m saying the choice is yours.",
+      "next": "release5"
+    },
+    "release5": {
+      "speaker": "kess",
+      "text": "That’s worse, somehow.",
+      "next": "release6"
+    },
+    "release6": {
+      "speaker": "player",
+      "text": "(She shoulders the bag.)",
+      "next": "release7"
+    },
+    "release7": {
+      "speaker": "kess",
+      "text": "If it’s them—",
+      "next": "release8"
+    },
+    "release8": {
+      "speaker": "player",
+      "text": "Go.",
+      "next": "release9"
+    },
+    "release9": {
+      "speaker": "kess",
+      "text": "And if it isn’t?",
+      "next": "release10"
+    },
+    "release10": {
+      "speaker": "player",
+      "text": "You know where the door is.",
+      "next": "release11"
+    },
+    "release11": {
+      "speaker": "kess",
+      "text": "(She smiles like she wants that to be enough.)",
+      "next": "release12"
+    },
+    "release12": {
+      "speaker": "player",
+      "text": "(The room is still empty at sunrise.)",
+      "next": "end_release"
+    },
+    "end": {
+      "end_scene": true
+    },
+    "end_release": {
+      "end_scene": true
+    }
   }
 }
