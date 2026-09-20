@@ -1,17 +1,292 @@
 {
-  "scene_id": "kess_b1_the_wall", "start_node": "n1",
+  "scene_id": "kess_b1_the_wall",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "kess", "text": "Oh, don't mind me. Just reorganizing my streaming schedule. At 3am. Like a normal person.", "next": "n2" },
-    "n2": { "speaker": "player", "text": "(Her laptop is open to a refugee-registry search, not a schedule.)", "next": "n3" },
-    "n3": { "speaker": "kess", "text": "Don't — it's not a big deal, okay?",
+    "n1": {
+      "speaker": "player",
+      "text": "(At 3:17 a.m., the House is quiet except for a rapid series of mouse clicks behind Kess’s door.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(The door is open. Her ring light is off. The laptop is the only light in the room.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "kess",
+      "text": "Oh, hey. Perfect timing. Tell me if this thumbnail says ‘urgent’ or ‘desperate.’",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "player",
+      "text": "That isn’t a thumbnail.",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "(The screen shows a refugee registry. Arrival dates. Species filters. Intake centers. Missing-person mirrors cached from six different cities.)",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "kess",
+      "text": "It’s research.",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "For what?",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "kess",
+      "text": "Content.",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "player",
+      "text": "One tab is called ‘unidentified beastkin arrivals.’",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "kess",
+      "text": "Very niche content.",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "player",
+      "text": "(A payment receipt sits beside the search results. Archive access. More Gold than she admitted earning this week.)",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "Kess.",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "kess",
+      "text": "Don’t.",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "player",
+      "text": "Don’t what?",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "kess",
+      "text": "Make the face.",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "What face?",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "kess",
+      "text": "The one where this becomes sad.",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "kess",
+      "text": "It’s not a big deal, okay?",
       "choices": [
-        { "choice_id": "press", "text": "\"It's a big deal if it matters to you.\"", "next": "n4_press",
-          "effects": { "set_flags": { "KESS_APPROACH": "press" }, "bond_delta": 15 } },
-        { "choice_id": "patience", "text": "(Close the laptop gently. Change the subject.)", "next": "n4_patience",
-          "effects": { "set_flags": { "KESS_APPROACH": "patience" }, "bond_delta": 10 } }
-      ] },
-    "n4_press": { "speaker": "kess", "text": "...You're annoyingly perceptive for a landlord.", "next": "end" },
-    "n4_patience": { "speaker": "kess", "text": "...Thanks. Didn't want to get into it tonight.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "press",
+          "text": "“It’s a big deal if it matters to you.”",
+          "next": "press1",
+          "effects": {
+            "set_flags": {
+              "KESS_APPROACH": "press"
+            },
+            "bond_delta": 15
+          }
+        },
+        {
+          "choice_id": "patience",
+          "text": "(Turn the payment receipt face-down and sit on the floor beside the desk.) “Okay.”",
+          "next": "patience1",
+          "effects": {
+            "set_flags": {
+              "KESS_APPROACH": "patience"
+            },
+            "bond_delta": 10
+          }
+        }
+      ]
+    },
+    "press1": {
+      "speaker": "kess",
+      "text": "Wow. Hate that sentence.",
+      "next": "press2"
+    },
+    "press2": {
+      "speaker": "player",
+      "text": "You don’t have to tell me what you’re looking for.",
+      "next": "press3"
+    },
+    "press3": {
+      "speaker": "kess",
+      "text": "But I’m not allowed to call it nothing.",
+      "next": "press4"
+    },
+    "press4": {
+      "speaker": "player",
+      "text": "Not if you’re spending sleep and rent money on it.",
+      "next": "press5"
+    },
+    "press5": {
+      "speaker": "kess",
+      "text": "It’s my rent money.",
+      "next": "press6"
+    },
+    "press6": {
+      "speaker": "player",
+      "text": "And your sleep.",
+      "next": "press7"
+    },
+    "press7": {
+      "speaker": "kess",
+      "text": "Rude.",
+      "next": "press8"
+    },
+    "press8": {
+      "speaker": "player",
+      "text": "(She minimizes the registry. Not closes. Minimizes.)",
+      "next": "press9"
+    },
+    "press9": {
+      "speaker": "kess",
+      "text": "Fine. It is a medium-sized deal.",
+      "next": "n19"
+    },
+    "patience1": {
+      "speaker": "kess",
+      "text": "That’s it?",
+      "next": "patience2"
+    },
+    "patience2": {
+      "speaker": "player",
+      "text": "You said don’t.",
+      "next": "patience3"
+    },
+    "patience3": {
+      "speaker": "kess",
+      "text": "People usually hear ‘don’t’ as ‘ask softer.’",
+      "next": "patience4"
+    },
+    "patience4": {
+      "speaker": "player",
+      "text": "I can wait.",
+      "next": "patience5"
+    },
+    "patience5": {
+      "speaker": "kess",
+      "text": "That sounds threatening when you say it like that.",
+      "next": "patience6"
+    },
+    "patience6": {
+      "speaker": "player",
+      "text": "(You stay on the floor. She keeps scrolling.)",
+      "next": "patience7"
+    },
+    "patience7": {
+      "speaker": "kess",
+      "text": "You’re not even going to pretend you came in here for something?",
+      "next": "patience8"
+    },
+    "patience8": {
+      "speaker": "player",
+      "text": "I came in here because somebody was typing like they were trying to win a fight.",
+      "next": "patience9"
+    },
+    "patience9": {
+      "speaker": "kess",
+      "text": "I was.",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "player",
+      "text": "(A result loads. Three lines. Wrong age. Wrong city. Wrong world of origin.)",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "kess",
+      "text": "Nope.",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "player",
+      "text": "You knew that fast.",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "kess",
+      "text": "I’m good at this.",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "player",
+      "text": "How long have you been good at this?",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "player",
+      "text": "(Her tail stills.)",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "kess",
+      "text": "Long enough.",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "player",
+      "text": "(Another alert appears. Her hand moves to the mouse before she can stop herself.)",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "kess",
+      "text": "Spam.",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "player",
+      "text": "The same spam from outside the gate?",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "kess",
+      "text": "Wow. Memory too. Terrible qualities in a landlord.",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "player",
+      "text": "(She closes the laptop at last.)",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "kess",
+      "text": "Go to bed.",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "You too.",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "kess",
+      "text": "Absolutely.",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "(At breakfast, the registry is open again. This time she does not minimize it when you walk past.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

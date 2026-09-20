@@ -1,13 +1,522 @@
 {
-  "scene_id": "kess_b5_full_truth", "start_node": "n1",
+  "scene_id": "kess_b5_full_truth",
+  "start_node": "stop_open1",
   "nodes": {
-    "n1": { "speaker": "kess", "text": "It wasn't them. It's never them. And some part of me is terrified that if I stop looking, I have to admit they're gone — and then what am I?",
+    "stop_open1": {
+      "speaker": "player",
+      "text": "(The counterfeit trade mark sits on Kess’s desk in an evidence bag Dana provided with visible irritation.)",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_FRACTURE",
+            "equals": "stop"
+          }
+        ]
+      },
+      "next": "stop_open2"
+    },
+    "stop_open2": {
+      "speaker": "player",
+      "text": "(Kess has been staring at it for twenty minutes.)",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_FRACTURE",
+            "equals": "stop"
+          }
+        ]
+      },
+      "next": "join_open1"
+    },
+    "join_open1": {
+      "speaker": "player",
+      "text": "(Your coat still smells like the illegal corridor. Kess’s shoes are beside the door where she kicked them off and never moved them.)",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_FRACTURE",
+            "equals": "join"
+          }
+        ]
+      },
+      "next": "join_open2"
+    },
+    "join_open2": {
+      "speaker": "player",
+      "text": "(The packed bag is open on the bed. Nothing has been unpacked.)",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_FRACTURE",
+            "equals": "join"
+          }
+        ]
+      },
+      "next": "n1"
+    },
+    "n1": {
+      "speaker": "player",
+      "text": "You missed dinner.",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "kess",
+      "text": "Wasn’t hungry.",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "Thora says that answer is illegal.",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "kess",
+      "text": "Tell Thora I died bravely.",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "She’ll feed your ghost.",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "player",
+      "text": "(A tiny laugh. Gone immediately.)",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "Talk to me.",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "kess",
+      "text": "About which part?",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "player",
+      "text": "The part where you keep opening the same search result.",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "player",
+      "text": "(Her screen shows the broker page. Offline.)",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "kess",
+      "text": "I knew better.",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "player",
+      "text": "You hoped better.",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "kess",
+      "text": "No.",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "kess",
+      "text": "I knew it was thin. I knew the price was wrong. I knew the photo could be stolen.",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "kess",
+      "text": "And I was still ready to hand over everything.",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "Because they might be alive.",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "kess",
+      "text": "Because if I stop acting like they are one search away, then I have to ask a different question.",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "What question?",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "kess",
+      "text": "Who am I if I never find them?",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "Kess.",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "kess",
+      "text": "Don’t do that.",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "Do what?",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "kess",
+      "text": "Answer like it’s easy.",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "kess",
+      "text": "I built everything around this.",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "kess",
+      "text": "The stream. The jobs. The lists. The cities. The stupid ring light.",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "kess",
+      "text": "Every bad month was fine because it paid for the next search.",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "kess",
+      "text": "Every good month was useful because it paid for a bigger one.",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "kess",
+      "text": "If I stop moving, I have to admit there might not be a finish line.",
+      "next": "press_cb1"
+    },
+    "press_cb1": {
+      "speaker": "kess",
+      "text": "You were right that night.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "press_cb2"
+    },
+    "press_cb2": {
+      "speaker": "kess",
+      "text": "It was a big deal.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "press_cb3"
+    },
+    "press_cb3": {
+      "speaker": "kess",
+      "text": "I hated you for making me say it without even knowing what ‘it’ was.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "patience_cb1"
+    },
+    "patience_cb1": {
+      "speaker": "kess",
+      "text": "You waited.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb2"
+    },
+    "patience_cb2": {
+      "speaker": "kess",
+      "text": "I kept expecting you to cash that patience in.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb3"
+    },
+    "patience_cb3": {
+      "speaker": "kess",
+      "text": "You never did.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "kess",
+      "text": "I like it here.",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "player",
+      "text": "I know.",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "kess",
+      "text": "No. I mean I like it here enough that it scares me.",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "kess",
+      "text": "I know which stair complains when Faelen comes down in armor.",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "kess",
+      "text": "I know Momo pretends she doesn’t want the last dumpling.",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "kess",
+      "text": "I know Thora waters the plant Dana says she hates.",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "kess",
+      "text": "I know when you’re home by how you close the front door.",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "player",
+      "text": "Kess—",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "kess",
+      "text": "And if I call this home, what does that say about them?",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "kess",
+      "text": "What does it say about me that I can be happy somewhere they aren’t?",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "It says you survived.",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "kess",
+      "text": "That word is doing a lot of work.",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "player",
+      "text": "It can.",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "kess",
+      "text": "I want this.",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "The House?",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "player",
+      "text": "(She looks directly at you.)",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "kess",
+      "text": "Don’t make me say every noun.",
       "choices": [
-        { "choice_id": "reassure", "text": "\"You're still you. And you're not alone here.\"", "next": "end",
-          "effects": { "set_flags": { "KESS_CONFESSED": true }, "bond_delta": 20 } },
-        { "choice_id": "stay_quiet", "text": "(Just sit with her. Don't fill the silence.)", "next": "end",
-          "effects": { "set_flags": { "KESS_CONFESSED": true }, "bond_delta": 15 } }
-      ] },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "reassure",
+          "text": "“Finding them and belonging here are not opposite choices. You don’t replace people by surviving without them.”",
+          "next": "reassure1",
+          "effects": {
+            "set_flags": {
+              "KESS_CONFESSED": true
+            },
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "stay_quiet",
+          "text": "(Sit beside her and start unpacking the bag one item at a time. Stop when she puts her hand over yours.)",
+          "next": "quiet1",
+          "effects": {
+            "set_flags": {
+              "KESS_CONFESSED": true
+            },
+            "bond_delta": 15
+          }
+        }
+      ]
+    },
+    "reassure1": {
+      "speaker": "kess",
+      "text": "You make it sound legal.",
+      "next": "reassure2"
+    },
+    "reassure2": {
+      "speaker": "player",
+      "text": "It is.",
+      "next": "reassure3"
+    },
+    "reassure3": {
+      "speaker": "kess",
+      "text": "Dana confirm that?",
+      "next": "reassure4"
+    },
+    "reassure4": {
+      "speaker": "dana",
+      "text": "(From the hallway.) For once, yes.",
+      "next": "reassure5"
+    },
+    "reassure5": {
+      "speaker": "kess",
+      "text": "Oh, come on.",
+      "next": "reassure6"
+    },
+    "reassure6": {
+      "speaker": "player",
+      "text": "You left the door open.",
+      "next": "reassure7"
+    },
+    "reassure7": {
+      "speaker": "kess",
+      "text": "I live with vultures.",
+      "next": "n46"
+    },
+    "quiet1": {
+      "speaker": "player",
+      "text": "(A charger. Two shirts. Spare gloves.)",
+      "next": "quiet2"
+    },
+    "quiet2": {
+      "speaker": "player",
+      "text": "(You reach for the folded travel jacket.)",
+      "next": "quiet3"
+    },
+    "quiet3": {
+      "speaker": "player",
+      "text": "(Her hand covers yours.)",
+      "next": "quiet4"
+    },
+    "quiet4": {
+      "speaker": "kess",
+      "text": "Leave that one.",
+      "next": "quiet5"
+    },
+    "quiet5": {
+      "speaker": "player",
+      "text": "Okay.",
+      "next": "quiet6"
+    },
+    "quiet6": {
+      "speaker": "kess",
+      "text": "I’m not done looking.",
+      "next": "quiet7"
+    },
+    "quiet7": {
+      "speaker": "player",
+      "text": "I know.",
+      "next": "quiet8"
+    },
+    "quiet8": {
+      "speaker": "kess",
+      "text": "But the bag doesn’t have to be packed.",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "player",
+      "text": "(She takes the ring light out last.)",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "kess",
+      "text": "This thing is terrible.",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "player",
+      "text": "You love that thing.",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "kess",
+      "text": "It has one dead LED.",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "player",
+      "text": "So do you.",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "kess",
+      "text": "Wow.",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "player",
+      "text": "Too soon?",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "kess",
+      "text": "By several years.",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "player",
+      "text": "(She laughs hard enough that Thora shouts from downstairs to keep it down.)",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "kess",
+      "text": "Home has terrible management.",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "player",
+      "text": "You said home.",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "kess",
+      "text": "Get out.",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }

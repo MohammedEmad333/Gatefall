@@ -1,7 +1,538 @@
 {
-  "scene_id": "kess_b6_the_choice", "start_node": "n1",
+  "scene_id": "kess_b6_the_choice",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "kess", "text": "...Maybe the house was what I was looking for the whole time.", "next": "end" },
-    "end": { "end_scene": true }
+    "n1": {
+      "speaker": "player",
+      "text": "(The gate opens during breakfast.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "momo",
+      "text": "Not here.",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "(Every phone in the House loses signal at once. Kess’s gains one.)",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "kess",
+      "text": "That’s impossible.",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "(Her screen is showing a dead search alert.)",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "kess",
+      "text": "One of the old mirrors just answered.",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "dana",
+      "text": "That network has been offline for eight months.",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "kess",
+      "text": "I know.",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "kess",
+      "text": "(She turns the phone around.)",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "player",
+      "text": "(A partial transit record. Fox-beastkin. Three entries. World-origin metadata corrupted.)",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "kess",
+      "text": "The timestamp is now.",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "momo",
+      "text": "The signal is inside the gate.",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "(Nobody says anything.)",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "kess",
+      "text": "No.",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "player",
+      "text": "No?",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "kess",
+      "text": "No speeches. Gear up.",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "faelen",
+      "text": "Formation?",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "(The old answer reaches her face first.)",
+      "next": "bench_cb1"
+    },
+    "bench_cb1": {
+      "speaker": "player",
+      "text": "One target.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_LEASH",
+            "equals": "bench"
+          }
+        ]
+      },
+      "next": "bench_cb2"
+    },
+    "bench_cb2": {
+      "speaker": "kess",
+      "text": "(She exhales.) Whole formation.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_LEASH",
+            "equals": "bench"
+          }
+        ]
+      },
+      "next": "free_cb1"
+    },
+    "free_cb1": {
+      "speaker": "kess",
+      "text": "Calling the break before I take it.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_LEASH",
+            "equals": "free"
+          }
+        ]
+      },
+      "next": "free_cb2"
+    },
+    "free_cb2": {
+      "speaker": "player",
+      "text": "Good.",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "KESS_LEASH",
+            "equals": "free"
+          }
+        ]
+      },
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "kess",
+      "text": "Whole formation.",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "player",
+      "text": "(Inside, the gate is all broken transit architecture: suspended platforms, doors opening into different skies, rails ending in light.)",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "momo",
+      "text": "The signal is moving.",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "kess",
+      "text": "Direction?",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "momo",
+      "text": "Every time I find it, the gate changes.",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "kess",
+      "text": "Then we make it stop changing.",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "player",
+      "text": "(A chain of Ember-bright locks ignites across the central passage. Creatures pour from the side doors.)",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "faelen",
+      "text": "Hold.",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "kess",
+      "text": "Usually my least favorite verb.",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "faelen",
+      "text": "Learn.",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "player",
+      "text": "(The first lock does not respond to Kess’s Dash. It absorbs the strike and throws her backward.)",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "kess",
+      "text": "Rude.",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "momo",
+      "text": "It changes after each hit.",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "Then don’t hit it the same way twice.",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "thora",
+      "text": "Finally, a problem made for this household.",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "(Faelen’s guard pulls the wave left.)",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "(Momo’s bolt reveals a seam.)",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "player",
+      "text": "(Thora’s strike holds the platform steady.)",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "player",
+      "text": "(Your Sever cut opens the last angle.)",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "player",
+      "text": "Kess!",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "kess",
+      "text": "(She moves.)",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "player",
+      "text": "(Not ahead of the formation. Through it.)",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "player",
+      "text": "(Every action before hers becomes momentum: guard, warning, impact, opening.)",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "kess",
+      "text": "Okay.",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "kess",
+      "text": "Now I got this.",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "player",
+      "text": "(Chainbreak lands. The Ember locks shatter together.)",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "player",
+      "text": "(Beyond them is not a person.)",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "kess",
+      "text": "(She stops so suddenly you almost hit her.)",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "player",
+      "text": "(A transit beacon hangs in the gate-light, wrapped in strips of old cloth.)",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "kess",
+      "text": "I know that mark.",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "Your family’s?",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "kess",
+      "text": "Our district.",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "kess",
+      "text": "Same trade route. Same crossing network.",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "dana",
+      "text": "So the alert was real.",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "kess",
+      "text": "Real enough.",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "player",
+      "text": "(The gate begins to collapse.)",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "kess",
+      "text": "We can follow the signal deeper.",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "momo",
+      "text": "Not safely.",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "player",
+      "text": "(Three years ago, that would have been the end of the discussion.)",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "kess",
+      "text": "Can we mark it?",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "momo",
+      "text": "Yes.",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "kess",
+      "text": "Can we find this signature again?",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "momo",
+      "text": "I think so.",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "kess",
+      "text": "Then we go home.",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "player",
+      "text": "Just like that?",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "kess",
+      "text": "No.",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "kess",
+      "text": "We go home, eat, sleep, map the beacon, check the registries, ask Dana which laws we are about to disrespect—",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "dana",
+      "text": "Several.",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "kess",
+      "text": "—and then we follow it properly.",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "faelen",
+      "text": "Together.",
+      "next": "n69"
+    },
+    "n69": {
+      "speaker": "kess",
+      "text": "Do not make me say the theme out loud.",
+      "next": "n70"
+    },
+    "n70": {
+      "speaker": "player",
+      "text": "(Back at the House, Kess sets the beacon fragment beside her laptop.)",
+      "next": "n71"
+    },
+    "n71": {
+      "speaker": "player",
+      "text": "(Then she turns on the ring light.)",
+      "next": "n72"
+    },
+    "n72": {
+      "speaker": "kess",
+      "text": "Hey, chat.",
+      "next": "n73"
+    },
+    "n73": {
+      "speaker": "kess",
+      "text": "Quick update.",
+      "next": "n74"
+    },
+    "n74": {
+      "speaker": "kess",
+      "text": "I found something today.",
+      "next": "n75"
+    },
+    "n75": {
+      "speaker": "kess",
+      "text": "Not them. Not yet.",
+      "next": "n76"
+    },
+    "n76": {
+      "speaker": "kess",
+      "text": "But a road.",
+      "next": "n77"
+    },
+    "n77": {
+      "speaker": "player",
+      "text": "(She glances past the camera. At Faelen in the kitchen doorway. Momo on the stairs. Thora carrying plates. Dana pretending not to listen. You.)",
+      "choices": [
+        {
+          "choice_id": "together",
+          "text": "“And you’re not walking it alone.”",
+          "next": "together1",
+          "effects": {
+            "bond_delta": 15
+          }
+        },
+        {
+          "choice_id": "both_homes",
+          "text": "“You don’t have to choose which family makes the other one real.”",
+          "next": "both1",
+          "effects": {
+            "bond_delta": 20
+          }
+        }
+      ]
+    },
+    "together1": {
+      "speaker": "kess",
+      "text": "No.",
+      "next": "together2"
+    },
+    "together2": {
+      "speaker": "player",
+      "text": "(She looks back into the camera.)",
+      "next": "together3"
+    },
+    "together3": {
+      "speaker": "kess",
+      "text": "This time I’ve got backup.",
+      "next": "n78"
+    },
+    "both1": {
+      "speaker": "kess",
+      "text": "You really save those lines for when I’m live?",
+      "next": "both2"
+    },
+    "both2": {
+      "speaker": "player",
+      "text": "You’re live?",
+      "next": "both3"
+    },
+    "both3": {
+      "speaker": "kess",
+      "text": "Unfortunately.",
+      "next": "both4"
+    },
+    "both4": {
+      "speaker": "player",
+      "text": "(She looks back into the camera.)",
+      "next": "both5"
+    },
+    "both5": {
+      "speaker": "kess",
+      "text": "I’m still looking.",
+      "next": "n78"
+    },
+    "n78": {
+      "speaker": "kess",
+      "text": "But I’m looking from home.",
+      "next": "n79"
+    },
+    "n79": {
+      "speaker": "player",
+      "text": "(The chat moves too fast to read.)",
+      "next": "n80"
+    },
+    "n80": {
+      "speaker": "kess",
+      "text": "And before anybody clips that—",
+      "next": "n81"
+    },
+    "n81": {
+      "speaker": "player",
+      "text": "(Momo reaches over and clips it.)",
+      "next": "n82"
+    },
+    "n82": {
+      "speaker": "kess",
+      "text": "Betrayal.",
+      "next": "n83"
+    },
+    "n83": {
+      "speaker": "momo",
+      "text": "Content.",
+      "next": "n84"
+    },
+    "n84": {
+      "speaker": "player",
+      "text": "(Kess laughs.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }
