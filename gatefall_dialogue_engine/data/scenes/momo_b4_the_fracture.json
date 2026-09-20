@@ -1,15 +1,634 @@
 {
-  "scene_id": "momo_b4_the_fracture", "start_node": "n1",
+  "scene_id": "momo_b4_the_fracture",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "momo", "text": "Something's hunting me specifically. If I leave, it follows me — not the house.",
+    "n1": {
+      "speaker": "player",
+      "text": "(The first message is a page torn from Momo's notebook.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(It is pinned to the House door from the outside.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "(Nobody saw who put it there.)",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "momo",
+      "text": "“I didn't tear that page out.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "dana",
+      "text": "“Could somebody have copied it?”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "“Why?”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "momo",
+      "text": "(Points to a mark in the margin.)",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "momo",
+      "text": "“That appeared after the laundromat gate.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "faelen",
+      "text": "“I have seen the shape.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "player",
+      "text": "“Where?”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "faelen",
+      "text": "“On the inside of seals that had been tested.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "momo",
+      "text": "(Very quietly.) “Tested by what?”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "faelen",
+      "text": "“Something patient.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "player",
+      "text": "(The second message arrives as pressure.)",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "(Not a gate. Not yet.)",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "momo",
+      "text": "“It's circling.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "kess",
+      "text": "“What is?”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "momo",
+      "text": "“I don't know.”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "momo",
+      "text": "“But it knows where I sleep.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "player",
+      "text": "“No one leaves alone.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "momo",
+      "text": "“I'm not asking.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "player",
+      "text": "“Momo.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "momo",
+      "text": "“If I stay, it keeps mapping the House.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "dana",
+      "text": "“We don't know that.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "momo",
+      "text": "“It used my notes.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "momo",
+      "text": "“It is learning how I describe it.”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "player",
+      "text": "“And leaving helps?”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "momo",
+      "text": "“If it wants me, yes.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "player",
+      "text": "“If.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "momo",
+      "text": "“Please don't make me wait for proof that hurts someone else.”",
+      "next": "hold_cb1"
+    },
+    "hold_cb1": {
+      "speaker": "player",
+      "text": "“Last time you decided alone that disappearing was the useful thing.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_TRUST",
+            "equals": "hold"
+          }
+        ]
+      },
+      "next": "hold_cb2"
+    },
+    "hold_cb2": {
+      "speaker": "momo",
+      "text": "“And last time the seam followed me.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_TRUST",
+            "equals": "hold"
+          }
+        ]
+      },
+      "next": "hold_cb3"
+    },
+    "hold_cb3": {
+      "speaker": "player",
+      "text": "“And we survived because you stayed in formation.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_TRUST",
+            "equals": "hold"
+          }
+        ]
+      },
+      "next": "free_cb1"
+    },
+    "free_cb1": {
+      "speaker": "player",
+      "text": "“I trusted your instincts.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_TRUST",
+            "equals": "free"
+          }
+        ]
+      },
+      "next": "free_cb2"
+    },
+    "free_cb2": {
+      "speaker": "momo",
+      "text": "“Then trust this one.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_TRUST",
+            "equals": "free"
+          }
+        ]
+      },
+      "next": "free_cb3"
+    },
+    "free_cb3": {
+      "speaker": "player",
+      "text": "“I trusted you to lead us, not abandon us.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_TRUST",
+            "equals": "free"
+          }
+        ]
+      },
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "momo",
+      "text": "“I've packed.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "player",
+      "text": "“When?”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "momo",
+      "text": "“I never unpacked all the way.”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "player",
+      "text": "(That hurts more than it should.)",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "momo",
+      "text": "“I can take the south road.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "momo",
+      "text": "“There are empty industrial blocks. If it opens there—”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "player",
+      "text": "“You become bait.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "momo",
+      "text": "“Yes.”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "player",
+      "text": "“And if it doesn't stop with you?”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "momo",
+      "text": "“Then at least I was right to leave.”",
       "choices": [
-        { "choice_id": "stop", "text": "\"You're not leaving. We face it together.\"", "next": "end",
-          "effects": { "set_flags": { "MOMO_FRACTURE": "stop" }, "bond_delta": 20 } },
-        { "choice_id": "join", "text": "\"Then I'm coming with you.\"", "next": "end",
-          "effects": { "set_flags": { "MOMO_FRACTURE": "join" }, "bond_delta": 20 } },
-        { "choice_id": "release", "text": "\"...If that's what keeps everyone else safe.\"", "next": "end",
-          "effects": { "set_flags": { "MOMO_FRACTURE": "release" }, "bond_delta": -10 } }
-      ] },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "stop",
+          "text": "“No. You are not turning yourself into a test case. We make the House harder to map.”",
+          "next": "stop1",
+          "effects": {
+            "set_flags": {
+              "MOMO_FRACTURE": "stop"
+            },
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "join",
+          "text": "“Then we move—but together. If it is hunting you, it meets all of us.”",
+          "next": "join1",
+          "effects": {
+            "set_flags": {
+              "MOMO_FRACTURE": "join"
+            },
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "release",
+          "text": "“If leaving is the only way you can believe we're safe... I won't stop you.”",
+          "next": "rel1",
+          "effects": {
+            "set_flags": {
+              "MOMO_FRACTURE": "release"
+            },
+            "bond_delta": -10
+          }
+        }
+      ]
+    },
+    "stop1": {
+      "speaker": "momo",
+      "text": "“You can't barricade attention.”",
+      "next": "stop2"
+    },
+    "stop2": {
+      "speaker": "dana",
+      "text": "“You can poison data.”",
+      "next": "stop3"
+    },
+    "stop3": {
+      "speaker": "momo",
+      "text": "“What?”",
+      "next": "stop4"
+    },
+    "stop4": {
+      "speaker": "dana",
+      "text": "“False routines. False rooms. Move beds. Swap devices. Change patrol patterns.”",
+      "next": "stop5"
+    },
+    "stop5": {
+      "speaker": "kess",
+      "text": "“Finally, crime with spreadsheets.”",
+      "next": "stop6"
+    },
+    "stop6": {
+      "speaker": "dana",
+      "text": "“Counter-surveillance.”",
+      "next": "stop7"
+    },
+    "stop7": {
+      "speaker": "kess",
+      "text": "“Boring crime.”",
+      "next": "stop8"
+    },
+    "stop8": {
+      "speaker": "player",
+      "text": "“We stop treating you like the thing being tracked and start treating the tracker like a problem.”",
+      "next": "stop9"
+    },
+    "stop9": {
+      "speaker": "momo",
+      "text": "“And if you're wrong?”",
+      "next": "stop10"
+    },
+    "stop10": {
+      "speaker": "player",
+      "text": "“Then we're wrong together.”",
+      "next": "stop11"
+    },
+    "stop11": {
+      "speaker": "momo",
+      "text": "“I hate that answer.”",
+      "next": "stop12"
+    },
+    "stop12": {
+      "speaker": "player",
+      "text": "“Stay anyway.”",
+      "next": "stop13"
+    },
+    "stop13": {
+      "speaker": "momo",
+      "text": "(She looks at the packed bag.)",
+      "next": "stop14"
+    },
+    "stop14": {
+      "speaker": "momo",
+      "text": "“...One night.”",
+      "next": "stop15"
+    },
+    "stop15": {
+      "speaker": "kess",
+      "text": "“Classic.”",
+      "next": "pos1"
+    },
+    "join1": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "join2"
+    },
+    "join2": {
+      "speaker": "player",
+      "text": "“That wasn't a question.”",
+      "next": "join3"
+    },
+    "join3": {
+      "speaker": "momo",
+      "text": "“You can't all move every time I feel something.”",
+      "next": "join4"
+    },
+    "join4": {
+      "speaker": "faelen",
+      "text": "“We can this time.”",
+      "next": "join5"
+    },
+    "join5": {
+      "speaker": "thora",
+      "text": "“I packed food.”",
+      "next": "join6"
+    },
+    "join6": {
+      "speaker": "kess",
+      "text": "“I packed chargers.”",
+      "next": "join7"
+    },
+    "join7": {
+      "speaker": "dana",
+      "text": "“I packed documents proving we are not doing what we are about to do.”",
+      "next": "join8"
+    },
+    "join8": {
+      "speaker": "momo",
+      "text": "“That is not reassuring.”",
+      "next": "join9"
+    },
+    "join9": {
+      "speaker": "player",
+      "text": "“Good. You can worry while walking.”",
+      "next": "join10"
+    },
+    "join10": {
+      "speaker": "momo",
+      "text": "(She looks around at the ridiculous, armed, over-prepared line of people waiting for her.)",
+      "next": "join11"
+    },
+    "join11": {
+      "speaker": "momo",
+      "text": "“...South road.”",
+      "next": "pos1"
+    },
+    "pos1": {
+      "speaker": "player",
+      "text": "(Whether the House becomes a maze or the party moves south, the pressure comes at 2:13 a.m.)",
+      "next": "pos2"
+    },
+    "pos2": {
+      "speaker": "momo",
+      "text": "“Now.”",
+      "next": "pos3"
+    },
+    "pos3": {
+      "speaker": "player",
+      "text": "(A seam opens without widening.)",
+      "next": "pos4"
+    },
+    "pos4": {
+      "speaker": "player",
+      "text": "(Something looks through.)",
+      "next": "pos5"
+    },
+    "pos5": {
+      "speaker": "momo",
+      "text": "“Don't look at it.”",
+      "next": "pos6"
+    },
+    "pos6": {
+      "speaker": "player",
+      "text": "“Why?”",
+      "next": "pos7"
+    },
+    "pos7": {
+      "speaker": "momo",
+      "text": "“Because it notices when noticed.”",
+      "next": "pos8"
+    },
+    "pos8": {
+      "speaker": "player",
+      "text": "(Faelen lowers her eyes first.)",
+      "next": "pos9"
+    },
+    "pos9": {
+      "speaker": "faelen",
+      "text": "“She is correct.”",
+      "next": "pos10"
+    },
+    "pos10": {
+      "speaker": "player",
+      "text": "(The thing presses harder.)",
+      "next": "pos11"
+    },
+    "pos11": {
+      "speaker": "momo",
+      "text": "“It's not trying to cross.”",
+      "next": "pos12"
+    },
+    "pos12": {
+      "speaker": "dana",
+      "text": "“What is it doing?”",
+      "next": "pos13"
+    },
+    "pos13": {
+      "speaker": "momo",
+      "text": "“Confirming.”",
+      "next": "pos14"
+    },
+    "pos14": {
+      "speaker": "player",
+      "text": "“Confirming what?”",
+      "next": "pos15"
+    },
+    "pos15": {
+      "speaker": "momo",
+      "text": "“Me.”",
+      "next": "pos16"
+    },
+    "pos16": {
+      "speaker": "player",
+      "text": "(The seam shuts.)",
+      "next": "pos17"
+    },
+    "pos17": {
+      "speaker": "momo",
+      "text": "(Momo is shaking so hard Thora has to hold the cup to her mouth.)",
+      "next": "pos18"
+    },
+    "pos18": {
+      "speaker": "momo",
+      "text": "“It knows I'm here.”",
+      "next": "pos19"
+    },
+    "pos19": {
+      "speaker": "player",
+      "text": "“We know it's there.”",
+      "next": "pos20"
+    },
+    "pos20": {
+      "speaker": "momo",
+      "text": "“That's not equal.”",
+      "next": "pos21"
+    },
+    "pos21": {
+      "speaker": "faelen",
+      "text": "“No.”",
+      "next": "pos22"
+    },
+    "pos22": {
+      "speaker": "faelen",
+      "text": "“But it is more than you knew yesterday.”",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    },
+    "rel1": {
+      "speaker": "momo",
+      "text": "“Thank you.”",
+      "next": "rel2"
+    },
+    "rel2": {
+      "speaker": "player",
+      "text": "“Don't thank me.”",
+      "next": "rel3"
+    },
+    "rel3": {
+      "speaker": "momo",
+      "text": "“I need to.”",
+      "next": "rel4"
+    },
+    "rel4": {
+      "speaker": "player",
+      "text": "“For letting you disappear?”",
+      "next": "rel5"
+    },
+    "rel5": {
+      "speaker": "momo",
+      "text": "“For believing I know what I am.”",
+      "next": "rel6"
+    },
+    "rel6": {
+      "speaker": "player",
+      "text": "“I don't.”",
+      "next": "rel7"
+    },
+    "rel7": {
+      "speaker": "momo",
+      "text": "(She shoulders the backpack.)",
+      "next": "rel8"
+    },
+    "rel8": {
+      "speaker": "momo",
+      "text": "“That's kinder.”",
+      "next": "rel9"
+    },
+    "rel9": {
+      "speaker": "player",
+      "text": "“Will you check in?”",
+      "next": "rel10"
+    },
+    "rel10": {
+      "speaker": "momo",
+      "text": "“If I can.”",
+      "next": "rel11"
+    },
+    "rel11": {
+      "speaker": "player",
+      "text": "(Pressure follows her south.)",
+      "next": "rel12"
+    },
+    "rel12": {
+      "speaker": "player",
+      "text": "(For three nights, the House is quiet.)",
+      "next": "rel13"
+    },
+    "rel13": {
+      "speaker": "player",
+      "text": "(No one calls it relief.)",
+      "next": "end_release"
+    },
+    "end_release": {
+      "end_scene": true
+    }
   }
 }
