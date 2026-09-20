@@ -1,13 +1,545 @@
 {
-  "scene_id": "momo_b5_full_truth", "start_node": "n1",
+  "scene_id": "momo_b5_full_truth",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "momo", "text": "I never believed I could be wanted. Only tolerated, or feared. Being needed felt... impossible.",
+    "n1": {
+      "speaker": "player",
+      "text": "(Momo has moved her books.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(Not far. From the windowsill to an actual shelf.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "“You unpacked.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "momo",
+      "text": "“Some.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "“That's four shelves.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "momo",
+      "text": "“Some is a flexible word.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "(She is repairing the pressure notebook with tape.)",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "momo",
+      "text": "“I keep thinking about the seam.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "player",
+      "text": "“Me too.”",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "momo",
+      "text": "“It knew me.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "player",
+      "text": "“Maybe.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "momo",
+      "text": "“That part I'm sure of.”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "player",
+      "text": "“Does that change anything?”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "momo",
+      "text": "“Yes.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "“How?”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "momo",
+      "text": "“Now I have proof that I wasn't imagining the danger.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "player",
+      "text": "“And?”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "momo",
+      "text": "“And I still came home.”",
+      "next": "press_cb1"
+    },
+    "press_cb1": {
+      "speaker": "momo",
+      "text": "“You told me my warning saved people.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "press_cb2"
+    },
+    "press_cb2": {
+      "speaker": "momo",
+      "text": "“I kept waiting for the part where saving you meant you owed me a room.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "press_cb3"
+    },
+    "press_cb3": {
+      "speaker": "player",
+      "text": "“That part doesn't exist.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "patience_cb1"
+    },
+    "patience_cb1": {
+      "speaker": "momo",
+      "text": "“You sat with me when I couldn't explain.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb2"
+    },
+    "patience_cb2": {
+      "speaker": "momo",
+      "text": "“I thought patience was just a slower way to get information.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb3"
+    },
+    "patience_cb3": {
+      "speaker": "player",
+      "text": "“Sometimes it's just sitting.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "MOMO_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "momo",
+      "text": "“I need to tell you something ugly.”",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "player",
+      "text": "“Okay.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "momo",
+      "text": "“I didn't only leave places to protect people.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "player",
+      "text": "“I know.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "momo",
+      "text": "“You can't.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "player",
+      "text": "“Try me.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "momo",
+      "text": "“If I leave first, nobody gets to ask me to.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "player",
+      "text": "(Silence.)",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "momo",
+      "text": "“If I tell myself I'm dangerous, every empty room makes sense.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "momo",
+      "text": "“Every person who stops calling makes sense.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "momo",
+      "text": "“Every shelter that says 'we don't have the capacity' becomes evidence instead of rejection.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "player",
+      "text": "“Momo.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "momo",
+      "text": "“I made being a hazard useful.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "momo",
+      "text": "“Because useful is easier than wanted.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "“Why?”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "momo",
+      "text": "“Needed things get kept until the problem is over.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "momo",
+      "text": "“Wanted things can still be lost.”",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "player",
+      "text": "“And you think we only need you?”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "momo",
+      "text": "“I don't know what else to call it.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "“What do you call the reading lamp Kess fixed twice?”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "momo",
+      "text": "“Unsafe wiring.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "player",
+      "text": "“The blanket Thora keeps washing even though you tell her not to?”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "momo",
+      "text": "“Boundary violations.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "“Faelen marking every safe exit without telling you to use one?”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "momo",
+      "text": "“Faelen.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "player",
+      "text": "“Dana memorizing your gate logs?”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "momo",
+      "text": "“Work.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "dana",
+      "text": "(From the hall.) “It is absolutely not in my job description.”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "momo",
+      "text": "“Does nobody in this House understand doors?”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "player",
+      "text": "“You keep leaving yours open.”",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "momo",
+      "text": "(Looks at the open door.)",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "momo",
+      "text": "“Oh.”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "player",
+      "text": "“You are useful.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "player",
+      "text": "“You are also wanted.”",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "momo",
+      "text": "“Those should not feel this different.”",
       "choices": [
-        { "choice_id": "value", "text": "\"You're not a hazard to me. You're just you.\"", "next": "end",
-          "effects": { "set_flags": { "MOMO_CONFESSED": true }, "bond_delta": 20 } },
-        { "choice_id": "quiet", "text": "(Stay close. Let the silence say it.)", "next": "end",
-          "effects": { "set_flags": { "MOMO_CONFESSED": true }, "bond_delta": 15 } }
-      ] },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "value",
+          "text": "“You're not a hazard I'm managing. You're Momo. I want you here.”",
+          "next": "value1",
+          "effects": {
+            "set_flags": {
+              "MOMO_CONFESSED": true
+            },
+            "bond_delta": 20
+          }
+        },
+        {
+          "choice_id": "quiet",
+          "text": "(Move one more book from the travel bag to the shelf, then wait for her to hand you the next.)",
+          "next": "quiet1",
+          "effects": {
+            "set_flags": {
+              "MOMO_CONFESSED": true
+            },
+            "bond_delta": 15
+          }
+        }
+      ]
+    },
+    "value1": {
+      "speaker": "momo",
+      "text": "“Don't say things like that casually.”",
+      "next": "value2"
+    },
+    "value2": {
+      "speaker": "player",
+      "text": "“I didn't.”",
+      "next": "value3"
+    },
+    "value3": {
+      "speaker": "momo",
+      "text": "(Her eyes fill immediately; she looks furious about it.)",
+      "next": "value4"
+    },
+    "value4": {
+      "speaker": "momo",
+      "text": "“I don't know what to do with that.”",
+      "next": "value5"
+    },
+    "value5": {
+      "speaker": "player",
+      "text": "“Nothing tonight.”",
+      "next": "value6"
+    },
+    "value6": {
+      "speaker": "momo",
+      "text": "“That's becoming your answer to everything.”",
+      "next": "value7"
+    },
+    "value7": {
+      "speaker": "player",
+      "text": "“Working?”",
+      "next": "value8"
+    },
+    "value8": {
+      "speaker": "momo",
+      "text": "“Unfortunately.”",
+      "next": "n55"
+    },
+    "quiet1": {
+      "speaker": "player",
+      "text": "(One book.)",
+      "next": "quiet2"
+    },
+    "quiet2": {
+      "speaker": "player",
+      "text": "(Then another.)",
+      "next": "quiet3"
+    },
+    "quiet3": {
+      "speaker": "momo",
+      "text": "“You're making a point.”",
+      "next": "quiet4"
+    },
+    "quiet4": {
+      "speaker": "player",
+      "text": "“No.”",
+      "next": "quiet5"
+    },
+    "quiet5": {
+      "speaker": "momo",
+      "text": "“You absolutely are.”",
+      "next": "quiet6"
+    },
+    "quiet6": {
+      "speaker": "player",
+      "text": "“Hand me the blue one.”",
+      "next": "quiet7"
+    },
+    "quiet7": {
+      "speaker": "momo",
+      "text": "(She does.)",
+      "next": "quiet8"
+    },
+    "quiet8": {
+      "speaker": "momo",
+      "text": "“...Stay until the shelf is done?”",
+      "next": "quiet9"
+    },
+    "quiet9": {
+      "speaker": "player",
+      "text": "“Yes.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "player",
+      "text": "(The travel bag is empty before midnight.)",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "momo",
+      "text": "“I still want it near the door.”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "player",
+      "text": "“Okay.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "momo",
+      "text": "“And if pressure starts—”",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "player",
+      "text": "“You tell us.”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "momo",
+      "text": "“And if it's because of me?”",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "player",
+      "text": "“We learn something.”",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "momo",
+      "text": "“And if it's hunting me?”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "player",
+      "text": "“We learn more.”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "momo",
+      "text": "“And if I get scared?”",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "player",
+      "text": "“You already know where the exits are.”",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "momo",
+      "text": "(A small laugh.)",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "momo",
+      "text": "“I hate this House.”",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "player",
+      "text": "“No, you don't.”",
+      "next": "n69"
+    },
+    "n69": {
+      "speaker": "momo",
+      "text": "“No.”",
+      "next": "n70"
+    },
+    "n70": {
+      "speaker": "momo",
+      "text": "“I really don't.”",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }
