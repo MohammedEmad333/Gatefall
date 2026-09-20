@@ -1,15 +1,527 @@
 {
-  "scene_id": "dana_b3_first_truth", "start_node": "n1",
+  "scene_id": "dana_b3_first_truth",
+  "start_node": "n1",
   "nodes": {
-    "n1": { "speaker": "dana", "text": "The rulebook isn't cruelty. It's armor. I watched the system fail people on both sides of the gates once. Caring cost me everything that time.",
+    "n1": {
+      "speaker": "player",
+      "text": "(Dana is on the roof after midnight.)",
+      "next": "n2"
+    },
+    "n2": {
+      "speaker": "player",
+      "text": "(No clipboard. No lanyard.)",
+      "next": "n3"
+    },
+    "n3": {
+      "speaker": "player",
+      "text": "“You know the roof is not an approved interview space.”",
+      "next": "n4"
+    },
+    "n4": {
+      "speaker": "dana",
+      "text": "“Neither is your kitchen.”",
+      "next": "n5"
+    },
+    "n5": {
+      "speaker": "player",
+      "text": "“You use that one anyway.”",
+      "next": "n6"
+    },
+    "n6": {
+      "speaker": "dana",
+      "text": "“The coffee is better.”",
+      "next": "n7"
+    },
+    "n7": {
+      "speaker": "player",
+      "text": "“Thora heard that.”",
+      "next": "n8"
+    },
+    "n8": {
+      "speaker": "dana",
+      "text": "“Good.”",
+      "next": "n9"
+    },
+    "n9": {
+      "speaker": "player",
+      "text": "(She has taken the lanyard off and wrapped it around one hand.)",
+      "next": "n10"
+    },
+    "n10": {
+      "speaker": "dana",
+      "text": "“The rulebook isn't cruelty.”",
+      "next": "n11"
+    },
+    "n11": {
+      "speaker": "player",
+      "text": "“I didn't say it was.”",
+      "next": "n12"
+    },
+    "n12": {
+      "speaker": "dana",
+      "text": "“You think it.”",
+      "next": "n13"
+    },
+    "n13": {
+      "speaker": "player",
+      "text": "“Sometimes.”",
+      "next": "n14"
+    },
+    "n14": {
+      "speaker": "dana",
+      "text": "“Rules exist because the first year after the Gatefall was chaos.”",
+      "next": "n15"
+    },
+    "n15": {
+      "speaker": "dana",
+      "text": "“People made exceptions until nobody knew what an exception was.”",
+      "next": "n16"
+    },
+    "n16": {
+      "speaker": "player",
+      "text": "“And you were there.”",
+      "next": "n17"
+    },
+    "n17": {
+      "speaker": "dana",
+      "text": "“Junior caseworker.”",
+      "next": "n18"
+    },
+    "n18": {
+      "speaker": "dana",
+      "text": "“I still believed good intentions counted as qualifications.”",
+      "next": "n19"
+    },
+    "n19": {
+      "speaker": "player",
+      "text": "“What happened?”",
+      "next": "n20"
+    },
+    "n20": {
+      "speaker": "dana",
+      "text": "(Looks at the city.)",
+      "next": "n21"
+    },
+    "n21": {
+      "speaker": "dana",
+      "text": "“South Intake Annex Four.”",
+      "next": "n22"
+    },
+    "n22": {
+      "speaker": "player",
+      "text": "“I don't know it.”",
+      "next": "n23"
+    },
+    "n23": {
+      "speaker": "dana",
+      "text": "“Most people don't.”",
+      "next": "n24"
+    },
+    "n24": {
+      "speaker": "dana",
+      "text": "“It was temporary housing for Gatekin who could not be classified fast enough.”",
+      "next": "n25"
+    },
+    "n25": {
+      "speaker": "dana",
+      "text": "“Temporary became nine months.”",
+      "next": "n26"
+    },
+    "n26": {
+      "speaker": "player",
+      "text": "“That sounds familiar.”",
+      "next": "n27"
+    },
+    "n27": {
+      "speaker": "dana",
+      "text": "“Yes.”",
+      "next": "n28"
+    },
+    "n28": {
+      "speaker": "dana",
+      "text": "“One family was going to be split across three sites.”",
+      "next": "n29"
+    },
+    "n29": {
+      "speaker": "dana",
+      "text": "“I knew a volunteer transport coordinator.”",
+      "next": "n30"
+    },
+    "n30": {
+      "speaker": "dana",
+      "text": "“I knew a shelter with unofficial capacity.”",
+      "next": "n31"
+    },
+    "n31": {
+      "speaker": "dana",
+      "text": "“I knew which supervisor would not check until Monday.”",
+      "next": "n32"
+    },
+    "n32": {
+      "speaker": "player",
+      "text": "“You moved them.”",
+      "next": "n33"
+    },
+    "n33": {
+      "speaker": "dana",
+      "text": "“I arranged it.”",
+      "next": "n34"
+    },
+    "n34": {
+      "speaker": "player",
+      "text": "“And?”",
+      "next": "n35"
+    },
+    "n35": {
+      "speaker": "dana",
+      "text": "“A surge hit the transit corridor.”",
+      "next": "n36"
+    },
+    "n36": {
+      "speaker": "player",
+      "text": "(Silence.)",
+      "next": "n37"
+    },
+    "n37": {
+      "speaker": "dana",
+      "text": "“People were hurt.”",
+      "next": "n38"
+    },
+    "n38": {
+      "speaker": "dana",
+      "text": "“Two did not make it.”",
+      "next": "n39"
+    },
+    "n39": {
+      "speaker": "player",
+      "text": "“The family?”",
+      "next": "n40"
+    },
+    "n40": {
+      "speaker": "dana",
+      "text": "“One of them.”",
+      "next": "n41"
+    },
+    "n41": {
+      "speaker": "player",
+      "text": "“Dana—”",
+      "next": "n42"
+    },
+    "n42": {
+      "speaker": "dana",
+      "text": "“The official route had also been hit.”",
+      "next": "n43"
+    },
+    "n43": {
+      "speaker": "player",
+      "text": "“What?”",
+      "next": "n44"
+    },
+    "n44": {
+      "speaker": "dana",
+      "text": "“If I had followed procedure, they might have died there instead.”",
+      "next": "n45"
+    },
+    "n45": {
+      "speaker": "dana",
+      "text": "“Or lived.”",
+      "next": "n46"
+    },
+    "n46": {
+      "speaker": "dana",
+      "text": "“I will never know.”",
+      "next": "n47"
+    },
+    "n47": {
+      "speaker": "player",
+      "text": "“What did the inquiry say?”",
+      "next": "n48"
+    },
+    "n48": {
+      "speaker": "dana",
+      "text": "“That I exceeded authority.”",
+      "next": "n49"
+    },
+    "n49": {
+      "speaker": "dana",
+      "text": "“Which was true.”",
+      "next": "n50"
+    },
+    "n50": {
+      "speaker": "player",
+      "text": "“And you decided never again.”",
+      "next": "n51"
+    },
+    "n51": {
+      "speaker": "dana",
+      "text": "“I decided that if something failed, it would fail inside a process designed to survive failure.”",
+      "next": "n52"
+    },
+    "n52": {
+      "speaker": "player",
+      "text": "“So it wouldn't be yours.”",
+      "next": "n53"
+    },
+    "n53": {
+      "speaker": "dana",
+      "text": "(Sharp look.)",
+      "next": "n54"
+    },
+    "n54": {
+      "speaker": "player",
+      "text": "“That's what this is.”",
+      "next": "n55"
+    },
+    "n55": {
+      "speaker": "dana",
+      "text": "“No.”",
+      "next": "n56"
+    },
+    "n56": {
+      "speaker": "player",
+      "text": "“Armor.”",
+      "next": "n57"
+    },
+    "n57": {
+      "speaker": "dana",
+      "text": "“The rulebook is armor.”",
+      "next": "n58"
+    },
+    "n58": {
+      "speaker": "player",
+      "text": "“For them?”",
+      "next": "n59"
+    },
+    "n59": {
+      "speaker": "dana",
+      "text": "“Yes.”",
+      "next": "n60"
+    },
+    "n60": {
+      "speaker": "player",
+      "text": "“For you?”",
+      "next": "n61"
+    },
+    "n61": {
+      "speaker": "dana",
+      "text": "(Long pause.)",
+      "next": "press_cb1"
+    },
+    "press_cb1": {
+      "speaker": "player",
+      "text": "“You care more than you let on.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "press_cb2"
+    },
+    "press_cb2": {
+      "speaker": "dana",
+      "text": "“You really enjoy being consistent.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "press"
+          }
+        ]
+      },
+      "next": "patience_cb1"
+    },
+    "patience_cb1": {
+      "speaker": "dana",
+      "text": "“You can pretend you didn't hear any of this.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb2"
+    },
+    "patience_cb2": {
+      "speaker": "player",
+      "text": "“I can.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
+      "next": "patience_cb3"
+    },
+    "patience_cb3": {
+      "speaker": "dana",
+      "text": "“You won't.”",
+      "condition": {
+        "requires_flags": [
+          {
+            "flag": "DANA_APPROACH",
+            "equals": "patience"
+          }
+        ]
+      },
       "choices": [
-        { "choice_id": "ask", "text": "\"What happened?\"", "next": "n2_ask",
-          "effects": { "set_flags": { "DANA_ARMOR_KNOWN": true }, "bond_delta": 15 } },
-        { "choice_id": "gentle", "text": "\"You don't have to relive it for my sake.\"", "next": "n2_gentle",
-          "effects": { "set_flags": { "DANA_ARMOR_KNOWN": true }, "bond_delta": 10 } }
-      ] },
-    "n2_ask": { "speaker": "dana", "text": "...Another day. Not tonight.", "next": "end" },
-    "n2_gentle": { "speaker": "dana", "text": "...Thank you.", "next": "end" },
-    "end": { "end_scene": true }
+        {
+          "choice_id": "ask",
+          "text": "“What did caring cost you after the inquiry?”",
+          "next": "ask1",
+          "effects": {
+            "set_flags": {
+              "DANA_ARMOR_KNOWN": true
+            },
+            "bond_delta": 15
+          }
+        },
+        {
+          "choice_id": "gentle",
+          "text": "“You don't have to turn the worst day of your career into a confession tonight.”",
+          "next": "gentle1",
+          "effects": {
+            "set_flags": {
+              "DANA_ARMOR_KNOWN": true
+            },
+            "bond_delta": 10
+          }
+        }
+      ]
+    },
+    "ask1": {
+      "speaker": "dana",
+      "text": "“Promotion.”",
+      "next": "ask2"
+    },
+    "ask2": {
+      "speaker": "dana",
+      "text": "“Friends.”",
+      "next": "ask3"
+    },
+    "ask3": {
+      "speaker": "dana",
+      "text": "“A year under review.”",
+      "next": "ask4"
+    },
+    "ask4": {
+      "speaker": "dana",
+      "text": "“And the ability to hear 'use your judgment' without feeling sick.”",
+      "next": "ask5"
+    },
+    "ask5": {
+      "speaker": "player",
+      "text": "“That's a lot.”",
+      "next": "ask6"
+    },
+    "ask6": {
+      "speaker": "dana",
+      "text": "“Not compared to two people.”",
+      "next": "ask7"
+    },
+    "ask7": {
+      "speaker": "player",
+      "text": "“You don't have to compare grief by weight.”",
+      "next": "ask8"
+    },
+    "ask8": {
+      "speaker": "dana",
+      "text": "“I work for a government office.”",
+      "next": "ask9"
+    },
+    "ask9": {
+      "speaker": "dana",
+      "text": "“We compare everything by weight.”",
+      "next": "n62"
+    },
+    "gentle1": {
+      "speaker": "dana",
+      "text": "“You think I'm confessing?”",
+      "next": "gentle2"
+    },
+    "gentle2": {
+      "speaker": "player",
+      "text": "“You took the lanyard off.”",
+      "next": "gentle3"
+    },
+    "gentle3": {
+      "speaker": "dana",
+      "text": "“That is not a recognized evidentiary standard.”",
+      "next": "gentle4"
+    },
+    "gentle4": {
+      "speaker": "player",
+      "text": "“Still noticed.”",
+      "next": "gentle5"
+    },
+    "gentle5": {
+      "speaker": "dana",
+      "text": "(Looks at the lanyard in her hand.)",
+      "next": "gentle6"
+    },
+    "gentle6": {
+      "speaker": "dana",
+      "text": "“Maybe another night.”",
+      "next": "gentle7"
+    },
+    "gentle7": {
+      "speaker": "player",
+      "text": "“Okay.”",
+      "next": "n62"
+    },
+    "n62": {
+      "speaker": "dana",
+      "text": "“I don't hate the rules.”",
+      "next": "n63"
+    },
+    "n63": {
+      "speaker": "player",
+      "text": "“I know.”",
+      "next": "n64"
+    },
+    "n64": {
+      "speaker": "dana",
+      "text": "“I hate that people use them to avoid choosing.”",
+      "next": "n65"
+    },
+    "n65": {
+      "speaker": "player",
+      "text": "“Do you?”",
+      "next": "n66"
+    },
+    "n66": {
+      "speaker": "dana",
+      "text": "(Looks at you.)",
+      "next": "n67"
+    },
+    "n67": {
+      "speaker": "dana",
+      "text": "“Good night.”",
+      "next": "n68"
+    },
+    "n68": {
+      "speaker": "player",
+      "text": "“Coward.”",
+      "next": "n69"
+    },
+    "n69": {
+      "speaker": "dana",
+      "text": "“Landlord.”",
+      "next": "n70"
+    },
+    "n70": {
+      "speaker": "player",
+      "text": "(She puts the lanyard in her pocket instead of back around her neck.)",
+      "next": "end"
+    },
+    "end": {
+      "end_scene": true
+    }
   }
 }
