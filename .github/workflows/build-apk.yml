@@ -88,6 +88,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Check dialogue data mirror
+        # Canonical narrative JSON lives in gatefall_dialogue_engine/data.
+        # Flutter bundles a mirror under gatefall_flame/data; keep drift from
+        # reaching tests/builds and tell contributors how to repair it.
+        run: python3 tool/sync_dialogue_data.py --check
+
       - name: Analyze
         # Informational only — a lint finding must not block the APK build.
         continue-on-error: true
