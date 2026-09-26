@@ -71,6 +71,34 @@ void main() {
     expect(find.text('Characters'), findsOneWidget);
   });
 
+  testWidgets('first-session guidance leads from Faelen to the gate board',
+      (tester) async {
+    final game = await pumpGame(tester);
+
+    expect(find.text('Start here'), findsOneWidget);
+    expect(find.text('Talk to Faelen'), findsOneWidget);
+
+    await tester.tap(find.text('Talk to Faelen'));
+    await tester.pumpAndSettle();
+    expect(find.text('I Won\'t Be Staying'), findsOneWidget);
+
+    var guard = 0;
+    while (find.text('Continue').evaluate().isNotEmpty && guard++ < 25) {
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+    }
+    await tester.tap(find.text('End of scene'));
+    await tester.pumpAndSettle();
+
+    expect(game.state.completedBeats, contains('faelen_b0_recruitment'));
+    expect(find.text('Your first gate'), findsOneWidget);
+    expect(find.text('Open the gate board'), findsOneWidget);
+
+    await tester.tap(find.text('Open the gate board'));
+    await tester.pumpAndSettle();
+    expect(find.text('The board'), findsOneWidget);
+  });
+
   testWidgets('all four tabs render without throwing', (tester) async {
     await pumpGame(tester);
 

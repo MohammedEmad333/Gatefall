@@ -46,6 +46,14 @@ class _GatefallShellState extends State<GatefallShell> {
     if (mounted) setState(() {});
   }
 
+  void _openGates() {
+    if (_index == 1) return;
+    Audio.instance.noteGesture();
+    Audio.instance.play(Sfx.page);
+    setState(() => _index = 1);
+    Audio.instance.ambience(_ambience);
+  }
+
   @override
   Widget build(BuildContext context) {
     final game = widget.game;
@@ -64,7 +72,7 @@ class _GatefallShellState extends State<GatefallShell> {
             child: IndexedStack(
               index: _index,
               children: [
-                HomeScreen(game: game),
+                HomeScreen(game: game, onOpenGates: _openGates),
                 GateScreen(game: game),
                 CompanionsScreen(game: game),
                 CharactersScreen(game: game),
