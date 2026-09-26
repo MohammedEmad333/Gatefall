@@ -30,7 +30,16 @@ import 'theme.dart';
 /// else here is this screen reading the simulation and reacting.
 class GateScreen extends StatefulWidget {
   final GameController game;
-  const GateScreen({super.key, required this.game});
+
+  /// Optional shell navigation used only to close the first-session loop
+  /// after the player's first successful clear.
+  final VoidCallback? onOpenHouse;
+
+  const GateScreen({
+    super.key,
+    required this.game,
+    this.onOpenHouse,
+  });
 
   @override
   State<GateScreen> createState() => _GateScreenState();
@@ -202,6 +211,9 @@ class _GateScreenState extends State<GateScreen> {
   }
 
   Future<void> _leaveResult() async {
+    final firstClear =
+        battle?.status == BattleStatus.won && game.clears == 1;
+
     // The post_raid hook, actually played: banter after clearing a gate
     // together (docs/combat-spec.md §2), rendered rather than announced.
     final pending = game.postRaidBeat;
@@ -218,6 +230,10 @@ class _GateScreenState extends State<GateScreen> {
       stage = _Stage.board;
     });
     game.rerollBoard();
+
+    // The very first clear is the end of the onboarding loop: story -> gate
+    // -> rewards -> back home to see Bond and the next route requirement.
+    if (firstClear) widget.onOpenHouse?.call();
   }
 
   @override
@@ -1003,7 +1019,9 @@ class _GateScreenState extends State<GateScreen> {
         staged(SlabButton(
           post != null
               ? '${House.byId(post.characterId).name} wants a word'
-              : 'Back to the board',
+              : (won && game.clears == 1
+                  ? 'Back to the house'
+                  : 'Back to the board'),
           filled: true,
           tone: post != null ? gold : rift,
           sound: post != null ? Sfx.bond : Sfx.uiSelect,
