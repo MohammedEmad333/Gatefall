@@ -194,8 +194,8 @@ Across tiers, against the progression a player actually has when each opens:
 ## Known caveats
 
 - Dart + Flutter (3.47.2 / Dart 3.13.2) are available in the build environment. `gatefall_dialogue_engine` passes `dart analyze` clean; `gatefall_flame` passes `flutter analyze` clean and `flutter test` (116/116 as of v2.0.0). The game has been played end to end in Chromium against a real `flutter build web` with no console errors, but **still never run on a phone or emulator** — expect to sanity-check touch targets and safe areas on a first real device run.
-- **There is no art.** Every screen is type, rule lines and colour. That is a deliberate placeholder, not a style decision — see the open question below.
-- **Faelen's route is fully written; the other four routes are still stubs.** Her seven scenes now establish the black-antlered host, Ilyr's eastern line, the eleven Wardens she lost, and the house-centered resolution of her oath. Her early approach and command choices receive conditional callbacks, and each major branch has its own aftermath. Kess, Momo, Thora, and Dana remain at 2-6 nodes per beat and should be expanded to the same standard.
+- **Art is now layered rather than absent.** Version 3 ships generated character silhouettes, creatures, rifts, comic panels, effects and audio; the rendered-sprite pipeline can replace those one character at a time. Faelen already has a committed transparent PNG at `assets/sprites/characters/faelen.png`, while characters without rendered PNGs safely fall back to the generated art.
+- **All five core routes are fully written at seven beats each.** Faelen established the prose/branching standard first; Kess, Momo, Thora and Dana were subsequently expanded to full routes and mirrored into the Flutter asset copy. Route/data tests verify every scene reference and fail if the canonical dialogue-engine JSON and Flutter mirror drift.
 - `Row` was renamed to **`BattleRow`** in the Dart code to avoid colliding with Flutter's `Row` widget; the elements enum is likewise **`GateElement`**, not `Element`, to avoid colliding with Flutter's own `Element` (widget tree node) class.
 - **`gatefall_flame/data/` is a manual mirror** of `gatefall_dialogue_engine/data/` — Flutter can't bundle assets from a pure-Dart path dependency. Nothing copies it automatically, but `game_test.dart` now **fails if the two ever drift**, so at least the mirror can't go stale silently.
 - **4× speed is an addition, not a locked decision.** The locked list names 2× only. 4× unlocks at ten clears because a 5-10 minute raid loop needs a second speed step once a player has cleared the same gate a dozen times. It is a presentation rate — the simulation still steps at `tickSeconds` — so it cannot affect balance. Easy to remove if unwanted.
@@ -205,19 +205,16 @@ Across tiers, against the progression a player actually has when each opens:
 
 ---
 
-## Open question for the user
+## Current presentation direction
 
-**Visual design / art direction is still the open question.** The
-recommendation stands and is now overdue rather than early: the loop is
-proven, so the systems that decide what art is *needed* — how many characters,
-what poses, what UI states — are settled. Every screen currently runs on type
-and rule lines, which reads as deliberate and austere but is not what this
-genre sells on.
+The game now has a stable layered presentation path instead of an unresolved
+art-direction question:
 
-Concretely, what the game now asks for: a portrait per companion with the five
-expression variants already generated for Faelen (`docs/art-direction/`), a
-room illustration or background per resident for the house, and a gate
-backdrop per element. Nothing else is blocking.
+- generated silhouettes / creatures / rifts remain the guaranteed fallback;
+- rendered transparent character PNGs drop in through `CharacterSprite` without changing simulation code;
+- Faelen is the first committed rendered character asset;
+- expression variants remain optional and fall back to the neutral sprite;
+- room/background art and additional rendered cast sprites are polish work, not blockers for the playable loop.
 
 ---
 
@@ -340,20 +337,17 @@ their own awakening — all of which lived only in `docs/story-bible.md`.
 
 In the order that adds the most to the game as it now stands.
 
-1. **Play it, then tune the pacing.** The whole loop is playable, so the
-   questions are finally answerable by playing rather than by simulating: does
-   choosing a gate off the board feel like a decision or a chore? Does bond
-   climb too slowly between scenes? Is the Gold economy too tight early (one
-   resident, 20 gold/hour, a 260-gold room) or too loose later? Every one of
-   those is a constant in `data/house.dart`, `data/gate.dart` or
-   `data/combat_config.dart`.
+1. **Play it on a real Android device, then tune pacing.** CI builds the APK,
+   but the highest-value remaining verification is still a real-phone pass:
+   touch targets, safe areas, text density, first-session flow, gate-choice
+   clarity, Bond pacing and the Gold curve. Those tuning values remain in
+   `data/house.dart`, `data/gate.dart` and `data/combat_config.dart`.
 
-2. **Write the remaining real scenes.** Faelen's complete seven-beat route is
-   now the length and voice standard: staged action, 20-34 nodes per beat,
-   branch-specific aftermath, and callbacks that remember earlier choices.
-   Expand Kess, Momo, Thora, and Dana next; their current scenes remain 2-6
-   nodes of placeholder. The renderer, schema, flags, and endings already work,
-   so this is content work rather than a code change.
+2. **Playtest route pacing and branch clarity.** All five seven-beat routes are
+   now implemented. The next narrative task is not filling stubs; it is playing
+   the real routes end to end and tightening scene length, branch callbacks,
+   trigger pacing and Bond thresholds where the experience feels slow or
+   unclear.
 
 3. **Tune the ascended kits against real play.** *(Shipped in v2.0.0 — see
    "Version 2" below.)* All five exist and are simulation-tested, but the
