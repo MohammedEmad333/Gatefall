@@ -176,6 +176,116 @@ class CharacterSprite extends StatelessWidget {
   }
 }
 
+
+/// A taller, profile-oriented presentation of a character.
+///
+/// Uses the same drop-in sprite convention as [CharacterSprite], but gives
+/// full-body art room to breathe instead of forcing it into a square combat
+/// plate. Missing or broken PNGs still fall back to the painted portrait, so
+/// this is safe to use for the entire cast while art arrives incrementally.
+class CharacterHero extends StatelessWidget {
+  final String id;
+  final double height;
+  final double glow;
+  final bool dimmed;
+
+  const CharacterHero(
+    this.id, {
+    super.key,
+    this.height = 260,
+    this.glow = 1,
+    this.dimmed = false,
+  });
+
+  Widget _fallback() => Center(
+        child: CharacterPortrait(
+          id,
+          size: height * .56,
+          glow: glow,
+          dimmed: dimmed,
+          calm: true,
+          plate: false,
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    final path = characterSpritePath(id);
+    final hasSprite = SpriteBook.instance.has(path);
+
+    Widget figure = hasSprite
+        ? Image.asset(
+            path,
+            fit: BoxFit.contain,
+            alignment: Alignment.bottomCenter,
+            filterQuality: FilterQuality.high,
+            errorBuilder: (_, __, ___) => _fallback(),
+          )
+        : _fallback();
+
+    if (dimmed) {
+      figure = ColorFiltered(
+        colorFilter: const ColorFilter.matrix(<double>[
+          0.33, 0.33, 0.33, 0, 0,
+          0.33, 0.33, 0.33, 0, 0,
+          0.33, 0.33, 0.33, 0, 0,
+          0, 0, 0, 1, 0,
+        ]),
+        child: Opacity(opacity: .62, child: figure),
+      );
+    }
+
+    return SizedBox(
+      height: height,
+      width: double.infinity,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
+            colors: [
+              verdant.withValues(alpha: .10 * glow.clamp(0, 1)),
+              rift.withValues(alpha: .04 * glow.clamp(0, 1)),
+              Colors.transparent,
+            ],
+          ),
+        ),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: FractionallySizedBox(
+                widthFactor: .72,
+                child: Container(
+                  height: 1,
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    boxShadow: glow <= 0
+                        ? null
+                        : [
+                            BoxShadow(
+                              color: verdant.withValues(
+                                  alpha: .35 * glow.clamp(0, 1)),
+                              blurRadius: 26,
+                              spreadRadius: 5,
+                            ),
+                          ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(12, 6, 12, 0),
+              child: figure,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 /// The thing you are fighting: its rendered sprite if one exists, otherwise
 /// the painted [CreatureView]. Approximates the painter's hit-flash and
 /// death-collapse so a sprite still reacts to the sim.

@@ -170,12 +170,11 @@ class CharacterDetailScreen extends StatelessWidget {
               borderColor: atHome ? rift : riftDim,
               child: Column(
                 children: [
-                  CharacterSprite(
+                  CharacterHero(
                     resident.id,
-                    size: 150,
+                    height: 270,
                     glow: atHome ? 1 : .35,
                     dimmed: !atHome,
-                    calm: true,
                   ),
                   const SizedBox(height: 12),
                   Text(resident.name,
