@@ -30,6 +30,32 @@ and seven-beat story route. Completed scenes can be replayed from the profile;
 replays use a disposable copy of the save, so alternate choices never award
 Bond again or overwrite the decisions from the real playthrough.
 
+## Version 3.2 — "Homebound"
+
+The first playable session now forms one clean loop instead of dropping the
+player between systems. The House explicitly points to Faelen's first scene,
+then to the first gate, and the first successful clear returns home after its
+post-raid scene so the player lands back where the next story beat belongs.
+
+- **First-session guidance.** The House presents a `Start here` path into
+  Faelen Beat 0, then changes to `Your first gate` and moves the player to the
+  gate board without duplicating navigation ownership.
+- **First-clear return.** The first successful gate result uses `Back to the
+  house`; post-raid dialogue still resolves first, while later clears retain
+  the normal gate-board return flow.
+- **Full-body character presentation.** Character profiles now have a reusable
+  hero area that shows rendered transparent art when available and safely
+  falls back to the generated painter style. Faelen is already wired into the
+  sprite pipeline.
+- **Dialogue-data hardening.** `gatefall_flame/tool/sync_dialogue_data.py`
+  makes the dialogue engine canonical, can refresh the Flutter mirror, and
+  runs in CI with `--check` so missing, extra, or changed scene JSON cannot
+  silently drift.
+- **Project-state cleanup.** The handoff and README now describe the actual
+  implemented five-route state and current generated-art/rendered-sprite
+  pipeline instead of the old stub/no-art status.
+
+---
 ## Version 3.1 — "Cold Open"
 
 The game now opens by saying what it is. A new player used to land on a rent
