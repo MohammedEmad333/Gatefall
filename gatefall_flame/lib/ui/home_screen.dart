@@ -26,7 +26,16 @@ import 'theme.dart';
 /// house.
 class HomeScreen extends StatefulWidget {
   final GameController game;
-  const HomeScreen({super.key, required this.game});
+
+  /// Optional navigation hook supplied by the shell. It keeps first-session
+  /// guidance inside the House without making this screen own tab state.
+  final VoidCallback? onOpenGates;
+
+  const HomeScreen({
+    super.key,
+    required this.game,
+    this.onOpenGates,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -86,6 +95,10 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         _actHeader(),
         const SizedBox(height: 12),
+        if (game.clears == 0) ...[
+          _firstJourneyCard(),
+          const SizedBox(height: 10),
+        ],
         if (pending.isNotEmpty) ...[
           for (final p in pending) ...[
             _storyCard(p.characterId, p.beat),
@@ -148,6 +161,43 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // ---------------- story ----------------
+
+  Widget _firstJourneyCard() {
+    final intro = game.beatFor('faelen', 'story');
+    final metFaelen =
+        game.state.completedBeats.contains('faelen_b0_recruitment');
+
+    return Panel(
+      borderColor: metFaelen ? verdant : gold,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PanelTitle(
+            metFaelen ? 'Your first gate' : 'Start here',
+            subtitle: metFaelen
+                ? 'Faelen is staying for now. Take her through one gate so '
+                    'the two halves of Gatefall meet: fighting together earns '
+                    'Mana, Gold, and Bond that opens the next parts of her story.'
+                : 'The elf from the doorstep is awake. Talk to her before '
+                    'doing anything else — this is where the first route begins.',
+          ),
+          const SizedBox(height: 10),
+          SlabButton(
+            metFaelen ? 'Open the gate board' : 'Talk to Faelen',
+            filled: true,
+            tone: metFaelen ? verdant : gold,
+            sound: metFaelen ? Sfx.page : Sfx.bond,
+            padding: const EdgeInsets.symmetric(vertical: 13),
+            onPressed: metFaelen
+                ? widget.onOpenGates
+                : intro == null
+                    ? null
+                    : () => _play('faelen', intro),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _storyCard(String characterId, Beat beat) => Beacon(
         color: gold,
