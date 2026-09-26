@@ -54,6 +54,14 @@ class _GatefallShellState extends State<GatefallShell> {
     Audio.instance.ambience(_ambience);
   }
 
+  void _openHouse() {
+    if (_index == 0) return;
+    Audio.instance.noteGesture();
+    Audio.instance.play(Sfx.page);
+    setState(() => _index = 0);
+    Audio.instance.ambience(_ambience);
+  }
+
   @override
   Widget build(BuildContext context) {
     final game = widget.game;
@@ -73,7 +81,7 @@ class _GatefallShellState extends State<GatefallShell> {
               index: _index,
               children: [
                 HomeScreen(game: game, onOpenGates: _openGates),
-                GateScreen(game: game),
+                GateScreen(game: game, onOpenHouse: _openHouse),
                 CompanionsScreen(game: game),
                 CharactersScreen(game: game),
               ],
