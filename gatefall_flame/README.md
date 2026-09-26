@@ -73,7 +73,19 @@ test/
   _preview.dart               Not a test: renders proof sheets of the art as PNGs
 assets/audio/                 22 synthesised WAVs (see tool/make_sounds.py)
 tool/make_sounds.py           The synthesiser that produced them
+tool/sync_dialogue_data.py     Sync/check canonical dialogue JSON -> Flutter mirror
 ```
+
+**Route JSON workflow.** Author canonical route/scene data under
+`../gatefall_dialogue_engine/data/`, then run:
+
+```bash
+cd gatefall_flame
+python3 tool/sync_dialogue_data.py
+```
+
+CI runs the same tool with `--check` and fails if the Flutter mirror is stale.
+`game_test.dart` still compares the decoded JSON as a second guardrail.
 
 **The model is separate from the UI on purpose.** Balance changes can be
 tested in milliseconds without rendering anything, and the same `Battle` class
