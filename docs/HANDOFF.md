@@ -197,7 +197,7 @@ Across tiers, against the progression a player actually has when each opens:
 - **Art is now layered rather than absent.** Version 3 ships generated character silhouettes, creatures, rifts, comic panels, effects and audio; the rendered-sprite pipeline can replace those one character at a time. Faelen already has a committed transparent PNG at `assets/sprites/characters/faelen.png`, while characters without rendered PNGs safely fall back to the generated art.
 - **All five core routes are fully written at seven beats each.** Faelen established the prose/branching standard first; Kess, Momo, Thora and Dana were subsequently expanded to full routes and mirrored into the Flutter asset copy. Route/data tests verify every scene reference and fail if the canonical dialogue-engine JSON and Flutter mirror drift.
 - `Row` was renamed to **`BattleRow`** in the Dart code to avoid colliding with Flutter's `Row` widget; the elements enum is likewise **`GateElement`**, not `Element`, to avoid colliding with Flutter's own `Element` (widget tree node) class.
-- **`gatefall_flame/data/` is a manual mirror** of `gatefall_dialogue_engine/data/` — Flutter can't bundle assets from a pure-Dart path dependency. Nothing copies it automatically, but `game_test.dart` now **fails if the two ever drift**, so at least the mirror can't go stale silently.
+- **`gatefall_flame/data/` remains a mirror** of `gatefall_dialogue_engine/data/` because Flutter cannot bundle assets from the pure-Dart path dependency, but it is no longer maintained by hand. `gatefall_flame/tool/sync_dialogue_data.py` refreshes the mirror from the canonical engine data, `--check` exits non-zero on missing/extra/changed JSON, and CI runs that check before analyze/tests/build. The JSON-equivalence test remains as a second guardrail.
 - **4× speed is an addition, not a locked decision.** The locked list names 2× only. 4× unlocks at ten clears because a 5-10 minute raid loop needs a second speed step once a player has cleared the same gate a dozen times. It is a presentation rate — the simulation still steps at `tickSeconds` — so it cannot affect balance. Easy to remove if unwanted.
 - **Dana is a non-combatant until her route awakens her** — that is now the mechanic rather than a gap. She moves in, takes gifts and dates and scenes like anyone else, but the bench refuses her and `GameController.roster` leaves her out until `dana_b6_the_choice` completes. Her bond still can't be raised by raiding *before* that, which is intended: the route is the only road to the party slot.
 - **Ascension is derived, never stored.** `GameController.ascended` reads `state.completedBeats` every time it is asked. That is deliberate — an old save ascends the moment it is loaded, there is no second source of truth to migrate, and nothing can drift out of sync with the routes. The cost is that it recomputes a small set on every read; if that ever matters, cache it on `completeBeat`, not in the save file.
@@ -333,6 +333,28 @@ their own awakening — all of which lived only in `docs/story-bible.md`.
 
 ---
 
+## Version 3.2 — "Homebound"
+
+Shipped as `gatefall_flame` **3.2.0+5**. One idea: *the first playable session
+should form a complete loop instead of handing the player off between systems.*
+
+- **First-session guidance.** The House exposes a clear `Start here` path into
+  Faelen Beat 0, then turns that prompt into `Your first gate` and moves the
+  player to the gate board.
+- **First-clear return.** After the first successful gate, post-raid dialogue
+  resolves first and the result sends the player back to the House. Later
+  clears retain the normal gate-board return flow.
+- **Full-body character profiles.** `CharacterHero` gives profile pages a tall
+  rendered-art area while preserving the generated-art fallback. Faelen is
+  already live through the existing sprite convention.
+- **Dialogue mirror hardening.** `tool/sync_dialogue_data.py` makes the canonical
+  engine -> Flutter mirror flow explicit and CI-enforced with `--check`.
+- **Release verification.** main run #47 passed mirror check, analyze, tests,
+  signed release APK build, artifact upload, and GitHub Release publication.
+  Tag: `v3.2.0`; APK: `gatefall-3.2.0.apk`.
+
+---
+
 ## Suggested next steps
 
 In the order that adds the most to the game as it now stands.
@@ -377,7 +399,8 @@ In the order that adds the most to the game as it now stands.
    `CustomPainter`s instead and did not need this; it is now only worth it
    if you want thousands of particles.)*
 
-7. **De-duplicate `gatefall_flame/data/`.** Still a manual mirror of the
-   canonical route JSON, though `game_test.dart` now fails loudly if the two
-   drift. A sync script or converting the dialogue engine into a real Flutter
-   package would close it properly.
+7. **Dialogue mirror automation — DONE in v3.2.** The pure-Dart engine stays
+   canonical and `gatefall_flame/tool/sync_dialogue_data.py` now refreshes the
+   Flutter asset mirror. CI runs `--check` before analyze/tests/build, and the
+   JSON-equivalence test remains as a second guardrail. Converting the dialogue
+   engine into a Flutter package is optional cleanup now, not a correctness gap.
