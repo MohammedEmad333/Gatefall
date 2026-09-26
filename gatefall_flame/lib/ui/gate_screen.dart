@@ -45,6 +45,12 @@ class GateScreen extends StatefulWidget {
   State<GateScreen> createState() => _GateScreenState();
 }
 
+bool shouldReturnHomeAfterRaid({
+  required bool won,
+  required int clears,
+}) =>
+    won && clears == 1;
+
 enum _Stage { board, formation, fighting, result }
 
 class _GateScreenState extends State<GateScreen> {
@@ -211,8 +217,10 @@ class _GateScreenState extends State<GateScreen> {
   }
 
   Future<void> _leaveResult() async {
-    final firstClear =
-        battle?.status == BattleStatus.won && game.clears == 1;
+    final firstClear = shouldReturnHomeAfterRaid(
+      won: battle?.status == BattleStatus.won,
+      clears: game.clears,
+    );
 
     // The post_raid hook, actually played: banter after clearing a gate
     // together (docs/combat-spec.md §2), rendered rather than announced.
