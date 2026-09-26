@@ -75,6 +75,33 @@ void main() {
     expect(find.byType(CreatureView), findsNothing);
   });
 
+  testWidgets('character hero uses full-body sprite and keeps fallback safe',
+      (t) async {
+    SpriteBook.instance.setAvailableForTest({characterSpritePath('faelen')});
+
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: SizedBox(
+        width: 320,
+        child: CharacterHero('faelen', height: 260),
+      ),
+    ));
+
+    expect(find.byType(Image), findsOneWidget);
+    final image = t.widget<Image>(find.byType(Image));
+    expect((image.image as AssetImage).assetName, characterSpritePath('faelen'));
+
+    SpriteBook.instance.setAvailableForTest(const {});
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: SizedBox(
+        width: 320,
+        child: CharacterHero('kess', height: 260),
+      ),
+    ));
+    expect(find.byType(CharacterPortrait), findsOneWidget);
+  });
+
   testWidgets('expression variant is used when present, else neutral base',
       (t) async {
     // Both a neutral base and a happy variant exist.
