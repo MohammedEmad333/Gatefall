@@ -163,6 +163,12 @@ void main() {
         containsAll(['faelen_b0_recruitment', 'faelen_b1_the_wall']));
   });
 
+  test('only the first successful clear returns onboarding to the house', () {
+    expect(shouldReturnHomeAfterRaid(won: true, clears: 1), isTrue);
+    expect(shouldReturnHomeAfterRaid(won: true, clears: 2), isFalse);
+    expect(shouldReturnHomeAfterRaid(won: false, clears: 1), isFalse);
+  });
+
   testWidgets('the gate board offers a gate and a formation screen',
       (tester) async {
     await pumpGame(tester);
