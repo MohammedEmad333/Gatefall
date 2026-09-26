@@ -94,15 +94,17 @@ class _GatefallShellState extends State<GatefallShell> {
           border: Border(top: BorderSide(color: riftDim)),
           color: night2,
         ),
-        child: NavigationBarTheme(
-          data: NavigationBarThemeData(
-            backgroundColor: Colors.transparent,
-            indicatorColor: rift.withValues(alpha: .25),
-            labelTextStyle: WidgetStateProperty.all(
-                const TextStyle(color: boneDim, fontSize: 11)),
-          ),
-          child: NavigationBar(
-            height: 62,
+        child: SafeArea(
+          top: false,
+          child: NavigationBarTheme(
+            data: NavigationBarThemeData(
+              backgroundColor: Colors.transparent,
+              indicatorColor: rift.withValues(alpha: .25),
+              labelTextStyle: WidgetStateProperty.all(
+                  const TextStyle(color: boneDim, fontSize: 11)),
+            ),
+            child: NavigationBar(
+              height: 62,
             selectedIndex: _index,
             onDestinationSelected: (i) {
               Audio.instance.noteGesture();
@@ -135,7 +137,8 @@ class _GatefallShellState extends State<GatefallShell> {
                 selectedIcon: Icon(Icons.people, color: bone),
                 label: 'Characters',
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
