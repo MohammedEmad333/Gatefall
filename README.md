@@ -56,9 +56,11 @@ reaches your door still on her feet.
 
 ## Version 3 — "Illumination"
 
-The game now looks and sounds like itself. Everything you see and hear is
-**generated from code in this repo** — there is no art pack and no sample
-library anywhere in it.
+The game now looks and sounds like itself. Version 3 established a complete
+**generated fallback style** in code — characters, creatures, gates, effects
+and synthesised audio — so the game never depends on missing external art.
+Rendered transparent character art can now replace that fallback one character
+at a time; Faelen is the first committed PNG in the sprite pipeline.
 
 - **Art.** Every companion is a hand-written silhouette in a stained-glass
   style, drawn by a `CustomPainter` and lit in their own element: you know
