@@ -82,6 +82,22 @@ void main() {
       expect(find.text('BEGIN'), findsNothing);
     });
 
+    testWidgets('opening header fits a very narrow phone', (tester) async {
+      final view =
+          TestWidgetsFlutterBinding.instance.platformDispatcher.views.first;
+      view.physicalSize = const Size(280, 620);
+
+      await tester.pumpWidget(MaterialApp(
+        theme: gatefallTheme(),
+        home: StartScene(onDone: () {}),
+      ));
+      await tester.pumpAndSettle();
+
+      expect(find.text('skip'), findsOneWidget);
+      expect(find.byType(ComicPanel), findsNWidgets(2));
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('taps reach the end and hand over to the game',
         (tester) async {
       var done = false;
