@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import 'package:gatefall/combat/battle.dart';
 import 'package:gatefall/data/ascension.dart';
+import 'package:gatefall/data/roster.dart';
 
 void main() {
   group('ascended passives', () {
