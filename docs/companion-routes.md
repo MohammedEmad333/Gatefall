@@ -1,5 +1,7 @@
 # COMPANION ROUTES — Kess, Momo, Thora, Dana
 
+> **Historical repository snapshot.** The Gatefall Vault (`Gatefall-Notes`) is the authoritative source for current route canon. If this file conflicts with the Vault or executable scene JSON, update from the Vault first.
+
 *Built on the Faelen route frame (7 beats: Recruitment → Wall → Proving Ground → First Truth → Fracture → Full Truth → Choice → Endings). Each beat lists its Bond/story gate, its player choice, the flag it sets, and its mechanical hook. See `faelen-route.md` for the full explanation of the frame.*
 
 **The two rules, restated:** every character has one **lie** and one **truth**, and the route is the distance between them. Their **combat kit mirrors the flaw; their ascended upgrade mirrors the cure.**
