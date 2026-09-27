@@ -558,8 +558,10 @@ class GameController extends ChangeNotifier {
   }
 
   void setAutoCast(bool v) {
+    if (autoCast == v) return;
     autoCast = v;
     notifyListeners();
+    persist();
   }
 
   void setSfxOn(bool v) {
