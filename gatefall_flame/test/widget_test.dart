@@ -214,6 +214,21 @@ void main() {
     );
   });
 
+  test('withdraw confirmation restores running state only on cancel', () {
+    expect(
+      shouldResumeAfterWithdrawDialog(wasPaused: false, confirmed: false),
+      isTrue,
+    );
+    expect(
+      shouldResumeAfterWithdrawDialog(wasPaused: true, confirmed: false),
+      isFalse,
+    );
+    expect(
+      shouldResumeAfterWithdrawDialog(wasPaused: false, confirmed: true),
+      isFalse,
+    );
+  });
+
   testWidgets('the gate board offers a gate and a formation screen',
       (tester) async {
     await pumpGame(tester);

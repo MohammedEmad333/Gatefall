@@ -65,6 +65,12 @@ bool shouldPauseRaidForLifecycle(AppLifecycleState state) =>
     state == AppLifecycleState.hidden ||
     state == AppLifecycleState.detached;
 
+bool shouldResumeAfterWithdrawDialog({
+  required bool wasPaused,
+  required bool confirmed,
+}) =>
+    !wasPaused && !confirmed;
+
 enum _Stage { board, formation, fighting, result }
 
 class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
@@ -262,6 +268,12 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     final g = gate;
     if (b == null || g == null || b.status != BattleStatus.fighting) return;
 
+    // A confirmation dialog must not secretly cost combat time. Freeze the
+    // simulation while it is open, then restore the previous running state
+    // only if the player cancels.
+    final wasPaused = _paused;
+    if (!_paused) setState(() => _paused = true);
+
     final confirmed = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
@@ -292,7 +304,16 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
           ),
         ) ??
         false;
-    if (!confirmed || !mounted || b.status != BattleStatus.fighting) return;
+    if (!mounted || b.status != BattleStatus.fighting) return;
+    if (!confirmed) {
+      if (shouldResumeAfterWithdrawDialog(
+        wasPaused: wasPaused,
+        confirmed: confirmed,
+      )) {
+        setState(() => _paused = false);
+      }
+      return;
+    }
 
     _paused = false;
     _timer?.cancel();
