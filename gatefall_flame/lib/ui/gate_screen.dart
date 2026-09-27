@@ -71,6 +71,12 @@ bool shouldResumeAfterWithdrawDialog({
 }) =>
     !wasPaused && !confirmed;
 
+bool canManualCastDuringRaid({
+  required BattleStatus status,
+  required bool paused,
+}) =>
+    status == BattleStatus.fighting && !paused;
+
 enum _Stage { board, formation, fighting, result }
 
 class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
@@ -1094,7 +1100,10 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
             children: b.abilities.map((a) {
               final owner = b.party.where((p) => p.id == a.ownerId).firstOrNull;
               final ready = a.ready &&
-                  b.status == BattleStatus.fighting &&
+                  canManualCastDuringRaid(
+                    status: b.status,
+                    paused: _paused,
+                  ) &&
                   owner != null &&
                   owner.alive;
               final ascended = _ascendedKinds.contains(a.kind);
@@ -1108,7 +1117,15 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
                   badge: ascended ? _ascendedBadge(b, a) : null,
                   // The cast itself makes the noise, through the event it
                   // emits — tapping only has to be allowed to happen.
-                  onTap: () => setState(() => b.castAbility(a.id)),
+                  onTap: () {
+                    if (!canManualCastDuringRaid(
+                      status: b.status,
+                      paused: _paused,
+                    )) {
+                      return;
+                    }
+                    setState(() => b.castAbility(a.id));
+                  },
                 ),
               );
             }).toList(),
