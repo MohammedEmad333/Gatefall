@@ -408,6 +408,30 @@ lifecycle/tab visibility, withdrawal semantics, and formation-fill priority.
 
 ---
 
+## Version 3.3 — "Together"
+
+Shipped as `gatefall_flame` **3.3.0+6**. One idea: *finishing a route should
+change how that companion fights all the time, not only add one more cooldown.*
+
+- **Ascended passives.** Faelen shares part of Guard with the party; Kess enters
+  each enemy with one link already banked; Momo opens each enemy with a brief
+  Foresight ward; Thora's Mend leaves a small shield on allies; Dana starts a
+  raid with an exit-plan shield across the party.
+- **Base tuning preserved.** No companion base HP, attack, attack speed, gate
+  HP/DPS, economy value, or progression multiplier changed. The passives alter
+  kit shape only.
+- **Regression coverage.** Dedicated passive tests sit beside the existing
+  ascension/balance suite, and older Chainbreak/Foresight expectations were
+  updated to distinguish active abilities from the new opening passives.
+- **Post-3.2 hardening included.** Narrow Android layouts, raid pause/withdraw
+  recovery, same-gate retry, formation fill assistance, and the latest story
+  continuity fixes are all part of this release line.
+- **Release verification.** PR #54 and the merged `main` run both passed
+  dialogue mirror check, analyze, the full Flutter test suite, signed release
+  APK build, artifact upload, and release publication.
+
+---
+
 ## Suggested next steps
 
 In the order that adds the most to the game as it now stands.
@@ -432,11 +456,10 @@ In the order that adds the most to the game as it now stands.
    `combat/battle.dart` — were tuned for "clearly felt, never required".
    Whether that is the right size is a question for playing, not simulating.
 
-4. **A second ascended ability, or an ascended *passive*.** Each companion
-   gets exactly one new button today. The routes describe transformations
-   broad enough to justify changing how their base kit behaves too — Momo's
-   sense pre-empting an ambush before it lands, say, rather than only a
-   cooldown she presses.
+4. **Ascended passive follow-through — DONE in v3.3.** Each companion now gets
+   an always-on route-finished passive in addition to the ascended ability.
+   The next combat expansion should come from real-device playtest findings,
+   not another speculative power layer.
 
 5. **Art direction** — see the open question above. *(Version 3 shipped a
    complete generated art style — painted silhouettes, animated rifts,
