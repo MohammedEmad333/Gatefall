@@ -326,14 +326,9 @@ class _GateScreenState extends State<GateScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(g.fullName,
-                                style:
-                                    const TextStyle(color: bone, fontSize: 15)),
-                          ),
-                          Container(
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final badge = Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
@@ -344,8 +339,32 @@ class _GateScreenState extends State<GateScreen> {
                                 style: TextStyle(
                                     color: elementColor(g.element),
                                     fontSize: 10.5)),
-                          ),
-                        ],
+                          );
+                          if (constraints.maxWidth < 210) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(g.fullName,
+                                    style: const TextStyle(
+                                        color: bone, fontSize: 15)),
+                                const SizedBox(height: 5),
+                                badge,
+                              ],
+                            );
+                          }
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: Text(g.fullName,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                        color: bone, fontSize: 15)),
+                              ),
+                              const SizedBox(width: 8),
+                              badge,
+                            ],
+                          );
+                        },
                       ),
                       const SizedBox(height: 3),
                       Text(g.description,
@@ -830,23 +849,37 @@ class _GateScreenState extends State<GateScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Text('${f.name}  Lv.${f.level}',
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: bone, fontSize: 13)),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(tag,
+                  LayoutBuilder(
+                    builder: (context, constraints) {
+                      final name = Text('${f.name}  Lv.${f.level}',
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: bone, fontSize: 13));
+                      final status = Text(tag,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: f.alive && (f.isTaunting || f.isRallied)
                                   ? accent
                                   : boneDim,
                               fontSize: 10.5,
-                              fontStyle: FontStyle.italic)),
-                    ],
+                              fontStyle: FontStyle.italic));
+                      if (constraints.maxWidth < 190) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            name,
+                            const SizedBox(height: 2),
+                            status,
+                          ],
+                        );
+                      }
+                      return Row(
+                        children: [
+                          Expanded(child: name),
+                          const SizedBox(width: 8),
+                          Flexible(child: status),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 5),
                   AnimatedBar(frac, color),
