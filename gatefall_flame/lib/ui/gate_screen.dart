@@ -59,9 +59,15 @@ bool shouldAdvanceRaid({
 }) =>
     status == BattleStatus.fighting && !paused;
 
+bool shouldPauseRaidForLifecycle(AppLifecycleState state) =>
+    state == AppLifecycleState.inactive ||
+    state == AppLifecycleState.paused ||
+    state == AppLifecycleState.hidden ||
+    state == AppLifecycleState.detached;
+
 enum _Stage { board, formation, fighting, result }
 
-class _GateScreenState extends State<GateScreen> {
+class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   GameController get game => widget.game;
 
   _Stage stage = _Stage.board;
@@ -95,7 +101,23 @@ class _GateScreenState extends State<GateScreen> {
   double _chipAge = 0;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!shouldPauseRaidForLifecycle(state)) return;
+    final b = battle;
+    if (b == null || b.status != BattleStatus.fighting || _paused) return;
+    if (!mounted) return;
+    setState(() => _paused = true);
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
     super.dispose();
   }

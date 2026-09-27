@@ -191,6 +191,29 @@ void main() {
     );
   });
 
+  test('leaving the app foreground pauses an active raid', () {
+    expect(
+      shouldPauseRaidForLifecycle(AppLifecycleState.resumed),
+      isFalse,
+    );
+    expect(
+      shouldPauseRaidForLifecycle(AppLifecycleState.inactive),
+      isTrue,
+    );
+    expect(
+      shouldPauseRaidForLifecycle(AppLifecycleState.paused),
+      isTrue,
+    );
+    expect(
+      shouldPauseRaidForLifecycle(AppLifecycleState.hidden),
+      isTrue,
+    );
+    expect(
+      shouldPauseRaidForLifecycle(AppLifecycleState.detached),
+      isTrue,
+    );
+  });
+
   testWidgets('the gate board offers a gate and a formation screen',
       (tester) async {
     await pumpGame(tester);
