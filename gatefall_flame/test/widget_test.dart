@@ -283,6 +283,41 @@ void main() {
     );
   });
 
+  test('raid ticker only runs for a visible unpaused fight', () {
+    expect(
+      shouldRunRaidTicker(
+        status: BattleStatus.fighting,
+        paused: false,
+        tabActive: true,
+      ),
+      isTrue,
+    );
+    expect(
+      shouldRunRaidTicker(
+        status: BattleStatus.fighting,
+        paused: true,
+        tabActive: true,
+      ),
+      isFalse,
+    );
+    expect(
+      shouldRunRaidTicker(
+        status: BattleStatus.fighting,
+        paused: false,
+        tabActive: false,
+      ),
+      isFalse,
+    );
+    expect(
+      shouldRunRaidTicker(
+        status: BattleStatus.won,
+        paused: false,
+        tabActive: true,
+      ),
+      isFalse,
+    );
+  });
+
   testWidgets('the gate board offers a gate and a formation screen',
       (tester) async {
     await pumpGame(tester);
