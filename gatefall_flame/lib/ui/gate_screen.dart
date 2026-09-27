@@ -218,6 +218,50 @@ class _GateScreenState extends State<GateScreen> {
     }
   }
 
+  Future<void> _confirmWithdraw() async {
+    final b = battle;
+    final g = gate;
+    if (b == null || g == null || b.status != BattleStatus.fighting) return;
+
+    final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            backgroundColor: night2,
+            shape: const RoundedRectangleBorder(
+              side: BorderSide(color: blood),
+            ),
+            title: const Text('Withdraw from this gate?',
+                style: TextStyle(color: bone, fontSize: 16)),
+            content: Text(
+              'You keep the ${b.manaEarned} mana earned so far. '
+              'The gate stays open and can be retried.',
+              style: const TextStyle(
+                  color: boneDim, fontSize: 12.5, height: 1.5),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Stay',
+                    style: TextStyle(color: boneDim)),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Withdraw',
+                    style: TextStyle(color: blood)),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+    if (!confirmed || !mounted || b.status != BattleStatus.fighting) return;
+
+    _timer?.cancel();
+    _timer = null;
+    b.withdraw();
+    game.finishRaid(b, g);
+    Audio.instance.play(Sfx.defeat);
+    setState(() => stage = _Stage.result);
+  }
   Future<void> _leaveResult() async {
     final firstClear = shouldReturnHomeAfterRaid(
       won: battle?.status == BattleStatus.won,
@@ -651,7 +695,19 @@ class _GateScreenState extends State<GateScreen> {
             _abilityRow(b),
             const SizedBox(height: 10),
             _battleLog(b),
-            const SizedBox(height: 16),
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerRight,
+              child: SlabButton(
+                'Withdraw',
+                key: const ValueKey('withdraw-raid'),
+                tone: blood,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
+                onPressed: _confirmWithdraw,
+              ),
+            ),
+            const SizedBox(height: 10),
             _raidControls(
               const SlabButton('In the gate…',
                   filled: true,
