@@ -33,6 +33,11 @@ void main() {
       expect(battle.castAbility('guard'), isTrue);
       expect(faelen.shield, greaterThan(player.shield));
       expect(player.shield, closeTo(200 * Battle.faelenSharedGuard, 0.001));
+      expect(
+        battle.events.any((e) =>
+            e.kind == 'passive' && e.message.contains('Oathbound passive')),
+        isTrue,
+      );
     });
 
     test('Kess begins each enemy with one team link banked', () {
@@ -48,6 +53,11 @@ void main() {
       battle.autoCast = false;
 
       expect(battle.linkStacks, Battle.kessOpeningLinks);
+      expect(
+        battle.events.any((e) =>
+            e.kind == 'passive' && e.message.contains('Chainbreak passive')),
+        isTrue,
+      );
     });
 
     test('Momo sees the opening seconds of each enemy ahead', () {
@@ -64,6 +74,11 @@ void main() {
 
       expect(battle.warded, isTrue);
       expect(battle.wardRemaining, Battle.momoOpeningForesight);
+      expect(
+        battle.events.any((e) =>
+            e.kind == 'passive' && e.message.contains('Foresight passive')),
+        isTrue,
+      );
     });
 
     test('Thora Mend leaves allies with a small reciprocal shield', () {
@@ -82,6 +97,11 @@ void main() {
       expect(player.shield, 0);
       expect(battle.castAbility('mend'), isTrue);
       expect(player.shield, closeTo(150 * Battle.thoraMendShield, 0.001));
+      expect(
+        battle.events.any((e) =>
+            e.kind == 'passive' && e.message.contains('Reciprocity passive')),
+        isTrue,
+      );
     });
 
     test('Dana prepares an opening shield for the whole party', () {
@@ -102,6 +122,12 @@ void main() {
           closeTo(fighter.maxHp * Battle.danaOpeningShield, 0.001),
         );
       }
+      expect(
+        battle.events.any((e) =>
+            e.kind == 'passive' && e.message.contains('Casework passive')),
+        isTrue,
+        reason: 'the opening passive event must survive battle.start()',
+      );
     });
   });
 }
