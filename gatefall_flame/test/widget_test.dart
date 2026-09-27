@@ -138,6 +138,42 @@ void main() {
     );
   });
 
+  testWidgets('withdraw confirmation preserves the previous pause state',
+      (tester) async {
+    final game = await pumpGame(tester);
+
+    await tapTab(tester, Icons.blur_circular_outlined);
+    final gate = game.board.first;
+    await tester.tap(find.text(gate.fullName).first);
+    await tester.pump();
+    await tester.tap(find.text('Enter the gate'));
+    await tester.pump();
+
+    // Cancelling from a running raid resumes it.
+    await tester.tap(find.byKey(const ValueKey('withdraw-raid')));
+    await tester.pumpAndSettle();
+    expect(find.text('Withdraw from this gate?'), findsOneWidget);
+    await tester.tap(find.text('Stay'));
+    await tester.pump();
+    expect(find.text('Pause'), findsOneWidget);
+
+    // Cancelling from an already paused raid must leave it paused.
+    await tester.tap(find.byKey(const ValueKey('pause-raid')));
+    await tester.pump();
+    expect(find.text('Resume'), findsOneWidget);
+
+    await tester.tap(find.byKey(const ValueKey('withdraw-raid')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Stay'));
+    await tester.pump();
+
+    expect(find.text('Resume'), findsOneWidget);
+    expect(
+      find.text('Raid paused — no combat time is passing.'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('all four tabs render without throwing', (tester) async {
     await pumpGame(tester);
 
