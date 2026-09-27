@@ -336,6 +336,9 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
         if (e.amount >= 1) {
           numbers?.spawn('${e.amount.round()}', rose, big: true);
         }
+      case 'passive':
+        Audio.instance.play(Sfx.ascend, gain: .72);
+        shake?.shake(.35);
       case 'crit':
         Audio.instance.play(Sfx.crit);
         shake?.shake(.7);
@@ -1045,7 +1048,7 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
                   style: TextStyle(
                     color: switch (e.kind) {
                       'crit' => gold,
-                      'ultimate' => rose,
+                      'ultimate' || 'passive' => rose,
                       'heal' || 'revive' => verdant,
                       'reward' => verdant,
                       'boss' || 'down' || 'hurt' => blood,
