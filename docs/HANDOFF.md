@@ -355,13 +355,42 @@ should form a complete loop instead of handing the player off between systems.*
 
 ---
 
+## Post-3.2 mobile polish
+
+A focused Android/narrow-screen hardening pass landed after 3.2 without changing
+combat, economy, route logic, or save semantics.
+
+- **System insets:** bottom navigation now stays above device gesture/navigation
+  areas via `SafeArea`.
+- **Narrow cards:** Party progression rows and Character story rows stack actions
+  below their copy when horizontal space is tight.
+- **Gate controls:** the formation/fight primary action stacks above Auto/Speed
+  on narrow phones; result rewards wrap instead of overflowing.
+- **Gate and fighter details:** gate title/element badges and live fighter
+  name/status rows adapt when available width shrinks.
+- **Formation slots:** 3+ fighter chips switch to a two-column wrap at narrow
+  widths instead of compressing every fighter into one row.
+- **Dialogue + opening:** dialogue headers stack below 300px, long choice lists
+  scroll safely on short screens, and the opening comic header adapts its logo,
+  progress dots, and skip control.
+- **Regression coverage:** the existing 320px all-screens widget smoke test is
+  supplemented by 280px tests for first-session dialogue and the opening comic.
+
+This significantly reduces obvious responsive risks before the first physical
+Android-device pass, but it does **not** replace that pass: touch comfort,
+keyboard/IME behavior, OEM safe-area quirks, and subjective text density still
+need to be checked on hardware.
+
+---
+
 ## Suggested next steps
 
 In the order that adds the most to the game as it now stands.
 
-1. **Play it on a real Android device, then tune pacing.** CI builds the APK,
-   but the highest-value remaining verification is still a real-phone pass:
-   touch targets, safe areas, text density, first-session flow, gate-choice
+1. **Play it on a real Android device, then tune pacing.** CI now covers the
+   narrow-screen layouts down to 280 logical pixels, but the highest-value
+   remaining verification is still a physical-phone pass: touch comfort,
+   OEM safe-area behavior, text density, first-session flow, gate-choice
    clarity, Bond pacing and the Gold curve. Those tuning values remain in
    `data/house.dart`, `data/gate.dart` and `data/combat_config.dart`.
 
