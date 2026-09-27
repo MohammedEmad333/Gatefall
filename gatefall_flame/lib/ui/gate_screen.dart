@@ -83,6 +83,19 @@ bool shouldResumeAfterWithdrawDialog({
 }) =>
     !wasPaused && !confirmed;
 
+bool canResumeAfterWithdrawDialog({
+  required bool wasPaused,
+  required bool confirmed,
+  required bool resumeAllowed,
+  required bool tabActive,
+}) =>
+    resumeAllowed &&
+    tabActive &&
+    shouldResumeAfterWithdrawDialog(
+      wasPaused: wasPaused,
+      confirmed: confirmed,
+    );
+
 bool canManualCastDuringRaid({
   required BattleStatus status,
   required bool paused,
@@ -409,12 +422,12 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
       return;
     }
     if (!confirmed) {
-      final canResume = _resumeAfterWithdrawDialog &&
-          widget.active &&
-          shouldResumeAfterWithdrawDialog(
-            wasPaused: wasPaused,
-            confirmed: confirmed,
-          );
+      final canResume = canResumeAfterWithdrawDialog(
+        wasPaused: wasPaused,
+        confirmed: confirmed,
+        resumeAllowed: _resumeAfterWithdrawDialog,
+        tabActive: widget.active,
+      );
       _resumeAfterWithdrawDialog = false;
       if (canResume) {
         setState(() => _paused = false);
