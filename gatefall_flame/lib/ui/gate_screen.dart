@@ -58,6 +58,13 @@ bool shouldReturnHomeAfterRaid({
 
 bool canRetryRaid(BattleStatus status) => status == BattleStatus.lost;
 
+bool canQuickRetryRaid({
+  required BattleStatus status,
+  required bool hasGate,
+  required int partyCount,
+}) =>
+    status == BattleStatus.lost && hasGate && partyCount > 0;
+
 bool shouldAdvanceRaid({
   required BattleStatus status,
   required bool paused,
@@ -1318,12 +1325,26 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
         const SizedBox(height: 26),
         if (canRetryRaid(b.status)) ...[
           staged(SlabButton(
-            'Retry this gate',
-            key: const ValueKey('retry-gate'),
+            'Retry same formation',
+            key: const ValueKey('quick-retry-gate'),
             filled: true,
             tone: rift,
             sound: Sfx.gateOpen,
             padding: const EdgeInsets.symmetric(vertical: 14),
+            onPressed: canQuickRetryRaid(
+              status: b.status,
+              hasGate: gate != null,
+              partyCount: game.partyCount,
+            )
+                ? _quickRetryGate
+                : null,
+          )),
+          const SizedBox(height: 8),
+          staged(SlabButton(
+            'Adjust formation',
+            key: const ValueKey('retry-gate'),
+            tone: gold,
+            padding: const EdgeInsets.symmetric(vertical: 12),
             onPressed: _retryGate,
           )),
           const SizedBox(height: 8),
@@ -1349,6 +1370,21 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
           )),
       ],
     );
+  }
+
+  void _quickRetryGate() {
+    final b = battle;
+    if (b == null ||
+        !canQuickRetryRaid(
+          status: b.status,
+          hasGate: gate != null,
+          partyCount: game.partyCount,
+        )) {
+      return;
+    }
+    battle = null;
+    _paused = false;
+    _enter();
   }
 
   void _retryGate() {
