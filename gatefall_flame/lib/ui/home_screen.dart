@@ -126,8 +126,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         _soundPanel(),
         const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 8,
+          runSpacing: 6,
           children: [_readOpening(), _startOver()],
         ),
       ],
