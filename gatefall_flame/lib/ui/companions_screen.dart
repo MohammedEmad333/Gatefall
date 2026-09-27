@@ -225,32 +225,43 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
   }) =>
       Padding(
         padding: const EdgeInsets.only(top: 8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title,
-                      style: const TextStyle(color: bone, fontSize: 12.5)),
-                  const SizedBox(height: 2),
-                  Text(detail,
-                      style: const TextStyle(
-                          color: boneDim, fontSize: 10.5, height: 1.4)),
-                ],
-              ),
-            ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 86,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxWidth < 320;
+            final info = Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                    style: const TextStyle(color: bone, fontSize: 12.5)),
+                const SizedBox(height: 2),
+                Text(detail,
+                    style: const TextStyle(
+                        color: boneDim, fontSize: 10.5, height: 1.4)),
+              ],
+            );
+            final action = SizedBox(
+              width: compact ? double.infinity : 86,
               child: SlabButton(buttonLabel,
                   tone: tone,
                   onPressed: onPressed,
                   sound: sound,
                   padding: const EdgeInsets.symmetric(vertical: 9)),
-            ),
-          ],
+            );
+            if (compact) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [info, const SizedBox(height: 8), action],
+              );
+            }
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: info),
+                const SizedBox(width: 10),
+                action,
+              ],
+            );
+          },
         ),
       );
 }
