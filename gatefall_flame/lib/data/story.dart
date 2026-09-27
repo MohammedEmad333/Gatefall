@@ -75,7 +75,7 @@ class Acts {
   static const Map<int, String> title = {
     1: 'Act I — The Door',
     2: 'Act II — The Fracture',
-    3: 'Act III — What The Gates Were For',
+    3: 'Act III — The Threshold',
   };
 
   static const Map<int, String> blurb = {
@@ -110,9 +110,9 @@ extension GateAnswerX on GateAnswer {
 
   String get pitch => switch (this) {
         GateAnswer.seal =>
-          'End the monsters and the refugees in the same stroke. The city '
-              'gets safe. Everyone in this house becomes the last of their kind '
-              'on the wrong side of a shut door.',
+          'Faelen\'s Warden geometry and Momo\'s gate-sense reveal the '
+              'recurrence pattern behind new tears. Use Sever to cut it gate '
+              'by gate. The monsters stop — and so does the road home.',
         GateAnswer.study =>
           'Momo\'s sense and Faelen\'s Warden records point the same '
               'direction. Follow it and you might learn what tore the sky. You '
@@ -125,10 +125,11 @@ extension GateAnswerX on GateAnswer {
 
   String get epilogue => switch (this) {
         GateAnswer.seal =>
-          'The gates go quiet one after another over eleven months. The '
-              'monsters stop. So does everything else that was coming through. '
-              'The house stays full, and no one in it can ever go home, and '
-              'they knew that when they voted.',
+          'With the recurrence pattern mapped, you spend eleven months '
+              'cutting it wherever a gate closes. New tears stop replacing old '
+              'ones. The monsters stop. So does everything else that was coming '
+              'through. The house stays full, and no one in it can ever go home, '
+              'and they knew that when they voted.',
         GateAnswer.study =>
           'You do not close the last gate. You map it. The answer, when it '
               'comes, is not the one anyone wanted, and it takes years, and '

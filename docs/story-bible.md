@@ -1,5 +1,7 @@
 # GATEFALL — Story & Design Bible (v2)
 
+> **Historical repository snapshot.** The Gatefall Vault (`Gatefall-Notes`) is the authoritative source for current story and design canon. If this file conflicts with the Vault, the Vault wins.
+
 *Working title. An idle action-RPG × romance sim: an ordinary person who awakened, the otherworldly tenants who fight beside them, and the gates that keep tearing the sky open.*
 
 ---
