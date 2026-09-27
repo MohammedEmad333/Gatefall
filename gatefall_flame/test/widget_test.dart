@@ -229,6 +229,30 @@ void main() {
     );
   });
 
+  test('manual ability casts are disabled while the raid is paused', () {
+    expect(
+      canManualCastDuringRaid(
+        status: BattleStatus.fighting,
+        paused: false,
+      ),
+      isTrue,
+    );
+    expect(
+      canManualCastDuringRaid(
+        status: BattleStatus.fighting,
+        paused: true,
+      ),
+      isFalse,
+    );
+    expect(
+      canManualCastDuringRaid(
+        status: BattleStatus.won,
+        paused: false,
+      ),
+      isFalse,
+    );
+  });
+
   testWidgets('the gate board offers a gate and a formation screen',
       (tester) async {
     await pumpGame(tester);
