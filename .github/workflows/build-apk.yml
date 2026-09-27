@@ -222,7 +222,7 @@ jobs:
           Install \`gatefall-${NAME}.apk\` on an Android device — Android will
           ask you to allow installation from an unknown source.
 
-          Updating from an earlier 2.x release installs over the top and keeps
+          Updating from an earlier release installs over the top and keeps
           your save. Progress lives in the app's own storage and the save
           format is backward compatible.
 
