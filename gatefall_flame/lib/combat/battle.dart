@@ -161,7 +161,7 @@ enum BattleStatus { idle, fighting, won, lost }
 class BattleEvent {
   final String message;
 
-  /// damage | crit | ultimate | heal | revive | boss | down | hurt | reward
+  /// damage | crit | ultimate | passive | heal | revive | boss | down | hurt | reward
   final String kind;
   final double amount;
 
@@ -309,18 +309,18 @@ class Battle {
     }
     linkStacks = 0;
     wardRemaining = 0;
+    events.clear();
+    eventsEmitted = 0;
     if (ascended.contains('dana')) {
       for (final p in party) {
         p.receiveShield(p.maxHp * danaOpeningShield);
       }
-      _emit('Dana has the exit plan ready — the party starts shielded.',
-          'ultimate');
+      _emit('✦ Casework passive — Dana has the exit plan ready. The party starts shielded.',
+          'passive');
     }
     for (final a in abilities) {
       a.remaining = 0;
     }
-    events.clear();
-    eventsEmitted = 0;
     _spawn();
   }
 
@@ -338,9 +338,14 @@ class Battle {
     // few seconds ahead. Neither changes the tuned base stats.
     if (ascended.contains('kess')) {
       linkStacks = max(linkStacks, kessOpeningLinks);
+      _emit('✦ Chainbreak passive — Kess starts this enemy with one link banked.',
+          'passive');
     }
     if (ascended.contains('momo')) {
       wardRemaining = max(wardRemaining, momoOpeningForesight);
+      _emit(
+          '✦ Foresight passive — Momo reads the opening ${momoOpeningForesight.round()}s ahead.',
+          'passive');
     }
 
     if (waveIndex >= CombatConfig.waves) {
@@ -427,6 +432,10 @@ class Battle {
             if (!p.alive || p.id == owner.id) continue;
             p.receiveShield(a.power * faelenSharedGuard);
           }
+          _emit(
+              '✦ Oathbound passive — Guard shares ${
+                  (faelenSharedGuard * 100).round()}% of its shield with every living ally.',
+              'passive');
         }
         owner.taunt = a.duration;
         _emit(
@@ -447,6 +456,9 @@ class Battle {
             if (!p.alive || p.id == owner.id) continue;
             p.receiveShield(a.power * thoraMendShield);
           }
+          _emit(
+              '✦ Reciprocity passive — Mend leaves every other living ally shielded.',
+              'passive');
         }
         _emit('${owner.name} mends the party (${healed.round()} healed)',
             'heal',
