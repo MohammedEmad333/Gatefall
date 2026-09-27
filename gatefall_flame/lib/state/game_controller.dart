@@ -499,6 +499,37 @@ class GameController extends ChangeNotifier {
 
   /// Tap cycles a unit: bench -> front -> back -> bench.
   /// The player can change rows but can never be benched.
+  /// Fill open party slots without overriding the player's existing choices.
+  ///
+  /// Advantage fighters are considered first, then neutral, then
+  /// disadvantaged. This is intentionally a helper rather than an optimizer:
+  /// it never benches or moves someone the player already placed.
+  void fillFormationFor(GateElement gateElement) {
+    if (partyCount >= CombatConfig.partyMax) return;
+
+    final available = roster
+        .where((f) => !formation.containsKey(f.id))
+        .toList()
+      ..sort((a, b) {
+        int rank(FighterDef f) => switch (matchupOf(f.element, gateElement)) {
+              Matchup.advantage => 0,
+              Matchup.neutral => 1,
+              Matchup.disadvantage => 2,
+            };
+        return rank(a).compareTo(rank(b));
+      });
+
+    for (final def in available) {
+      if (formation.length >= CombatConfig.partyMax) break;
+      formation[def.id] = switch (def.role) {
+        'Warden' || 'Mender' || 'Awakened' => BattleRow.front,
+        _ => BattleRow.back,
+      };
+    }
+    notifyListeners();
+    persist();
+  }
+
   void cycleFormation(String id) {
     final def = Roster.byId(id);
     if (!formation.containsKey(id)) {
