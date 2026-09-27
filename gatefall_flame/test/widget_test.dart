@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gatefall/combat/battle.dart';
 import 'package:gatefall/data/gear.dart';
 import 'package:gatefall/state/game_controller.dart';
 import 'package:gatefall/state/save_store.dart';
@@ -167,6 +168,12 @@ void main() {
     expect(shouldReturnHomeAfterRaid(won: true, clears: 1), isTrue);
     expect(shouldReturnHomeAfterRaid(won: true, clears: 2), isFalse);
     expect(shouldReturnHomeAfterRaid(won: false, clears: 1), isFalse);
+  });
+
+  test('only a failed raid can retry the same gate', () {
+    expect(canRetryRaid(BattleStatus.lost), isTrue);
+    expect(canRetryRaid(BattleStatus.won), isFalse);
+    expect(canRetryRaid(BattleStatus.fighting), isFalse);
   });
 
   testWidgets('the gate board offers a gate and a formation screen',
