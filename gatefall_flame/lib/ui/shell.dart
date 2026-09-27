@@ -81,7 +81,11 @@ class _GatefallShellState extends State<GatefallShell> {
               index: _index,
               children: [
                 HomeScreen(game: game, onOpenGates: _openGates),
-                GateScreen(game: game, onOpenHouse: _openHouse),
+                GateScreen(
+                  game: game,
+                  active: _index == 1,
+                  onOpenHouse: _openHouse,
+                ),
                 CompanionsScreen(game: game),
                 CharactersScreen(game: game),
               ],
