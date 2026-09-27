@@ -475,20 +475,12 @@ class _GateScreenState extends State<GateScreen> {
           ),
         ),
         const SizedBox(height: 14),
-        Row(
-          children: [
-            Expanded(
-              child: SlabButton('Enter the gate',
-                  filled: true,
-                  sound: Sfx.gateOpen,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  onPressed: _enter),
-            ),
-            const SizedBox(width: 7),
-            _autoButton(),
-            const SizedBox(width: 7),
-            _speedButton(),
-          ],
+        _raidControls(
+          SlabButton('Enter the gate',
+              filled: true,
+              sound: Sfx.gateOpen,
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              onPressed: _enter),
         ),
       ],
     );
@@ -617,18 +609,10 @@ class _GateScreenState extends State<GateScreen> {
             const SizedBox(height: 10),
             _battleLog(b),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                const Expanded(
-                  child: SlabButton('In the gate…',
-                      filled: true,
-                      padding: EdgeInsets.symmetric(vertical: 14)),
-                ),
-                const SizedBox(width: 7),
-                _autoButton(),
-                const SizedBox(width: 7),
-                _speedButton(),
-              ],
+            _raidControls(
+              const SlabButton('In the gate…',
+                  filled: true,
+                  padding: EdgeInsets.symmetric(vertical: 14)),
             ),
           ],
         ),
@@ -988,14 +972,13 @@ class _GateScreenState extends State<GateScreen> {
         )),
         const SizedBox(height: 16),
         staged(Center(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 16,
+            runSpacing: 6,
             children: [
               CurrencyChip('+${b.manaEarned}', 'mana', verdant),
-              if (won) ...[
-                const SizedBox(width: 16),
-                CurrencyChip('+${g.tier.goldReward}', 'gold', gold),
-              ],
+              if (won) CurrencyChip('+${g.tier.goldReward}', 'gold', gold),
             ],
           ),
         )),
@@ -1041,6 +1024,37 @@ class _GateScreenState extends State<GateScreen> {
   }
 
   // ---------------- shared controls ----------------
+
+  Widget _raidControls(Widget primary) => LayoutBuilder(
+        builder: (context, constraints) {
+          final compact = constraints.maxWidth < 340;
+          if (compact) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                primary,
+                const SizedBox(height: 7),
+                Row(
+                  children: [
+                    Expanded(child: _autoButton()),
+                    const SizedBox(width: 7),
+                    Expanded(child: _speedButton()),
+                  ],
+                ),
+              ],
+            );
+          }
+          return Row(
+            children: [
+              Expanded(child: primary),
+              const SizedBox(width: 7),
+              _autoButton(),
+              const SizedBox(width: 7),
+              _speedButton(),
+            ],
+          );
+        },
+      );
 
   Widget _autoButton() => SlabButton(
         game.autoCast ? 'Auto' : 'Manual',
