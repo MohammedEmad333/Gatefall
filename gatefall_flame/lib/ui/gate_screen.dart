@@ -51,6 +51,8 @@ bool shouldReturnHomeAfterRaid({
 }) =>
     won && clears == 1;
 
+bool canRetryRaid(BattleStatus status) => status == BattleStatus.lost;
+
 enum _Stage { board, formation, fighting, result }
 
 class _GateScreenState extends State<GateScreen> {
@@ -1062,7 +1064,7 @@ class _GateScreenState extends State<GateScreen> {
           staged(const Callout('4× speed unlocked.')),
         ],
         const SizedBox(height: 26),
-        if (!won) ...[
+        if (canRetryRaid(b.status)) ...[
           staged(SlabButton(
             'Retry this gate',
             key: const ValueKey('retry-gate'),
