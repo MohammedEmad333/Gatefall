@@ -269,6 +269,12 @@ class Battle {
     );
   }
 
+  void withdraw() {
+    if (status != BattleStatus.fighting) return;
+    status = BattleStatus.lost;
+    _emit('You withdraw through the tear. Mana kept: $manaEarned', 'hurt');
+  }
+
   void start() {
     status = BattleStatus.fighting;
     elapsed = 0;
