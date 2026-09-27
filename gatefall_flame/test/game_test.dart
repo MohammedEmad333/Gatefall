@@ -14,6 +14,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gatefall/combat/battle.dart';
 import 'package:gatefall/data/companion_routes.dart';
+import 'package:gatefall/data/combat_config.dart';
 import 'package:gatefall/data/element.dart';
 import 'package:gatefall/data/roster.dart';
 import 'package:gatefall/data/gear.dart';
@@ -212,6 +213,33 @@ void main() {
       expect(b.state.flags['FAELEN_FRACTURE'], 'join');
       expect(b.state.completedBeats, contains('faelen_b0_recruitment'));
       expect(b.formation.containsKey('kess'), isTrue);
+    });
+
+    test('raid speed survives a round trip once unlocked', () async {
+      final store = MemorySaveStore();
+      final a = await booted(store: store);
+      a.clears = CombatConfig.clearsToUnlockFastSpeed;
+      a.setSpeed(4);
+      await a.persist();
+
+      final b = await booted(store: store);
+      expect(b.speed, 4);
+    });
+
+    test('locked or invalid saved raid speed falls back to 1x', () async {
+      final locked = MemorySaveStore({
+        'clears': 0,
+        'speed': 4,
+      });
+      final a = await booted(store: locked);
+      expect(a.speed, 1);
+
+      final invalid = MemorySaveStore({
+        'clears': CombatConfig.clearsToUnlockFastSpeed,
+        'speed': 3,
+      });
+      final b = await booted(store: invalid);
+      expect(b.speed, 1);
     });
 
     test('gear survives a round trip with its rarity and enhance level',
