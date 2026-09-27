@@ -321,6 +321,20 @@ void main() {
     expect(find.text('The books'), findsOneWidget);
   });
 
+  testWidgets('first-session dialogue fits a very narrow phone',
+      (tester) async {
+    final view =
+        TestWidgetsFlutterBinding.instance.platformDispatcher.views.first;
+    view.physicalSize = const Size(280, 700);
+
+    await pumpGame(tester);
+    await tester.tap(find.text('Talk to Faelen'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('I Won\'t Be Staying'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('the party screen shows the Mana sinks', (tester) async {
     await pumpGame(tester, setup: (g) => g.mana = 5000);
     await tester.pumpAndSettle();
