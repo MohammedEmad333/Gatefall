@@ -53,6 +53,12 @@ bool shouldReturnHomeAfterRaid({
 
 bool canRetryRaid(BattleStatus status) => status == BattleStatus.lost;
 
+bool shouldAdvanceRaid({
+  required BattleStatus status,
+  required bool paused,
+}) =>
+    status == BattleStatus.fighting && !paused;
+
 enum _Stage { board, formation, fighting, result }
 
 class _GateScreenState extends State<GateScreen> {
@@ -62,6 +68,7 @@ class _GateScreenState extends State<GateScreen> {
   Battle? battle;
   Gate? gate;
   Timer? _timer;
+  bool _paused = false;
 
   /// The presentation layer's own state. None of this is the simulation —
   /// it is what the simulation looked like last frame, so this frame can
@@ -99,6 +106,7 @@ class _GateScreenState extends State<GateScreen> {
     final b = game.startRaid(g);
     battle = b;
     stage = _Stage.fighting;
+    _paused = false;
     _eventCursor = 0;
     _enemyHp = b.enemy.hp;
     _wave = b.waveIndex;
@@ -114,11 +122,13 @@ class _GateScreenState extends State<GateScreen> {
       (_) {
         // Higher speeds are extra simulation steps per frame, not a
         // different simulation.
-        for (var i = 0; i < game.speed; i++) {
-          if (b.status != BattleStatus.fighting) break;
-          b.tick(CombatConfig.tickSeconds);
+        if (shouldAdvanceRaid(status: b.status, paused: _paused)) {
+          for (var i = 0; i < game.speed; i++) {
+            if (b.status != BattleStatus.fighting) break;
+            b.tick(CombatConfig.tickSeconds);
+          }
+          _react(b);
         }
-        _react(b);
         if (b.status != BattleStatus.fighting) {
           _timer?.cancel();
           _timer = null;
@@ -218,6 +228,13 @@ class _GateScreenState extends State<GateScreen> {
     }
   }
 
+  void _togglePause() {
+    final b = battle;
+    if (b == null || b.status != BattleStatus.fighting) return;
+    setState(() => _paused = !_paused);
+    Audio.instance.play(Sfx.uiTap);
+  }
+
   Future<void> _confirmWithdraw() async {
     final b = battle;
     final g = gate;
@@ -255,6 +272,7 @@ class _GateScreenState extends State<GateScreen> {
         false;
     if (!confirmed || !mounted || b.status != BattleStatus.fighting) return;
 
+    _paused = false;
     _timer?.cancel();
     _timer = null;
     b.withdraw();
@@ -282,6 +300,7 @@ class _GateScreenState extends State<GateScreen> {
       battle = null;
       gate = null;
       stage = _Stage.board;
+      _paused = false;
     });
 
     // A win already refreshes the board in GameController.finishRaid. A loss
@@ -695,17 +714,35 @@ class _GateScreenState extends State<GateScreen> {
             _abilityRow(b),
             const SizedBox(height: 10),
             _battleLog(b),
-            const SizedBox(height: 10),
-            Align(
-              alignment: Alignment.centerRight,
-              child: SlabButton(
-                'Withdraw',
-                key: const ValueKey('withdraw-raid'),
-                tone: blood,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
-                onPressed: _confirmWithdraw,
+            if (_paused) ...[
+              const SizedBox(height: 8),
+              const Callout(
+                'Raid paused — no combat time is passing.',
+                tone: gold,
               ),
+            ],
+            const SizedBox(height: 10),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                SlabButton(
+                  _paused ? 'Resume' : 'Pause',
+                  key: const ValueKey('pause-raid'),
+                  tone: _paused ? gold : boneDim,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
+                  onPressed: _togglePause,
+                ),
+                const SizedBox(width: 7),
+                SlabButton(
+                  'Withdraw',
+                  key: const ValueKey('withdraw-raid'),
+                  tone: blood,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
+                  onPressed: _confirmWithdraw,
+                ),
+              ],
             ),
             const SizedBox(height: 10),
             _raidControls(
@@ -1160,6 +1197,7 @@ class _GateScreenState extends State<GateScreen> {
     setState(() {
       battle = null;
       stage = _Stage.formation;
+      _paused = false;
     });
   }
 
