@@ -545,6 +545,23 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
                       'Front row draws most attacks and lands full melee '
                       'damage. Back row takes half damage, but melee hits from '
                       'there are weaker. Tap anyone to move them.'),
+              const SizedBox(height: 9),
+              Align(
+                alignment: Alignment.centerRight,
+                child: SlabButton(
+                  'Fill open slots',
+                  key: const ValueKey('fill-formation'),
+                  tone: verdant,
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 9, horizontal: 12),
+                  onPressed: party >= CombatConfig.partyMax
+                      ? null
+                      : () {
+                          Audio.instance.play(Sfx.uiSelect);
+                          setState(() => game.fillFormationFor(g.element));
+                        },
+                ),
+              ),
               if (game.formation.keys.every((id) =>
                   matchupOf(Roster.byId(id).element, g.element) !=
                   Matchup.advantage)) ...[
