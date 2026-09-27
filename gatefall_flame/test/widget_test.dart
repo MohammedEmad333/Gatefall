@@ -176,6 +176,41 @@ void main() {
     expect(canRetryRaid(BattleStatus.fighting), isFalse);
   });
 
+  test('quick retry requires a failed raid, a gate, and a party', () {
+    expect(
+      canQuickRetryRaid(
+        status: BattleStatus.lost,
+        hasGate: true,
+        partyCount: 4,
+      ),
+      isTrue,
+    );
+    expect(
+      canQuickRetryRaid(
+        status: BattleStatus.won,
+        hasGate: true,
+        partyCount: 4,
+      ),
+      isFalse,
+    );
+    expect(
+      canQuickRetryRaid(
+        status: BattleStatus.lost,
+        hasGate: false,
+        partyCount: 4,
+      ),
+      isFalse,
+    );
+    expect(
+      canQuickRetryRaid(
+        status: BattleStatus.lost,
+        hasGate: true,
+        partyCount: 0,
+      ),
+      isFalse,
+    );
+  });
+
   test('paused raids do not advance simulation time', () {
     expect(
       shouldAdvanceRaid(status: BattleStatus.fighting, paused: false),
