@@ -553,8 +553,10 @@ class GameController extends ChangeNotifier {
   }
 
   void setSpeed(int s) {
+    if (!speedOptions.contains(s) || speed == s) return;
     speed = s;
     notifyListeners();
+    persist();
   }
 
   void setAutoCast(bool v) {
@@ -781,6 +783,7 @@ class GameController extends ChangeNotifier {
         'rent_since': _rentSince?.toIso8601String(),
         'last_odd_job': _lastOddJob?.toIso8601String(),
         'auto_cast': autoCast,
+        'speed': speed,
         'sfx_on': sfxOn,
         'music_on': musicOn,
         'prologue_seen': prologueSeen,
@@ -792,6 +795,8 @@ class GameController extends ChangeNotifier {
     clears = json['clears'] as int? ?? 0;
     bestClearMana = json['best_clear_mana'] as int? ?? 0;
     autoCast = json['auto_cast'] as bool? ?? true;
+    final savedSpeed = json['speed'] as int? ?? 1;
+    speed = speedOptions.contains(savedSpeed) ? savedSpeed : 1;
     // A save from before version 3 has no sound settings, and the answer
     // for it is the same as for a new player: everything on.
     sfxOn = json['sfx_on'] as bool? ?? true;
