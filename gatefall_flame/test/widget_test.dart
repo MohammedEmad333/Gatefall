@@ -253,6 +253,36 @@ void main() {
     );
   });
 
+  test('leaving the Gates tab pauses only an active running raid', () {
+    expect(
+      shouldPauseRaidWhenTabHidden(
+        wasActive: true,
+        isActive: false,
+        status: BattleStatus.fighting,
+        paused: false,
+      ),
+      isTrue,
+    );
+    expect(
+      shouldPauseRaidWhenTabHidden(
+        wasActive: true,
+        isActive: false,
+        status: BattleStatus.fighting,
+        paused: true,
+      ),
+      isFalse,
+    );
+    expect(
+      shouldPauseRaidWhenTabHidden(
+        wasActive: false,
+        isActive: true,
+        status: BattleStatus.fighting,
+        paused: false,
+      ),
+      isFalse,
+    );
+  });
+
   testWidgets('the gate board offers a gate and a formation screen',
       (tester) async {
     await pumpGame(tester);
