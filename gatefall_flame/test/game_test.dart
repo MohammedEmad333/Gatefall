@@ -214,6 +214,16 @@ void main() {
       expect(b.formation.containsKey('kess'), isTrue);
     });
 
+    test('auto-cast preference survives a round trip', () async {
+      final store = MemorySaveStore();
+      final a = await booted(store: store);
+      a.setAutoCast(false);
+      await a.persist();
+
+      final b = await booted(store: store);
+      expect(b.autoCast, isFalse);
+    });
+
     test('gear survives a round trip with its rarity and enhance level',
         () async {
       final store = MemorySaveStore();
