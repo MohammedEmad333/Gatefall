@@ -14,6 +14,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gatefall/combat/battle.dart';
 import 'package:gatefall/data/companion_routes.dart';
+import 'package:gatefall/data/element.dart';
 import 'package:gatefall/data/roster.dart';
 import 'package:gatefall/data/gear.dart';
 import 'package:gatefall/data/gifts.dart';
@@ -156,6 +157,28 @@ void main() {
 
       expect(b.status, BattleStatus.lost);
       expect(b.events.length, eventCount);
+    });
+  });
+
+  // -------------------------------------------------------------------
+  group('formation helper', () {
+    test('fill open slots prefers elemental advantage and preserves choices',
+        () async {
+      final g = await booted();
+      g.settled.addAll(['kess', 'momo', 'thora']);
+      g.formation = {'player': BattleRow.front};
+
+      g.fillFormationFor(GateElement.stone);
+
+      expect(g.formation, hasLength(4));
+      expect(g.formation['player'], BattleRow.front,
+          reason: 'existing player placement must be preserved');
+      expect(g.formation['faelen'], BattleRow.front,
+          reason: 'Verdant has advantage into Stone');
+      expect(g.formation['momo'], BattleRow.back);
+      expect(g.formation['thora'], BattleRow.front);
+      expect(g.formation.containsKey('kess'), isFalse,
+          reason: 'Ember is disadvantaged into Stone and should be last');
     });
   });
 
