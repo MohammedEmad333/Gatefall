@@ -117,6 +117,7 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   Gate? gate;
   Timer? _timer;
   bool _paused = false;
+  bool _resumeAfterWithdrawDialog = false;
 
   /// The presentation layer's own state. None of this is the simulation —
   /// it is what the simulation looked like last frame, so this frame can
@@ -153,6 +154,9 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     super.didUpdateWidget(oldWidget);
     final b = battle;
     if (b == null) return;
+    if (oldWidget.active && !widget.active && b.status == BattleStatus.fighting) {
+      _resumeAfterWithdrawDialog = false;
+    }
     if (shouldPauseRaidWhenTabHidden(
       wasActive: oldWidget.active,
       isActive: widget.active,
@@ -168,8 +172,9 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (!shouldPauseRaidForLifecycle(state)) return;
     final b = battle;
-    if (b == null || b.status != BattleStatus.fighting || _paused) return;
-    if (!mounted) return;
+    if (b == null || b.status != BattleStatus.fighting) return;
+    _resumeAfterWithdrawDialog = false;
+    if (_paused || !mounted) return;
     setState(() => _paused = true);
     _syncRaidTicker();
   }
@@ -363,6 +368,7 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     // simulation while it is open, then restore the previous running state
     // only if the player cancels.
     final wasPaused = _paused;
+    _resumeAfterWithdrawDialog = !wasPaused;
     if (!_paused) {
       setState(() => _paused = true);
       _syncRaidTicker();
@@ -398,18 +404,26 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
           ),
         ) ??
         false;
-    if (!mounted || b.status != BattleStatus.fighting) return;
+    if (!mounted || b.status != BattleStatus.fighting) {
+      _resumeAfterWithdrawDialog = false;
+      return;
+    }
     if (!confirmed) {
-      if (shouldResumeAfterWithdrawDialog(
-        wasPaused: wasPaused,
-        confirmed: confirmed,
-      )) {
+      final canResume = _resumeAfterWithdrawDialog &&
+          widget.active &&
+          shouldResumeAfterWithdrawDialog(
+            wasPaused: wasPaused,
+            confirmed: confirmed,
+          );
+      _resumeAfterWithdrawDialog = false;
+      if (canResume) {
         setState(() => _paused = false);
         _syncRaidTicker();
       }
       return;
     }
 
+    _resumeAfterWithdrawDialog = false;
     _paused = false;
     _timer?.cancel();
     _timer = null;
