@@ -278,35 +278,33 @@ class CharacterDetailScreen extends StatelessWidget {
     return Panel(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       borderColor: completed ? rose.withValues(alpha: .65) : riftDim,
-      child: Row(
-        children: [
-          SizedBox(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final compact = constraints.maxWidth < 300;
+          final number = SizedBox(
             width: 28,
             child: Text('${beat.order}',
                 style: TextStyle(
                     color: completed ? rose : boneDim,
                     fontSize: 16,
                     fontFamily: 'monospace')),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(beat.title,
-                    style: TextStyle(
-                        color: completed ? bone : boneDim, fontSize: 12.5)),
-                const SizedBox(height: 3),
-                Text(status,
-                    style: TextStyle(
-                        color: completed ? rose : boneDim,
-                        fontSize: 10.5,
-                        height: 1.35)),
-              ],
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 78,
+          );
+          final info = Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(beat.title,
+                  style: TextStyle(
+                      color: completed ? bone : boneDim, fontSize: 12.5)),
+              const SizedBox(height: 3),
+              Text(status,
+                  style: TextStyle(
+                      color: completed ? rose : boneDim,
+                      fontSize: 10.5,
+                      height: 1.35)),
+            ],
+          );
+          final action = SizedBox(
+            width: compact ? double.infinity : 78,
             child: SlabButton(
               completed ? 'Replay' : (ready ? 'New' : 'Locked'),
               key: Key('replay-${beat.beatId}'),
@@ -321,8 +319,29 @@ class CharacterDetailScreen extends StatelessWidget {
                       )
                   : null,
             ),
-          ),
-        ],
+          );
+          if (compact) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [number, Expanded(child: info)],
+                ),
+                const SizedBox(height: 8),
+                action,
+              ],
+            );
+          }
+          return Row(
+            children: [
+              number,
+              Expanded(child: info),
+              const SizedBox(width: 8),
+              action,
+            ],
+          );
+        },
       ),
     );
   }
