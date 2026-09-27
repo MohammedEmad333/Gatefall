@@ -93,6 +93,13 @@ bool shouldPauseRaidWhenTabHidden({
     status == BattleStatus.fighting &&
     !paused;
 
+bool shouldRunRaidTicker({
+  required BattleStatus status,
+  required bool paused,
+  required bool tabActive,
+}) =>
+    status == BattleStatus.fighting && !paused && tabActive;
+
 enum _Stage { board, formation, fighting, result }
 
 class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
@@ -146,6 +153,7 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
       paused: _paused,
     )) {
       setState(() => _paused = true);
+      _syncRaidTicker();
     }
   }
 
@@ -156,6 +164,7 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     if (b == null || b.status != BattleStatus.fighting || _paused) return;
     if (!mounted) return;
     setState(() => _paused = true);
+    _syncRaidTicker();
   }
 
   @override
@@ -182,18 +191,40 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     // The gate-opening sound comes from the button that called this (see
     // its `sound:`), so entering by any other route stays silent rather
     // than doubling up.
+    _startRaidTicker(b, g);
+    setState(() {});
+  }
+
+  void _startRaidTicker(Battle b, Gate g) {
+    _timer?.cancel();
+    _timer = null;
+    if (!shouldRunRaidTicker(
+      status: b.status,
+      paused: _paused,
+      tabActive: widget.active,
+    )) {
+      return;
+    }
+
     _timer = Timer.periodic(
       Duration(milliseconds: (CombatConfig.tickSeconds * 1000).round()),
       (_) {
-        // Higher speeds are extra simulation steps per frame, not a
-        // different simulation.
-        if (shouldAdvanceRaid(status: b.status, paused: _paused)) {
-          for (var i = 0; i < game.speed; i++) {
-            if (b.status != BattleStatus.fighting) break;
-            b.tick(CombatConfig.tickSeconds);
-          }
-          _react(b);
+        if (!shouldRunRaidTicker(
+          status: b.status,
+          paused: _paused,
+          tabActive: widget.active,
+        )) {
+          _timer?.cancel();
+          _timer = null;
+          return;
         }
+
+        for (var i = 0; i < game.speed; i++) {
+          if (b.status != BattleStatus.fighting) break;
+          b.tick(CombatConfig.tickSeconds);
+        }
+        _react(b);
+
         if (b.status != BattleStatus.fighting) {
           _timer?.cancel();
           _timer = null;
@@ -205,7 +236,22 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
         if (mounted) setState(() {});
       },
     );
-    setState(() {});
+  }
+
+  void _syncRaidTicker() {
+    final b = battle;
+    final g = gate;
+    if (b == null || g == null) return;
+    if (shouldRunRaidTicker(
+      status: b.status,
+      paused: _paused,
+      tabActive: widget.active,
+    )) {
+      if (_timer == null) _startRaidTicker(b, g);
+    } else {
+      _timer?.cancel();
+      _timer = null;
+    }
   }
 
   /// Turn one simulation frame into sound and motion.
@@ -297,6 +343,7 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     final b = battle;
     if (b == null || b.status != BattleStatus.fighting) return;
     setState(() => _paused = !_paused);
+    _syncRaidTicker();
     Audio.instance.play(Sfx.uiTap);
   }
 
@@ -309,7 +356,10 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     // simulation while it is open, then restore the previous running state
     // only if the player cancels.
     final wasPaused = _paused;
-    if (!_paused) setState(() => _paused = true);
+    if (!_paused) {
+      setState(() => _paused = true);
+      _syncRaidTicker();
+    }
 
     final confirmed = await showDialog<bool>(
           context: context,
@@ -348,6 +398,7 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
         confirmed: confirmed,
       )) {
         setState(() => _paused = false);
+        _syncRaidTicker();
       }
       return;
     }
