@@ -337,28 +337,24 @@ class _StartSceneState extends State<StartScene> {
 
   // ---------------- page furniture ----------------
 
-  Widget _header() => Row(
-        children: [
-          InkedText(
-            'GATEFALL',
-            stroke: 3,
-            style: letterStyle(size: 15, color: bone, spacing: 3),
-          ),
-          const SizedBox(width: 8),
-          const Text('no. 1',
-              style: TextStyle(color: boneDim, fontSize: 11)),
-          const Spacer(),
-          for (var i = 0; i < _script.length; i++)
-            Padding(
-              padding: const EdgeInsets.only(left: 4),
-              child: Container(
-                width: 7,
-                height: 7,
-                color: i <= _page ? bone : riftDim,
-              ),
-            ),
-          const SizedBox(width: 10),
-          TextButton(
+  Widget _header() => LayoutBuilder(
+        builder: (context, constraints) {
+          final compact = constraints.maxWidth < 320;
+          final progress = Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var i = 0; i < _script.length; i++)
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Container(
+                    width: compact ? 6 : 7,
+                    height: compact ? 6 : 7,
+                    color: i <= _page ? bone : riftDim,
+                  ),
+                ),
+            ],
+          );
+          final skip = TextButton(
             onPressed: _finish,
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -367,8 +363,53 @@ class _StartSceneState extends State<StartScene> {
             ),
             child: const Text('skip',
                 style: TextStyle(color: boneDim, fontSize: 11)),
-          ),
-        ],
+          );
+
+          if (compact) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        alignment: Alignment.centerLeft,
+                        child: InkedText(
+                          'GATEFALL',
+                          stroke: 3,
+                          style: letterStyle(
+                              size: 15, color: bone, spacing: 3),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    skip,
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Align(alignment: Alignment.centerRight, child: progress),
+              ],
+            );
+          }
+
+          return Row(
+            children: [
+              InkedText(
+                'GATEFALL',
+                stroke: 3,
+                style: letterStyle(size: 15, color: bone, spacing: 3),
+              ),
+              const SizedBox(width: 8),
+              const Text('no. 1',
+                  style: TextStyle(color: boneDim, fontSize: 11)),
+              const Spacer(),
+              progress,
+              const SizedBox(width: 10),
+              skip,
+            ],
+          );
+        },
       );
 
   Widget _footer() => SizedBox(
