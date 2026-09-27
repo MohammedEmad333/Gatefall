@@ -538,13 +538,33 @@ class _GateScreenState extends State<GateScreen> {
                         color: boneDim,
                         fontSize: 11,
                         fontStyle: FontStyle.italic)))
-            : Row(
-                children: [
-                  for (final id in ids) ...[
-                    Expanded(child: _unitChip(Roster.byId(id), g)),
-                    if (id != ids.last) const SizedBox(width: 6),
-                  ]
-                ],
+            : LayoutBuilder(
+                builder: (context, constraints) {
+                  final useTwoColumns =
+                      constraints.maxWidth < 340 && ids.length > 2;
+                  if (useTwoColumns) {
+                    final width = (constraints.maxWidth - 6) / 2;
+                    return Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+                        for (final id in ids)
+                          SizedBox(
+                            width: width,
+                            child: _unitChip(Roster.byId(id), g),
+                          ),
+                      ],
+                    );
+                  }
+                  return Row(
+                    children: [
+                      for (final id in ids) ...[
+                        Expanded(child: _unitChip(Roster.byId(id), g)),
+                        if (id != ids.last) const SizedBox(width: 6),
+                      ]
+                    ],
+                  );
+                },
               ),
       );
 
