@@ -383,6 +383,31 @@ need to be checked on hardware.
 
 ---
 
+## Post-3.2 raid-control hardening
+
+The raid loop received a focused control/recovery pass after the mobile-layout
+work. These changes preserve the locked combat tuning; they change how a
+player can control and recover from a raid, not the simulation numbers.
+
+- **Failed gates stay open.** Leaving a loss no longer rerolls the board, and
+  the result screen can retry the same gate with a new formation.
+- **Manual withdrawal.** A player can leave an active raid deliberately, keep
+  Mana already earned, and retry the same gate. The confirmation pauses combat
+  while the decision is open.
+- **Pause/resume.** Active raids can be paused without advancing damage,
+  cooldowns, elapsed combat time, or boss enrage. Manual casts are disabled
+  while paused.
+- **Mobile lifecycle safety.** Backgrounding the app or leaving the Gates tab
+  pauses the raid and requires an explicit Resume when the player returns.
+- **Formation assistance.** `Fill open slots` preserves existing placements
+  and fills only empty party slots, preferring elemental advantage before
+  neutral and disadvantage matchups.
+
+These are covered by regression tests around retry eligibility, pause gates,
+lifecycle/tab visibility, withdrawal semantics, and formation-fill priority.
+
+---
+
 ## Suggested next steps
 
 In the order that adds the most to the game as it now stands.
