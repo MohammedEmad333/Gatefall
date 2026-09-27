@@ -216,6 +216,52 @@ class CharacterDetailScreen extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 12),
+            Panel(
+              key: Key('ascension-${resident.id}'),
+              borderColor: game.isAscended(resident.id) ? rose : riftDim,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          game.isAscended(resident.id)
+                              ? '✦ ${ascension.title} — Ascended'
+                              : '${ascension.title} — Ascension',
+                          style: TextStyle(
+                            color: game.isAscended(resident.id) ? rose : boneDim,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        game.isAscended(resident.id) ? 'ROUTE COMPLETE' : 'LOCKED',
+                        style: TextStyle(
+                          color: game.isAscended(resident.id) ? rose : boneDim,
+                          fontSize: 9,
+                          fontFamily: 'monospace',
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  _fact(
+                    'Ability',
+                    game.isAscended(resident.id)
+                        ? ascension.cure
+                        : 'Complete her final route scene to unlock ${ascension.title}.',
+                  ),
+                  _fact(
+                    'Passive',
+                    game.isAscended(resident.id)
+                        ? ascension.passive
+                        : 'Revealed when the route is complete.',
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 18),
             const Text('Story archive',
                 style: TextStyle(color: bone, fontSize: 16)),
