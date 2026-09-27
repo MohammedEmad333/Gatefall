@@ -707,11 +707,12 @@ void main() {
       b.start();
       b.autoCast = false;
 
-      expect(b.linkStacks, 0);
-      // Faelen casting is an ally action; Kess's own cast is not.
+      expect(b.linkStacks, Battle.kessOpeningLinks);
+      // Faelen casting is an ally action; Kess's own cast is not. The
+      // ascended passive contributes the opening link before either cast.
       b.castAbility('guard');
       b.castAbility('bolt');
-      expect(b.linkStacks, 2);
+      expect(b.linkStacks, Battle.kessOpeningLinks + 2);
 
       final before = b.enemy.hp;
       b.castAbility('chainbreak');
@@ -746,6 +747,11 @@ void main() {
           ascended: const {'momo'}, rng: Random(5));
       b.start();
       b.autoCast = false;
+
+      // Ascended Momo now opens each enemy with a brief passive ward. Clear
+      // that opening window so this test can still measure the active
+      // Foresight ability against an unwarded baseline.
+      b.wardRemaining = 0;
       final normal = b.incomingDps;
 
       b.castAbility('foresight');

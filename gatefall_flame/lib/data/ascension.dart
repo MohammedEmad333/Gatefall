@@ -28,12 +28,16 @@ class Ascension {
   /// What the ascended ability does, in the player's terms.
   final String cure;
 
+  /// The always-on change to the base kit after the route resolves.
+  final String passive;
+
   const Ascension({
     required this.characterId,
     required this.beatId,
     required this.title,
     required this.lie,
     required this.cure,
+    required this.passive,
   });
 
   static const List<Ascension> all = [
@@ -44,6 +48,7 @@ class Ascension {
       lie: 'Guard shields her alone, because closeness is how people get hurt.',
       cure: 'Her oath covers the whole party — everyone shielded, everyone '
           'hitting harder, because together is the stronger thing.',
+      passive: 'Guard now shares part of its shield with every living ally.',
     ),
     Ascension(
       characterId: 'kess',
@@ -52,6 +57,7 @@ class Ascension {
       lie: 'Dash is one enormous hit she takes alone, over-extended.',
       cure: 'Every ally action since her last strike loads the next one. '
           'Strongest when she is not fighting alone.',
+      passive: 'Each new wave begins with one link already banked.',
     ),
     Ascension(
       characterId: 'momo',
@@ -60,6 +66,7 @@ class Ascension {
       lie: 'Her gate-sense drags danger to the party and she hides from it.',
       cure: 'She reads the gate a few seconds ahead and the whole party takes '
           'less for it. "She draws danger" becomes "she sees it first."',
+      passive: 'Every new enemy arrives under a brief opening Foresight ward.',
     ),
     Ascension(
       characterId: 'thora',
@@ -68,6 +75,7 @@ class Ascension {
       lie: 'Mend pours into everyone but herself, until she runs dry.',
       cure: 'What the party puts back into her is returned with interest — '
           'the more she is held up, the harder the house hits.',
+      passive: 'Mend leaves a small shield on every ally except Thora.',
     ),
     Ascension(
       characterId: 'dana',
@@ -76,6 +84,7 @@ class Ascension {
       lie: 'She is not a fighter. She files, and other people bleed.',
       cure: 'She awakens and enters the party — an off-role wildcard whose '
           'call is never quite the same fight twice.',
+      passive: 'A prepared exit plan gives the whole party an opening shield.',
     ),
   ];
 
