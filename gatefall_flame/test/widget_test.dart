@@ -100,6 +100,44 @@ void main() {
     expect(find.text('The board'), findsOneWidget);
   });
 
+  testWidgets('raid pause control and tab auto-pause work end to end',
+      (tester) async {
+    final game = await pumpGame(tester);
+
+    await tapTab(tester, Icons.blur_circular_outlined);
+    final gate = game.board.first;
+    await tester.tap(find.text(gate.fullName).first);
+    await tester.pump();
+    await tester.tap(find.text('Enter the gate'));
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('pause-raid')), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('pause-raid')));
+    await tester.pump();
+
+    expect(find.text('Resume'), findsOneWidget);
+    expect(
+      find.text('Raid paused — no combat time is passing.'),
+      findsOneWidget,
+    );
+
+    // Resume manually, then prove leaving the Gates tab pauses it again.
+    await tester.tap(find.byKey(const ValueKey('pause-raid')));
+    await tester.pump();
+    expect(find.text('Pause'), findsOneWidget);
+
+    await tester.tap(find.byIcon(Icons.home_outlined));
+    await tester.pump();
+    await tester.tap(find.byIcon(Icons.blur_circular_outlined));
+    await tester.pump();
+
+    expect(find.text('Resume'), findsOneWidget);
+    expect(
+      find.text('Raid paused — no combat time is passing.'),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('all four tabs render without throwing', (tester) async {
     await pumpGame(tester);
 
