@@ -207,7 +207,8 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
     return _trackRow(
       title: done ? '${a.title} — ascended' : 'Ascension locked',
       detail: done
-          ? '${ability?.name ?? a.title}: ${a.cure}'
+          ? 'Ability — ${ability?.name ?? a.title}: ${a.cure} '
+              'Passive — ${a.passive}'
           : 'her route\'s last scene grants it — ${a.lie}',
       buttonLabel: done ? 'Earned' : 'Locked',
       tone: done ? rose : boneDim,

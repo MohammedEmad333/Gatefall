@@ -850,7 +850,8 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
             const SizedBox(height: 2),
             Text(
               '${def.role} · Lv.${game.levels[def.id] ?? Progression.minLevel}'
-              '${tier > 0 ? " · ♥$tier" : ""}',
+              '${tier > 0 ? " · ♥$tier" : ""}'
+              '${game.isAscended(def.id) ? " · ✦ ascended" : ""}',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(

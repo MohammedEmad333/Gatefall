@@ -1,6 +1,9 @@
 name: gatefall
 description: Gatefall — idle action-RPG x romance simulation.
 publish_to: 'none'
+# 3.3.1 — ascension visibility. Character profiles, Party progression and
+# gate formation now explain/show the route-finished passive before combat.
+#
 # 3.3.0 — "Together". Route completion now reshapes each companion's base kit
 # with an ascended passive, while the post-3.2 mobile/raid-control hardening and
 # narrative continuity fixes ship together as one clean release.
@@ -16,7 +19,7 @@ publish_to: 'none'
 # drawn characters, a gate you can watch turn, combat that reacts, and a
 # score synthesised from scratch. The build number is what Android orders
 # installs by, so it goes up with every release: 1.0.0 shipped as +1.
-version: 3.3.0+6
+version: 3.3.1+7
 
 environment:
   # Raised from >=3.0.0 for audioplayers, which is what version 3's sound

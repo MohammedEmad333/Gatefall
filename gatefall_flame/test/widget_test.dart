@@ -238,6 +238,48 @@ void main() {
         containsAll(['faelen_b0_recruitment', 'faelen_b1_the_wall']));
   });
 
+  testWidgets('ascended status and passive are visible before a raid',
+      (tester) async {
+    await pumpGame(tester, setup: (g) {
+      g.state.completedBeats.addAll([
+        'faelen_b0_recruitment',
+        'faelen_b1_the_wall',
+        'faelen_b2_proving_ground',
+        'faelen_b3_first_truth',
+        'faelen_b4_the_fracture',
+        'faelen_b5_after_the_wall',
+        'faelen_b6_the_choice',
+      ]);
+    });
+
+    await tapTab(tester, Icons.people_outline);
+    await tester.tap(find.byKey(const Key('character-faelen')));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const Key('ascension-faelen')), findsOneWidget);
+    expect(find.text('✦ Oathbound — Ascended'), findsOneWidget);
+    expect(
+      find.text('Guard now shares part of its shield with every living ally.'),
+      findsOneWidget,
+    );
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    await tapTab(tester, Icons.groups_outlined);
+    expect(find.textContaining('Passive — Guard now shares'), findsOneWidget);
+
+    await tapTab(tester, Icons.blur_circular_outlined);
+    final gate = find
+        .descendant(
+          of: find.byType(GateScreen),
+          matching: find.textContaining('Fracture'),
+        )
+        .first;
+    await tester.tap(gate);
+    await tester.pumpAndSettle();
+    expect(find.textContaining('✦ ascended'), findsWidgets);
+  });
+
   test('only the first successful clear returns onboarding to the house', () {
     expect(shouldReturnHomeAfterRaid(won: true, clears: 1), isTrue);
     expect(shouldReturnHomeAfterRaid(won: true, clears: 2), isFalse);
