@@ -31,6 +31,10 @@ import 'theme.dart';
 class GateScreen extends StatefulWidget {
   final GameController game;
 
+  /// Whether the Gates tab is currently visible in the shell. An active raid
+  /// pauses when this flips false; returning never auto-resumes it.
+  final bool active;
+
   /// Optional shell navigation used only to close the first-session loop
   /// after the player's first successful clear.
   final VoidCallback? onOpenHouse;
@@ -38,6 +42,7 @@ class GateScreen extends StatefulWidget {
   const GateScreen({
     super.key,
     required this.game,
+    this.active = true,
     this.onOpenHouse,
   });
 
@@ -76,6 +81,17 @@ bool canManualCastDuringRaid({
   required bool paused,
 }) =>
     status == BattleStatus.fighting && !paused;
+
+bool shouldPauseRaidWhenTabHidden({
+  required bool wasActive,
+  required bool isActive,
+  required BattleStatus status,
+  required bool paused,
+}) =>
+    wasActive &&
+    !isActive &&
+    status == BattleStatus.fighting &&
+    !paused;
 
 enum _Stage { board, formation, fighting, result }
 
@@ -116,6 +132,21 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didUpdateWidget(covariant GateScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final b = battle;
+    if (b == null) return;
+    if (shouldPauseRaidWhenTabHidden(
+      wasActive: oldWidget.active,
+      isActive: widget.active,
+      status: b.status,
+      paused: _paused,
+    )) {
+      setState(() => _paused = true);
+    }
   }
 
   @override
