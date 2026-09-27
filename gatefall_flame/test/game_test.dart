@@ -12,6 +12,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gatefall/combat/battle.dart';
 import 'package:gatefall/data/companion_routes.dart';
 import 'package:gatefall/data/roster.dart';
 import 'package:gatefall/data/gear.dart';
@@ -125,6 +126,40 @@ void main() {
     });
   });
 
+  group('raid withdrawal', () {
+    test('manual withdrawal ends the raid but keeps earned mana', () {
+      final b = Battle.fromFormation({
+        'player': BattleRow.front,
+        'faelen': BattleRow.front,
+      })..start();
+
+      b.manaEarned = 137;
+      b.withdraw();
+
+      expect(b.status, BattleStatus.lost);
+      expect(b.manaEarned, 137);
+      expect(
+        b.events.last.message,
+        contains('Mana kept: 137'),
+      );
+    });
+
+    test('withdraw is ignored after a raid has already ended', () {
+      final b = Battle.fromFormation({
+        'player': BattleRow.front,
+        'faelen': BattleRow.front,
+      })..start();
+
+      b.withdraw();
+      final eventCount = b.events.length;
+      b.withdraw();
+
+      expect(b.status, BattleStatus.lost);
+      expect(b.events.length, eventCount);
+    });
+  });
+
+  // -------------------------------------------------------------------
   // -------------------------------------------------------------------
   group('save / load', () {
     test('a full round trip preserves everything a player earned', () async {
