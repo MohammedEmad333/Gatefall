@@ -285,40 +285,50 @@ class _DialogueScreenState extends State<DialogueScreen> {
   Widget _header() {
     final last = _lastSpoken;
     final theirs = last?.speaker != 'player';
+    final portrait = CharacterSprite(
+      widget.characterId,
+      size: 66,
+      // Their portrait brightens on their own lines and settles back while
+      // the player is talking.
+      glow: theirs ? 1 : .35,
+      expression: theirs ? last?.emotion : null,
+    );
+    final copy = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(widget.beat.title,
+            style: const TextStyle(color: bone, fontSize: 17)),
+        const SizedBox(height: 2),
+        Text(
+          '${_speakerName(widget.characterId)} · beat '
+          '${widget.beat.order} · ${widget.beat.triggerContext}'
+          '${widget.isReplay ? " · replay" : ""}',
+          style: const TextStyle(color: boneDim, fontSize: 11, height: 1.35),
+        ),
+      ],
+    );
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-      child: Row(
-        children: [
-          CharacterSprite(
-            widget.characterId,
-            size: 66,
-            // Their portrait brightens on their own lines and settles back
-            // while the player is talking. It is the cheapest possible
-            // "who is speaking" cue and it costs no layout.
-            glow: theirs ? 1 : .35,
-            // Show the scene's expression cue only on the character's own
-            // lines; the player talking leaves them neutral. Missing a
-            // matching sprite falls back to neutral, then to painted art.
-            expression: theirs ? last?.emotion : null,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          if (constraints.maxWidth < 300) {
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(widget.beat.title,
-                    style: const TextStyle(color: bone, fontSize: 17)),
-                const SizedBox(height: 2),
-                Text(
-                  '${_speakerName(widget.characterId)} · beat '
-                  '${widget.beat.order} · ${widget.beat.triggerContext}'
-                  '${widget.isReplay ? " · replay" : ""}',
-                  style: const TextStyle(color: boneDim, fontSize: 11),
-                ),
+                Align(alignment: Alignment.centerLeft, child: portrait),
+                const SizedBox(height: 8),
+                copy,
               ],
-            ),
-          ),
-        ],
+            );
+          }
+          return Row(
+            children: [
+              portrait,
+              const SizedBox(width: 12),
+              Expanded(child: copy),
+            ],
+          );
+        },
       ),
     );
   }
@@ -388,40 +398,46 @@ class _DialogueScreenState extends State<DialogueScreen> {
           border: Border(top: BorderSide(color: riftDim)),
           color: night2,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(bottom: 8),
-              child: Text('What do you say?',
-                  style: TextStyle(
-                      color: boneDim,
-                      fontSize: 11,
-                      fontStyle: FontStyle.italic)),
-            ),
-            for (final (i, c) in choices.indexed)
-              Reveal(
-                delay: Duration(milliseconds: 70 * i),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 7),
-                  child: InkWell(
-                    onTap: () => _choose(c),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 12),
-                      decoration: BoxDecoration(
-                        border: Border.all(color: rose.withValues(alpha: .55)),
-                        color: rose.withValues(alpha: .06),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 320),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(bottom: 8),
+                  child: Text('What do you say?',
+                      style: TextStyle(
+                          color: boneDim,
+                          fontSize: 11,
+                          fontStyle: FontStyle.italic)),
+                ),
+                for (final (i, c) in choices.indexed)
+                  Reveal(
+                    delay: Duration(milliseconds: 70 * i),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 7),
+                      child: InkWell(
+                        onTap: () => _choose(c),
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 12),
+                          decoration: BoxDecoration(
+                            border:
+                                Border.all(color: rose.withValues(alpha: .55)),
+                            color: rose.withValues(alpha: .06),
+                          ),
+                          child: Text(c.text,
+                              style: const TextStyle(
+                                  color: bone, fontSize: 13.5, height: 1.45)),
+                        ),
                       ),
-                      child: Text(c.text,
-                          style: const TextStyle(
-                              color: bone, fontSize: 13.5, height: 1.45)),
                     ),
                   ),
-                ),
-              ),
-          ],
+              ],
+            ),
+          ),
         ),
       );
 
