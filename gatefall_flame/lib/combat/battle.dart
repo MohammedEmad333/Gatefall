@@ -173,6 +173,12 @@ class Battle {
   final List<Fighter> party;
   final List<Ability> abilities;
 
+  /// Route-finished companions. Ascended abilities are built from this set,
+  /// and version 3.3 also lets it reshape a small part of each base kit.
+  /// Keeping the IDs on the battle makes those passives explicit instead of
+  /// inferring them from ability names.
+  final Set<String> ascended;
+
   /// The gate's element for this whole raid — every wave and the boss share
   /// it (see docs/combat-spec.md §3: "each [gate] shows its element").
   final GateElement gateElement;
@@ -220,6 +226,14 @@ class Battle {
   static const double reciprocalReturn = 1.35;
   static const double rallyAttackBonus = 0.30;
 
+  // Ascended passives deliberately change *shape*, not base stats. They are
+  // small enough to feel earned without becoming a new progression gate.
+  static const double faelenSharedGuard = 0.25;
+  static const int kessOpeningLinks = 1;
+  static const double momoOpeningForesight = 3.0;
+  static const double thoraMendShield = 0.12;
+  static const double danaOpeningShield = 0.04;
+
   bool get warded => wardRemaining > 0;
 
   /// One ally action, for Chainbreak. Only counts while someone can spend
@@ -235,6 +249,7 @@ class Battle {
   Battle({
     required this.party,
     required this.abilities,
+    this.ascended = const {},
     this.gateElement = GateElement.verdant,
     this.hpMult = 1.0,
     this.dpsMult = 1.0,
@@ -261,6 +276,7 @@ class Battle {
           gear: gear,
           bondTiers: bondTiers,
           ascended: ascended),
+      ascended: Set.unmodifiable(ascended),
       gateElement: gateElement,
       hpMult: hpMult,
       dpsMult: dpsMult,
@@ -293,6 +309,13 @@ class Battle {
     }
     linkStacks = 0;
     wardRemaining = 0;
+    if (ascended.contains('dana')) {
+      for (final p in party) {
+        p.receiveShield(p.maxHp * danaOpeningShield);
+      }
+      _emit('Dana has the exit plan ready — the party starts shielded.',
+          'ultimate');
+    }
     for (final a in abilities) {
       a.remaining = 0;
     }
@@ -310,6 +333,16 @@ class Battle {
   ];
 
   void _spawn() {
+    // Route-finished instincts fire before a new enemy gets its first clean
+    // action. Kess enters each wave already linked to the team; Momo sees a
+    // few seconds ahead. Neither changes the tuned base stats.
+    if (ascended.contains('kess')) {
+      linkStacks = max(linkStacks, kessOpeningLinks);
+    }
+    if (ascended.contains('momo')) {
+      wardRemaining = max(wardRemaining, momoOpeningForesight);
+    }
+
     if (waveIndex >= CombatConfig.waves) {
       onBoss = true;
       bossElapsed = 0;
@@ -389,6 +422,12 @@ class Battle {
 
       case AbilityKind.taunt:
         owner.receiveShield(a.power);
+        if (owner.id == 'faelen' && ascended.contains('faelen')) {
+          for (final p in party) {
+            if (!p.alive || p.id == owner.id) continue;
+            p.receiveShield(a.power * faelenSharedGuard);
+          }
+        }
         owner.taunt = a.duration;
         _emit(
             '${owner.name}: "Get behind me." '
@@ -402,6 +441,12 @@ class Battle {
         for (final p in party) {
           if (!p.alive) continue;
           healed += p.receiveHealing(a.power);
+        }
+        if (owner.id == 'thora' && ascended.contains('thora')) {
+          for (final p in party) {
+            if (!p.alive || p.id == owner.id) continue;
+            p.receiveShield(a.power * thoraMendShield);
+          }
         }
         _emit('${owner.name} mends the party (${healed.round()} healed)',
             'heal',
