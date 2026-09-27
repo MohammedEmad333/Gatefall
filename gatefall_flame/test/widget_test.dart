@@ -264,6 +264,38 @@ void main() {
     );
   });
 
+  test('withdraw dialog cannot resume after lifecycle or tab auto-pause', () {
+    expect(
+      canResumeAfterWithdrawDialog(
+        wasPaused: false,
+        confirmed: false,
+        resumeAllowed: true,
+        tabActive: true,
+      ),
+      isTrue,
+    );
+    expect(
+      canResumeAfterWithdrawDialog(
+        wasPaused: false,
+        confirmed: false,
+        resumeAllowed: false,
+        tabActive: true,
+      ),
+      isFalse,
+      reason: 'backgrounding invalidates the temporary dialog resume',
+    );
+    expect(
+      canResumeAfterWithdrawDialog(
+        wasPaused: false,
+        confirmed: false,
+        resumeAllowed: true,
+        tabActive: false,
+      ),
+      isFalse,
+      reason: 'a hidden Gates tab must never resume combat',
+    );
+  });
+
   test('manual ability casts are disabled while the raid is paused', () {
     expect(
       canManualCastDuringRaid(
