@@ -237,8 +237,10 @@ class _GateScreenState extends State<GateScreen> {
       gate = null;
       stage = _Stage.board;
     });
-    game.rerollBoard();
 
+    // A win already refreshes the board in GameController.finishRaid. A loss
+    // deliberately does not: the design promise is that an uncleared gate
+    // stays open, so backing out of the result must not silently replace it.
     // The very first clear is the end of the onboarding loop: story -> gate
     // -> rewards -> back home to see Bond and the next route requirement.
     if (firstClear) widget.onOpenHouse?.call();
@@ -1060,20 +1062,47 @@ class _GateScreenState extends State<GateScreen> {
           staged(const Callout('4× speed unlocked.')),
         ],
         const SizedBox(height: 26),
-        staged(SlabButton(
-          post != null
-              ? '${House.byId(post.characterId).name} wants a word'
-              : (won && game.clears == 1
-                  ? 'Back to the house'
-                  : 'Back to the board'),
-          filled: true,
-          tone: post != null ? gold : rift,
-          sound: post != null ? Sfx.bond : Sfx.uiSelect,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          onPressed: _leaveResult,
-        )),
+        if (!won) ...[
+          staged(SlabButton(
+            'Retry this gate',
+            key: const ValueKey('retry-gate'),
+            filled: true,
+            tone: rift,
+            sound: Sfx.gateOpen,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            onPressed: _retryGate,
+          )),
+          const SizedBox(height: 8),
+          staged(SlabButton(
+            'Back to the board',
+            key: const ValueKey('leave-failed-gate'),
+            tone: boneDim,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            onPressed: _leaveResult,
+          )),
+        ] else
+          staged(SlabButton(
+            post != null
+                ? '${House.byId(post.characterId).name} wants a word'
+                : (game.clears == 1
+                    ? 'Back to the house'
+                    : 'Back to the board'),
+            filled: true,
+            tone: post != null ? gold : rift,
+            sound: post != null ? Sfx.bond : Sfx.uiSelect,
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            onPressed: _leaveResult,
+          )),
       ],
     );
+  }
+
+  void _retryGate() {
+    if (battle?.status == BattleStatus.won || gate == null) return;
+    setState(() {
+      battle = null;
+      stage = _Stage.formation;
+    });
   }
 
   // ---------------- shared controls ----------------
