@@ -176,6 +176,21 @@ void main() {
     expect(canRetryRaid(BattleStatus.fighting), isFalse);
   });
 
+  test('paused raids do not advance simulation time', () {
+    expect(
+      shouldAdvanceRaid(status: BattleStatus.fighting, paused: false),
+      isTrue,
+    );
+    expect(
+      shouldAdvanceRaid(status: BattleStatus.fighting, paused: true),
+      isFalse,
+    );
+    expect(
+      shouldAdvanceRaid(status: BattleStatus.won, paused: false),
+      isFalse,
+    );
+  });
+
   testWidgets('the gate board offers a gate and a formation screen',
       (tester) async {
     await pumpGame(tester);
