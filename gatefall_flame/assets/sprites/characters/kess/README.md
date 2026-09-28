@@ -12,6 +12,9 @@ Kess production art and animation references selected from the approved Gatefall
 | Twin Ember Blades design sheet | `weapons/kess_twin_ember_blades_design_sheet.jpg` | Multi-view weapon/detail reference |
 | Kess idle source sheet | `animations/idle/kess_idle_sprite_sheet_v1.jpg` | Approved idle animation source |
 | Kess idle runtime frames | `animations/idle/runtime/kess_idle_01.png` … `08.png` | Transparent calm/idle loop |
+| Kess attack runtime contract | `animations/attack/runtime/kess_attack_01.png` … `08.png` | Reserved; awaiting approved frames |
+| Kess hurt runtime contract | `animations/hurt/runtime/kess_hurt_01.png` … `06.png` | Reserved; awaiting approved frames |
+| Kess death runtime contract | `animations/death/runtime/kess_death_01.png` … `08.png` | Reserved; awaiting approved frames |
 | Kess rig v5 | `rig/kess_rig_cutout_v5.jpg` | Current rig/cutout source |
 | Kess rig v4 | `rig/archive/kess_rig_cutout_v4.jpg` | Previous verified rig revision |
 
@@ -47,6 +50,7 @@ Their SHA-256 checksums are recorded in `asset_manifest.json`.
 - Rig v5 is the active rig. v4 is retained only as a development/archive reference.
 - The weapon design sheet is reference art, not a runtime sprite.
 - The approved idle sheet remains the source reference. Eight transparent runtime frames derived from its 4×2 grid are bundled under `animations/idle/runtime/` and loop only for calm Kess portraits; active combat keeps the neutral runtime sprite.
+- Attack, Hurt and Death runtime paths are already wired, but the animation only activates when every expected frame in that set exists. Partial or draft sets therefore fall back to the approved neutral runtime sprite.
 - Rejected run/contact-pose generations remain excluded because they changed Kess identity and/or produced inconsistent mechanics.
 - Do not promote generated animation art merely because it has a newer filename/version; it must first pass visual identity and frame-spacing review.
 - Presentation/hero-card artwork should live under `reference/` and must not replace the canonical full-body master.
