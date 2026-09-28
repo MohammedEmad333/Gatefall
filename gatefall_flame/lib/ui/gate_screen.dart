@@ -162,6 +162,11 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   final Map<String, CharacterAnimationState> _fighterAnimations = {};
   final Map<String, Timer> _fighterAnimationTimers = {};
 
+  /// Last rendered HP per fighter. Enemy attacks are continuous simulation
+  /// damage and do not emit a log event for every tick; comparing snapshots
+  /// lets the presentation play a hurt reaction without spamming BattleEvent.
+  final Map<String, double> _fighterHp = {};
+
   @override
   void initState() {
     super.initState();
@@ -228,6 +233,9 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     }
     _fighterAnimationTimers.clear();
     _fighterAnimations.clear();
+    _fighterHp
+      ..clear()
+      ..addEntries(b.party.map((f) => MapEntry(f.id, f.hp)));
     // The gate-opening sound comes from the button that called this (see
     // its `sound:`), so entering by any other route stays silent rather
     // than doubling up.
@@ -328,6 +336,21 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
           ?.spawn('${_chip.round()}', bone.withValues(alpha: .8));
       _chip = 0;
       _chipAge = 0;
+    }
+
+    // Ally damage is tick-based rather than event-based. Detect a real HP
+    // decrease here and play a short hurt state. Shield-only hits intentionally
+    // do not trigger it because HP did not move.
+    for (final fighter in b.party) {
+      final previous = _fighterHp[fighter.id] ?? fighter.hp;
+      if (fighter.alive && fighter.hp < previous) {
+        _setFighterAnimation(
+          fighter.id,
+          CharacterAnimationState.hurt,
+          hold: const Duration(milliseconds: 330),
+        );
+      }
+      _fighterHp[fighter.id] = fighter.hp;
     }
 
     // Events since the last frame. [Battle.eventsEmitted] counts every one
