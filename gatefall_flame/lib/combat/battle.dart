@@ -692,9 +692,12 @@ class Battle {
           // A critical is an ally action Chainbreak can load off, same as a
           // cast — "the party did something while she waited".
           _noteAllyAction(p.id);
-          _emit('${p.name} strikes for ${dmg.round()} (critical)', 'crit',
-              amount: dmg,
-            actorId: owner.id);
+          _emit(
+            '${p.name} strikes for ${dmg.round()} (critical)',
+            'crit',
+            amount: dmg,
+            actorId: p.id,
+          );
         }
       }
     }
