@@ -12,7 +12,7 @@
       "source_name": "Kess_Master_Transparent_v1.png",
       "target_path": "kess_master.jpg",
       "source_sha256": "697555356c582c0c0be248d3cc2471032c2a1540fd99fc84f788cfdc40b42086",
-      "git_blob_sha": "22e727dadd6c6961b87ccb3a6c94a37d227f0088",
+      "git_blob_sha": "729984a1606dfa1e03a9fa0e2cf9208c00220ddb",
       "actual_encoding": "jpeg",
       "role": "identity_master",
       "runtime_ready": false,
