@@ -1,13 +1,26 @@
 {
   "character": "Kess",
-  "version": 2,
+  "version": 3,
   "policy": {
     "identity_source": "kess_master.jpg",
+    "runtime_sprite": "../kess.png",
     "active_rig": "rig/kess_rig_cutout_v5.jpg",
     "archived_rig": "rig/archive/kess_rig_cutout_v4.jpg",
     "rejected_run_cycles_included": false
   },
   "assets": [
+    {
+      "source_name": "derived from Kess_Master_Transparent_v1.png",
+      "target_path": "../kess.png",
+      "sha256": "d6111cdcab0e5e12408d1ad5ec42ae19a504f8febac2515ea609728f3f8967f5",
+      "git_blob_sha": "370bab54512837131e6d00695a487c0b264d8213",
+      "actual_encoding": "png",
+      "dimensions": "1024x1536",
+      "alpha": true,
+      "role": "runtime_sprite",
+      "runtime_ready": true,
+      "note": "Derived by preserving the canonical master's RGB artwork and adding an alpha mask for the black background; no redraw/restyle."
+    },
     {
       "source_name": "Kess_Master_Transparent_v1.png",
       "target_path": "kess_master.jpg",
