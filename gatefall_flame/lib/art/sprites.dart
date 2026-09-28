@@ -93,13 +93,28 @@ String characterHeroPath(String id) => switch (id) {
       _ => characterSpritePath(id),
     };
 
-List<String> characterIdleFramePaths(String id) => switch (id) {
-      'kess' => List<String>.generate(
+enum CharacterAnimationState { neutral, idle, attack, hurt, death }
+
+List<String> characterAnimationFramePaths(
+  String id,
+  CharacterAnimationState state,
+) =>
+    switch ((id, state)) {
+      ('kess', CharacterAnimationState.idle) => List<String>.generate(
           8,
           (i) =>
               'assets/sprites/characters/kess/animations/idle/runtime/kess_idle_${(i + 1).toString().padLeft(2, '0')}.png',
         ),
       _ => const <String>[],
+    };
+
+Duration characterAnimationFrameDuration(CharacterAnimationState state) =>
+    switch (state) {
+      CharacterAnimationState.idle => const Duration(milliseconds: 190),
+      CharacterAnimationState.attack => const Duration(milliseconds: 95),
+      CharacterAnimationState.hurt => const Duration(milliseconds: 110),
+      CharacterAnimationState.death => const Duration(milliseconds: 130),
+      CharacterAnimationState.neutral => Duration.zero,
     };
 
 String creatureSpritePath(Beastform form) =>
@@ -115,6 +130,7 @@ class CharacterSprite extends StatelessWidget {
   final bool dimmed;
   final bool calm;
   final bool plate;
+  final CharacterAnimationState animation;
 
   /// Optional expression variant, e.g. `happy` → `<id>_happy.png`. Falls back
   /// to the neutral `<id>.png` when the variant is missing, then to painted
@@ -131,6 +147,7 @@ class CharacterSprite extends StatelessWidget {
     this.calm = false,
     this.plate = true,
     this.expression,
+    this.animation = CharacterAnimationState.neutral,
   });
 
   Widget _painted() => CharacterPortrait(id,
@@ -148,17 +165,24 @@ class CharacterSprite extends StatelessWidget {
         : (SpriteBook.instance.has(base) ? base : null);
     if (path == null) return _painted();
 
-    final idleFrames = characterIdleFramePaths(id);
-    final useIdle = calm &&
-        expression == null &&
-        idleFrames.isNotEmpty &&
-        idleFrames.every(SpriteBook.instance.has);
+    final requestedAnimation =
+        animation == CharacterAnimationState.neutral && calm
+            ? CharacterAnimationState.idle
+            : animation;
+    final animationFrames =
+        characterAnimationFramePaths(id, requestedAnimation);
+    final useAnimation = expression == null &&
+        requestedAnimation != CharacterAnimationState.neutral &&
+        animationFrames.isNotEmpty &&
+        animationFrames.every(SpriteBook.instance.has);
 
-    Widget sprite = useIdle
-        ? _CharacterIdleFrames(
-            paths: idleFrames,
+    Widget sprite = useAnimation
+        ? _CharacterAnimationFrames(
+            paths: animationFrames,
             size: size,
             fallback: _painted,
+            frameDuration: characterAnimationFrameDuration(requestedAnimation),
+            loop: requestedAnimation == CharacterAnimationState.idle,
           )
         : Image.asset(
             path,
@@ -208,39 +232,64 @@ class CharacterSprite extends StatelessWidget {
 }
 
 
-class _CharacterIdleFrames extends StatefulWidget {
+class _CharacterAnimationFrames extends StatefulWidget {
   final List<String> paths;
   final double size;
   final Widget Function() fallback;
+  final Duration frameDuration;
+  final bool loop;
 
-  const _CharacterIdleFrames({
+  const _CharacterAnimationFrames({
     required this.paths,
     required this.size,
     required this.fallback,
+    required this.frameDuration,
+    required this.loop,
   });
 
   @override
-  State<_CharacterIdleFrames> createState() => _CharacterIdleFramesState();
+  State<_CharacterAnimationFrames> createState() =>
+      _CharacterAnimationFramesState();
 }
 
-class _CharacterIdleFramesState extends State<_CharacterIdleFrames> {
-  static const _frameDuration = Duration(milliseconds: 190);
+class _CharacterAnimationFramesState extends State<_CharacterAnimationFrames> {
   Timer? _timer;
   int _frame = 0;
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(_frameDuration, (_) {
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    if (widget.paths.length < 2 || widget.frameDuration == Duration.zero) return;
+    _timer = Timer.periodic(widget.frameDuration, (_) {
       if (!mounted || widget.paths.isEmpty) return;
-      setState(() => _frame = (_frame + 1) % widget.paths.length);
+      if (_frame >= widget.paths.length - 1) {
+        if (!widget.loop) {
+          _timer?.cancel();
+          return;
+        }
+        setState(() => _frame = 0);
+        return;
+      }
+      setState(() => _frame++);
     });
   }
 
   @override
-  void didUpdateWidget(covariant _CharacterIdleFrames oldWidget) {
+  void didUpdateWidget(covariant _CharacterAnimationFrames oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_frame >= widget.paths.length) _frame = 0;
+    if (oldWidget.paths != widget.paths ||
+        oldWidget.frameDuration != widget.frameDuration ||
+        oldWidget.loop != widget.loop) {
+      _frame = 0;
+      _startTimer();
+    } else if (_frame >= widget.paths.length) {
+      _frame = 0;
+    }
   }
 
   @override
