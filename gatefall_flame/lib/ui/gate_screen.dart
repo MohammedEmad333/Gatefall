@@ -156,6 +156,12 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   double _chip = 0;
   double _chipAge = 0;
 
+  /// Transient character presentation state. Combat owns the facts; this map
+  /// only decides which approved frame sequence should represent the latest
+  /// event for each fighter.
+  final Map<String, CharacterAnimationState> _fighterAnimations = {};
+  final Map<String, Timer> _fighterAnimationTimers = {};
+
   @override
   void initState() {
     super.initState();
@@ -196,6 +202,10 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _timer?.cancel();
+    for (final timer in _fighterAnimationTimers.values) {
+      timer.cancel();
+    }
+    _fighterAnimationTimers.clear();
     super.dispose();
   }
 
@@ -213,6 +223,11 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     _hurt = 0;
     _chip = 0;
     _chipAge = 0;
+    for (final timer in _fighterAnimationTimers.values) {
+      timer.cancel();
+    }
+    _fighterAnimationTimers.clear();
+    _fighterAnimations.clear();
     // The gate-opening sound comes from the button that called this (see
     // its `sound:`), so entering by any other route stays silent rather
     // than doubling up.
@@ -326,9 +341,37 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     }
   }
 
+  void _setFighterAnimation(
+    String id,
+    CharacterAnimationState state, {
+    Duration hold = const Duration(milliseconds: 520),
+  }) {
+    _fighterAnimationTimers.remove(id)?.cancel();
+    _fighterAnimations[id] = state;
+    if (state == CharacterAnimationState.death) return;
+
+    _fighterAnimationTimers[id] = Timer(hold, () {
+      if (!mounted) return;
+      _fighterAnimationTimers.remove(id);
+      setState(() => _fighterAnimations.remove(id));
+    });
+  }
+
   void _onEvent(BattleEvent e, Battle b) {
     final numbers = _numbers.currentState;
     final shake = _shake.currentState;
+
+    final actorId = e.actorId;
+    if (actorId != null &&
+        (e.kind == 'damage' || e.kind == 'crit' || e.kind == 'ultimate')) {
+      _setFighterAnimation(actorId, CharacterAnimationState.attack);
+    }
+    if (e.kind == 'down' && e.targetId case final targetId?) {
+      _setFighterAnimation(targetId, CharacterAnimationState.death);
+    } else if (e.kind == 'revive' && e.targetId case final targetId?) {
+      _fighterAnimationTimers.remove(targetId)?.cancel();
+      _fighterAnimations.remove(targetId);
+    }
     switch (e.kind) {
       case 'ultimate':
         Audio.instance.play(Sfx.ultimate);
@@ -1106,6 +1149,9 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
 
   Widget _fighterRow(Fighter f) {
     final frac = f.hpFraction;
+    final animation = !f.alive
+        ? CharacterAnimationState.death
+        : (_fighterAnimations[f.id] ?? CharacterAnimationState.neutral);
     final color = frac < .25
         ? blood
         : frac < .55
@@ -1146,6 +1192,7 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
               glow: f.isTaunting || f.isRallied ? 1 : .45,
               dimmed: !f.alive,
               calm: true,
+              animation: animation,
             ),
             const SizedBox(width: 9),
             Expanded(
