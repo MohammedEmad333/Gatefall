@@ -63,4 +63,7 @@ flutter:
     # the right name. Directories are declared so that drop-in needs no
     # pubspec edit.
     - assets/sprites/characters/
+    # Canonical Kess profile art lives in a nested source folder. Flutter
+    # directory asset entries are not recursive, so include this level too.
+    - assets/sprites/characters/kess/
     - assets/sprites/enemies/

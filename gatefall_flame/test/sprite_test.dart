@@ -24,6 +24,10 @@ void main() {
         'assets/sprites/characters/faelen_happy.png');
     expect(characterSpritePath('faelen', expression: ''),
         'assets/sprites/characters/faelen.png');
+    expect(characterHeroPath('faelen'),
+        'assets/sprites/characters/faelen.png');
+    expect(characterHeroPath('kess'),
+        'assets/sprites/characters/kess/kess_master.jpg');
     expect(creatureSpritePath(Beastform.guardian),
         'assets/sprites/enemies/guardian.png');
   });
@@ -90,6 +94,26 @@ void main() {
     expect(find.byType(Image), findsOneWidget);
     final image = t.widget<Image>(find.byType(Image));
     expect((image.image as AssetImage).assetName, characterSpritePath('faelen'));
+
+    SpriteBook.instance.setAvailableForTest({characterHeroPath('kess')});
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: SizedBox(
+        width: 320,
+        child: CharacterHero('kess', height: 260),
+      ),
+    ));
+    expect(find.byType(Image), findsOneWidget);
+    final kessImage = t.widget<Image>(find.byType(Image));
+    expect((kessImage.image as AssetImage).assetName, characterHeroPath('kess'));
+
+    // Hero art does not implicitly become a combat sprite: Kess keeps the
+    // painted combat portrait until a transparent runtime sprite is approved.
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite('kess', size: 40),
+    ));
+    expect(find.byType(CharacterPortrait), findsOneWidget);
 
     SpriteBook.instance.setAvailableForTest(const {});
     await t.pumpWidget(const Directionality(

@@ -83,6 +83,14 @@ String characterSpritePath(String id, {String? expression}) =>
         ? 'assets/sprites/characters/$id.png'
         : 'assets/sprites/characters/${id}_$expression.png';
 
+/// Full-body profile art can live separately from combat sprites. Kess is the
+/// first character to use the canonical nested source set; everyone else keeps
+/// the original drop-in convention until their final hero art arrives.
+String characterHeroPath(String id) => switch (id) {
+      'kess' => 'assets/sprites/characters/kess/kess_master.jpg',
+      _ => characterSpritePath(id),
+    };
+
 String creatureSpritePath(Beastform form) =>
     'assets/sprites/enemies/${form.name}.png';
 
@@ -179,10 +187,11 @@ class CharacterSprite extends StatelessWidget {
 
 /// A taller, profile-oriented presentation of a character.
 ///
-/// Uses the same drop-in sprite convention as [CharacterSprite], but gives
-/// full-body art room to breathe instead of forcing it into a square combat
-/// plate. Missing or broken PNGs still fall back to the painted portrait, so
-/// this is safe to use for the entire cast while art arrives incrementally.
+/// Uses a profile-specific source when one is registered by [characterHeroPath],
+/// otherwise the same drop-in convention as [CharacterSprite]. This lets a
+/// character ship approved full-body profile art before a transparent combat
+/// sprite exists. Missing or broken art still falls back to the painted
+/// portrait, so the cast can migrate incrementally.
 class CharacterHero extends StatelessWidget {
   final String id;
   final double height;
@@ -210,7 +219,7 @@ class CharacterHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final path = characterSpritePath(id);
+    final path = characterHeroPath(id);
     final hasSprite = SpriteBook.instance.has(path);
 
     Widget figure = hasSprite
