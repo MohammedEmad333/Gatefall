@@ -165,7 +165,19 @@ class BattleEvent {
   final String kind;
   final double amount;
 
-  BattleEvent(this.message, this.kind, {this.amount = 0});
+  /// Optional structured presentation metadata. Keeping actor/target ids on
+  /// the event means UI animation code never has to parse human-readable log
+  /// strings to discover who acted or who fell.
+  final String? actorId;
+  final String? targetId;
+
+  BattleEvent(
+    this.message,
+    this.kind, {
+    this.amount = 0,
+    this.actorId,
+    this.targetId,
+  });
 }
 
 class Battle {
@@ -374,8 +386,20 @@ class Battle {
     }
   }
 
-  void _emit(String msg, String kind, {double amount = 0}) {
-    events.add(BattleEvent(msg, kind, amount: amount));
+  void _emit(
+    String msg,
+    String kind, {
+    double amount = 0,
+    String? actorId,
+    String? targetId,
+  }) {
+    events.add(BattleEvent(
+      msg,
+      kind,
+      amount: amount,
+      actorId: actorId,
+      targetId: targetId,
+    ));
     eventsEmitted++;
     if (events.length > 40) events.removeAt(0);
   }
@@ -422,6 +446,7 @@ class Battle {
               ? 'ultimate'
               : (crit ? 'crit' : 'damage'),
           amount: dmg,
+          actorId: owner.id,
         );
         break;
 
@@ -442,7 +467,8 @@ class Battle {
             '${owner.name}: "Get behind me." '
                 '(+${a.power.round()} shield, drawing fire)',
             'ultimate',
-            amount: a.power);
+            amount: a.power,
+            actorId: owner.id);
         break;
 
       case AbilityKind.heal:
@@ -462,7 +488,8 @@ class Battle {
         }
         _emit('${owner.name} mends the party (${healed.round()} healed)',
             'heal',
-            amount: healed);
+            amount: healed,
+            actorId: owner.id);
         break;
 
       // ---- ascended kits (version 2, see data/ascension.dart) ----
@@ -483,7 +510,7 @@ class Battle {
             '(party +${a.power.round()} shield, '
             '+${(rallyAttackBonus * 100).round()}% attack for '
             '${a.duration.round()}s)',
-            'ultimate');
+            'ultimate', actorId: owner.id);
         break;
 
       // Kess's cure: the hit is loaded by everything the party did while she
@@ -504,7 +531,8 @@ class Battle {
             '${stacks == 1 ? "" : "s"}: ${dmg.round()}'
             '${crit ? " (critical)" : ""}',
             'ultimate',
-            amount: dmg);
+            amount: dmg,
+            actorId: owner.id);
         break;
 
       // Momo's cure: the sense that dragged danger to the party now reads it
@@ -521,7 +549,8 @@ class Battle {
             '${(foresightReduction * 100).round()}% less for '
             '${a.duration.round()}s (${dmg.round()} damage)',
             'ultimate',
-            amount: dmg);
+            amount: dmg,
+            actorId: owner.id);
         break;
 
       // Thora's cure: everything the party put back into her is returned
@@ -543,7 +572,8 @@ class Battle {
             '${owner.name} gives it back — ${dmg.round()} damage off '
             '${held.round()} taken care of, ${healed.round()} healed',
             'ultimate',
-            amount: dmg);
+            amount: dmg,
+            actorId: owner.id);
         break;
 
       // Dana's cure: she was never supposed to be in the fight, so what she
@@ -560,7 +590,8 @@ class Battle {
             _emit(
                 '${owner.name} files an emergency order: ${dmg.round()} damage',
                 'ultimate',
-                amount: dmg);
+                amount: dmg,
+            actorId: owner.id);
             break;
           case 1:
             var healed = 0.0;
@@ -572,7 +603,8 @@ class Battle {
                 '${owner.name} calls in a favour — ${healed.round()} healed '
                 'across the party',
                 'heal',
-                amount: healed);
+                amount: healed,
+            actorId: owner.id);
             break;
           default:
             for (final p in party) {
@@ -585,7 +617,8 @@ class Battle {
                 '${owner.name} reads the regulations aloud — party shielded '
                 'and steadied for ${a.duration.round()}s',
                 'ultimate',
-                amount: a.power * 0.9);
+                amount: a.power * 0.9,
+                actorId: owner.id);
             break;
         }
         break;
@@ -660,7 +693,8 @@ class Battle {
           // cast — "the party did something while she waited".
           _noteAllyAction(p.id);
           _emit('${p.name} strikes for ${dmg.round()} (critical)', 'crit',
-              amount: dmg);
+              amount: dmg,
+            actorId: owner.id);
         }
       }
     }
@@ -683,7 +717,7 @@ class Battle {
         target.taunt = 0;
         target.attackBuffRemaining = 0;
         target.attackBuff = 1.0;
-        _emit('${target.name} goes down', 'down');
+        _emit('${target.name} goes down', 'down', targetId: target.id);
       }
     }
 
@@ -715,7 +749,7 @@ class Battle {
         } else {
           p.alive = true;
           p.hp = p.maxHp * CombatConfig.reviveAtWave;
-          _emit('${p.name} gets back up', 'revive');
+          _emit('${p.name} gets back up', 'revive', targetId: p.id);
         }
       }
 
