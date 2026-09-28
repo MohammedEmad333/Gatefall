@@ -28,6 +28,12 @@ void main() {
         'assets/sprites/characters/faelen.png');
     expect(characterHeroPath('kess'),
         'assets/sprites/characters/kess/kess_master.jpg');
+    expect(characterIdleFramePaths('kess').length, 8);
+    expect(characterIdleFramePaths('kess').first,
+        'assets/sprites/characters/kess/animations/idle/runtime/kess_idle_01.png');
+    expect(characterIdleFramePaths('kess').last,
+        'assets/sprites/characters/kess/animations/idle/runtime/kess_idle_08.png');
+    expect(characterIdleFramePaths('faelen'), isEmpty);
     expect(creatureSpritePath(Beastform.guardian),
         'assets/sprites/enemies/guardian.png');
   });
@@ -107,8 +113,8 @@ void main() {
     final kessImage = t.widget<Image>(find.byType(Image));
     expect((kessImage.image as AssetImage).assetName, characterHeroPath('kess'));
 
-    // Hero art does not implicitly become a combat sprite: Kess keeps the
-    // painted combat portrait until a transparent runtime sprite is approved.
+    // Hero art alone does not imply the runtime sprite is available; the
+    // fallback remains safe when a test bundle only exposes the hero source.
     await t.pumpWidget(const Directionality(
       textDirection: TextDirection.ltr,
       child: CharacterSprite('kess', size: 40),
@@ -124,6 +130,32 @@ void main() {
       ),
     ));
     expect(find.byType(CharacterPortrait), findsOneWidget);
+  });
+
+  testWidgets('Kess calm portrait loops approved idle frames', (t) async {
+    final frames = characterIdleFramePaths('kess');
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('kess'),
+      ...frames,
+    });
+
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite('kess', size: 80, calm: true),
+    ));
+
+    Image imageOf() => t.widget<Image>(find.byType(Image));
+    expect((imageOf().image as AssetImage).assetName, frames[0]);
+
+    await t.pump(const Duration(milliseconds: 200));
+    expect((imageOf().image as AssetImage).assetName, frames[1]);
+
+    // Active/combat presentation stays on the neutral runtime sprite.
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite('kess', size: 80),
+    ));
+    expect((imageOf().image as AssetImage).assetName, characterSpritePath('kess'));
   });
 
   testWidgets('expression variant is used when present, else neutral base',
