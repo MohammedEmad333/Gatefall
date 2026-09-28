@@ -521,7 +521,7 @@ class AscensionReveal extends StatelessWidget {
             CharacterSprite(characterId, size: 84, glow: 1, calm: true),
             const SizedBox(height: 10),
             Text(
-              '\$name — \${ascension.title}',
+              '$name — ${ascension.title}',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 color: bone,
