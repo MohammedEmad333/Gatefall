@@ -716,7 +716,7 @@ class GameController extends ChangeNotifier {
     for (final id in newly) {
       final a = Ascension.byId(id);
       final name = Roster.byId(id).name;
-      lines.add('$name — ${a.title}. ${a.cure}');
+      lines.add('$name has ascended.');
       final wasDeployable = House.exists(id) && House.byId(id).deployable;
       if (!wasDeployable &&
           !formation.containsKey(id) &&
