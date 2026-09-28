@@ -1,0 +1,67 @@
+{
+  "character": "Kess",
+  "version": 2,
+  "policy": {
+    "identity_source": "kess_master.jpg",
+    "active_rig": "rig/kess_rig_cutout_v5.jpg",
+    "archived_rig": "rig/archive/kess_rig_cutout_v4.jpg",
+    "rejected_run_cycles_included": false
+  },
+  "assets": [
+    {
+      "source_name": "Kess_Master_Transparent_v1.png",
+      "target_path": "kess_master.jpg",
+      "source_sha256": "697555356c582c0c0be248d3cc2471032c2a1540fd99fc84f788cfdc40b42086",
+      "git_blob_sha": "22e727dadd6c6961b87ccb3a6c94a37d227f0088",
+      "actual_encoding": "jpeg",
+      "role": "identity_master",
+      "runtime_ready": false,
+      "note": "Source filename says PNG/Transparent, but supplied bytes are flattened JPEG/RGB with no alpha channel."
+    },
+    {
+      "source_name": "file_00000000ba6482108a5206cf6efb40da.png",
+      "target_path": "weapons/kess_twin_ember_blades.jpg",
+      "source_sha256": "52c451b3fbde39345739c3d72c122bf402322f963ef9c24d5e72056fc8fbd6f7",
+      "git_blob_sha": "ff501afadf323424b352cdd5b5cbbc542682ffc8",
+      "actual_encoding": "jpeg",
+      "role": "weapon_reference",
+      "runtime_ready": false
+    },
+    {
+      "source_name": "file_00000000a5948210b0dee833fdb8d7de.png",
+      "target_path": "weapons/kess_twin_ember_blades_design_sheet.jpg",
+      "source_sha256": "6a5e3d9dbf06a725bbee620e0d4c108dca3a2c47f1f3ce802207e89843f77203",
+      "git_blob_sha": "c6142796559ff687bb434bb8d101907aabddbc37",
+      "actual_encoding": "jpeg",
+      "role": "weapon_design_reference",
+      "runtime_ready": false
+    },
+    {
+      "source_name": "kess_idle_sprite_sheet_final.png",
+      "target_path": "animations/idle/kess_idle_sprite_sheet_v1.jpg",
+      "source_sha256": "e639bc523cfc1c327af6cbbc36b62030c4cd14e80d8afb7663ddabb257ee57ff",
+      "git_blob_sha": "eed7084aa51ad3c978415f4343e1b2c2476509f3",
+      "actual_encoding": "jpeg",
+      "role": "idle_animation_source",
+      "runtime_ready": false
+    },
+    {
+      "source_name": "Kess_Rig_Cutout_Sheet_v5.png",
+      "target_path": "rig/kess_rig_cutout_v5.jpg",
+      "source_sha256": "c0412c4c74b272fb7b13bad54dcf958d4286508358e9c7b58e20d65e4bdc706b",
+      "git_blob_sha": "8462f1bdc8af1583b277cfa52b8641445cd3d0ec",
+      "actual_encoding": "jpeg",
+      "role": "active_rig_reference",
+      "runtime_ready": false
+    },
+    {
+      "source_name": "Kess_Rig_Cutout_Sheet_v4.png",
+      "target_path": "rig/archive/kess_rig_cutout_v4.jpg",
+      "source_sha256": "c540e97eb651cea1183df09d4c9034b15ec7b49462363cbda85b7cb873551851",
+      "git_blob_sha": "2f49439e97a1a82d3787516a74fb4c4a732976b3",
+      "actual_encoding": "jpeg",
+      "role": "archived_rig_reference",
+      "runtime_ready": false
+    }
+  ]
+}
