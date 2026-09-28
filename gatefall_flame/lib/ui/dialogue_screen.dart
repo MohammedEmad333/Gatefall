@@ -8,6 +8,7 @@ import 'package:gatefall_dialogue_engine/models/scene.dart';
 import '../art/effects.dart';
 import '../art/sprites.dart';
 import '../audio/sfx.dart';
+import '../data/ascension.dart';
 import '../data/companion_routes.dart';
 import '../data/house.dart';
 import '../state/game_controller.dart';
@@ -202,26 +203,19 @@ class _DialogueScreenState extends State<DialogueScreen> {
     if (mounted) Navigator.of(context).pop();
   }
 
-  Future<void> _tellAscension(String body) => showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (_) => AlertDialog(
-          backgroundColor: night2,
-          shape: const RoundedRectangleBorder(
-              side: BorderSide(color: rose)),
-          title: const Text('Ascended',
-              style: TextStyle(color: rose, fontSize: 16)),
-          content: Text(body,
-              style: const TextStyle(
-                  color: bone, fontSize: 13.5, height: 1.6)),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Good', style: TextStyle(color: rose)),
-            ),
-          ],
-        ),
-      );
+  Future<void> _tellAscension(String note) {
+    final ascension = Ascension.byId(widget.characterId);
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AscensionReveal(
+        characterId: widget.characterId,
+        ascension: ascension,
+        note: note,
+        onContinue: () => Navigator.of(dialogContext).pop(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -475,4 +469,150 @@ class _Line {
     this.isChoice = false,
     this.emotion,
   });
+}
+
+
+/// The route-completion payoff shown immediately after Beat 6.
+///
+/// Kept as a standalone widget so the reward moment can be regression-tested
+/// without replaying an entire dialogue scene. It deliberately presents both
+/// halves of Ascension: the active ability the route unlocks and the passive
+/// change that reshapes the base kit.
+class AscensionReveal extends StatelessWidget {
+  final String characterId;
+  final Ascension ascension;
+  final String note;
+  final VoidCallback onContinue;
+
+  const AscensionReveal({
+    super.key,
+    required this.characterId,
+    required this.ascension,
+    required this.note,
+    required this.onContinue,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final name = House.byId(characterId).name;
+    final ability = Ascension.abilities[characterId];
+    return AlertDialog(
+      backgroundColor: night2,
+      shape: const RoundedRectangleBorder(
+        side: BorderSide(color: rose, width: 1.4),
+      ),
+      titlePadding: const EdgeInsets.fromLTRB(20, 18, 20, 0),
+      contentPadding: const EdgeInsets.fromLTRB(20, 14, 20, 6),
+      actionsPadding: const EdgeInsets.fromLTRB(14, 4, 14, 12),
+      title: const Text(
+        'ASCENSION',
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: rose,
+          fontSize: 11,
+          letterSpacing: 2.2,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CharacterSprite(characterId, size: 84, glow: 1, calm: true),
+            const SizedBox(height: 10),
+            Text(
+              '$name — ${ascension.title}',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: bone,
+                fontSize: 21,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              'ROUTE COMPLETE',
+              style: TextStyle(
+                color: rose,
+                fontSize: 10,
+                letterSpacing: 1.5,
+              ),
+            ),
+            const SizedBox(height: 18),
+            _AscensionUnlockBlock(
+              label: 'NEW ABILITY',
+              title: ability?.name ?? ascension.title,
+              body: ascension.cure,
+            ),
+            const SizedBox(height: 10),
+            _AscensionUnlockBlock(
+              label: 'PASSIVE',
+              title: 'Base kit changed',
+              body: ascension.passive,
+            ),
+            if (note.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                note,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: gold,
+                  fontSize: 11.5,
+                  height: 1.45,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: onContinue,
+          child: const Text(
+            'Take it to the gates',
+            style: TextStyle(color: rose),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AscensionUnlockBlock extends StatelessWidget {
+  final String label;
+  final String title;
+  final String body;
+
+  const _AscensionUnlockBlock({
+    required this.label,
+    required this.title,
+    required this.body,
+  });
+
+  @override
+  Widget build(BuildContext context) => Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: rose.withValues(alpha: .055),
+          border: Border.all(color: rose.withValues(alpha: .30)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(label,
+                style: const TextStyle(
+                    color: rose, fontSize: 9.5, letterSpacing: 1.3)),
+            const SizedBox(height: 4),
+            Text(title,
+                style: const TextStyle(
+                    color: bone, fontSize: 13.5, fontWeight: FontWeight.w600)),
+            const SizedBox(height: 4),
+            Text(body,
+                style: const TextStyle(
+                    color: boneDim, fontSize: 11.5, height: 1.45)),
+          ],
+        ),
+      );
 }
