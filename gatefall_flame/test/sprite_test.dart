@@ -46,12 +46,52 @@ void main() {
         const Duration(milliseconds: 110));
     expect(characterAnimationFrameDuration(CharacterAnimationState.death),
         const Duration(milliseconds: 130));
-    expect(characterAnimationFramePaths('kess', CharacterAnimationState.attack),
-        isEmpty);
-    expect(characterAnimationFramePaths('kess', CharacterAnimationState.hurt),
-        isEmpty);
-    expect(characterAnimationFramePaths('kess', CharacterAnimationState.death),
-        isEmpty);
+    final attack =
+        characterAnimationFramePaths('kess', CharacterAnimationState.attack);
+    final hurt =
+        characterAnimationFramePaths('kess', CharacterAnimationState.hurt);
+    final death =
+        characterAnimationFramePaths('kess', CharacterAnimationState.death);
+
+    expect(attack, hasLength(8));
+    expect(attack.first,
+        'assets/sprites/characters/kess/animations/attack/runtime/kess_attack_01.png');
+    expect(attack.last,
+        'assets/sprites/characters/kess/animations/attack/runtime/kess_attack_08.png');
+
+    expect(hurt, hasLength(6));
+    expect(hurt.first,
+        'assets/sprites/characters/kess/animations/hurt/runtime/kess_hurt_01.png');
+    expect(hurt.last,
+        'assets/sprites/characters/kess/animations/hurt/runtime/kess_hurt_06.png');
+
+    expect(death, hasLength(8));
+    expect(death.first,
+        'assets/sprites/characters/kess/animations/death/runtime/kess_death_01.png');
+    expect(death.last,
+        'assets/sprites/characters/kess/animations/death/runtime/kess_death_08.png');
+  });
+
+  testWidgets('combat animation waits for a complete approved frame set',
+      (t) async {
+    final attack =
+        characterAnimationFramePaths('kess', CharacterAnimationState.attack);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('kess'),
+      ...attack.take(7),
+    });
+
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite(
+        'kess',
+        size: 80,
+        animation: CharacterAnimationState.attack,
+      ),
+    ));
+
+    final image = t.widget<Image>(find.byType(Image));
+    expect((image.image as AssetImage).assetName, characterSpritePath('kess'));
   });
 
   testWidgets('with no sprite present, falls back to painted art', (t) async {
