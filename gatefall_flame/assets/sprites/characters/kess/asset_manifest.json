@@ -1,12 +1,13 @@
 {
   "character": "Kess",
-  "version": 3,
+  "version": 4,
   "policy": {
     "identity_source": "kess_master.jpg",
     "runtime_sprite": "../kess.png",
     "active_rig": "rig/kess_rig_cutout_v5.jpg",
     "archived_rig": "rig/archive/kess_rig_cutout_v4.jpg",
-    "rejected_run_cycles_included": false
+    "rejected_run_cycles_included": false,
+    "runtime_idle": "animations/idle/runtime/kess_idle_01.png..kess_idle_08.png"
   },
   "assets": [
     {
@@ -20,6 +21,38 @@
       "role": "runtime_sprite",
       "runtime_ready": true,
       "note": "Derived by preserving the canonical master's RGB artwork and adding an alpha mask for the black background; no redraw/restyle."
+    },
+    {
+      "source_name": "derived from kess_idle_sprite_sheet_final.png",
+      "target_path": "animations/idle/runtime/",
+      "source_grid": "4x2",
+      "frame_dimensions": "384x480",
+      "frames": 8,
+      "frame_duration_ms": 190,
+      "alpha": true,
+      "role": "idle_runtime_animation",
+      "runtime_ready": true,
+      "note": "Derived from the approved flattened idle source by splitting its 4x2 grid and removing the near-black background; used only for calm Kess portraits.",
+      "frame_sha256": [
+        "c373e1b594ec8dfece7fccc91a5cf64ad2f892242fee3938341cdac1aaf95e58",
+        "80d320103bc45a8024bc185e767cfe3f75ed50df99a982f125d023c4d33653e0",
+        "c5f3536657258e2978670340412339cfd81f6ba946a4afc685c1898d749c74da",
+        "43b5fc550fd826df9a2f0daa5af5b0f562d6261ba0d1856620d4f924e2bbc9f2",
+        "8de38f0176a827a8bf41e1fedaa2d0fe72c774812b02eaf6072390d738ece765",
+        "b8c4bb78bbf497825f7d267ed02b392eec01deca883ac101c64c78813b2a88b8",
+        "402749553b3f892953edf018b83e75b03d20d50f56a46ce99b5586474af4a152",
+        "29847874103124fd5eaf3c52e0e616ceafddde8e5fcc20021d3d5300ff8242dc"
+      ],
+      "git_blob_sha": [
+        "01cfedcb45eebd5e7c85e209d2bf8b53eba2cf06",
+        "36171276b3eca5de7c770449495f1ed02f011538",
+        "9750ce78262c4d09a3eae96d1e93483c52e4c274",
+        "14350f7dfc36a4058fd088f7e040a91a5d38245e",
+        "94127805294080decb85b3d062cead594a630c0d",
+        "38c8290573979334b0401a8a30db78993f2511f7",
+        "b9d8e35cabed13d3c52cdc9295fe512647675a8d",
+        "dce4e6603331ffa1a321d0211a9fe6abd7f31405"
+      ]
     },
     {
       "source_name": "Kess_Master_Transparent_v1.png",
