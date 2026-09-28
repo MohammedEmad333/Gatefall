@@ -853,5 +853,18 @@ void main() {
           reason: 'the wildcard slot must be a real party member, not a '
               'downgrade the player is punished for using');
     });
+
+    test('battle events identify the fighter who acted', () {
+      final b = Battle.fromFormation(full, rng: Random(17));
+      b.start();
+      b.autoCast = false;
+
+      expect(b.castAbility('dash'), isTrue);
+      final event = b.events.last;
+
+      expect(event.actorId, 'kess');
+      expect(event.targetId, isNull);
+      expect(event.kind, anyOf('damage', 'crit'));
+    });
   });
 }
