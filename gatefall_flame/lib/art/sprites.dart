@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 
@@ -91,6 +93,15 @@ String characterHeroPath(String id) => switch (id) {
       _ => characterSpritePath(id),
     };
 
+List<String> characterIdleFramePaths(String id) => switch (id) {
+      'kess' => List<String>.generate(
+          8,
+          (i) =>
+              'assets/sprites/characters/kess/animations/idle/runtime/kess_idle_${(i + 1).toString().padLeft(2, '0')}.png',
+        ),
+      _ => const <String>[],
+    };
+
 String creatureSpritePath(Beastform form) =>
     'assets/sprites/enemies/${form.name}.png';
 
@@ -137,15 +148,27 @@ class CharacterSprite extends StatelessWidget {
         : (SpriteBook.instance.has(base) ? base : null);
     if (path == null) return _painted();
 
-    Widget sprite = Image.asset(
-      path,
-      width: size,
-      height: size,
-      fit: BoxFit.contain,
-      filterQuality: FilterQuality.medium,
-      // A declared-but-broken asset must never crash the fight; fall back.
-      errorBuilder: (_, __, ___) => _painted(),
-    );
+    final idleFrames = characterIdleFramePaths(id);
+    final useIdle = calm &&
+        expression == null &&
+        idleFrames.isNotEmpty &&
+        idleFrames.every(SpriteBook.instance.has);
+
+    Widget sprite = useIdle
+        ? _CharacterIdleFrames(
+            paths: idleFrames,
+            size: size,
+            fallback: _painted,
+          )
+        : Image.asset(
+            path,
+            width: size,
+            height: size,
+            fit: BoxFit.contain,
+            filterQuality: FilterQuality.medium,
+            // A declared-but-broken asset must never crash the fight; fall back.
+            errorBuilder: (_, __, ___) => _painted(),
+          );
     if (dimmed) {
       // Down/benched: drain the colour, matching the painted portrait's dim.
       sprite = ColorFiltered(
@@ -182,6 +205,61 @@ class CharacterSprite extends StatelessWidget {
       child: sprite,
     );
   }
+}
+
+
+class _CharacterIdleFrames extends StatefulWidget {
+  final List<String> paths;
+  final double size;
+  final Widget Function() fallback;
+
+  const _CharacterIdleFrames({
+    required this.paths,
+    required this.size,
+    required this.fallback,
+  });
+
+  @override
+  State<_CharacterIdleFrames> createState() => _CharacterIdleFramesState();
+}
+
+class _CharacterIdleFramesState extends State<_CharacterIdleFrames> {
+  static const _frameDuration = Duration(milliseconds: 190);
+  Timer? _timer;
+  int _frame = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(_frameDuration, (_) {
+      if (!mounted || widget.paths.isEmpty) return;
+      setState(() => _frame = (_frame + 1) % widget.paths.length);
+    });
+  }
+
+  @override
+  void didUpdateWidget(covariant _CharacterIdleFrames oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_frame >= widget.paths.length) _frame = 0;
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Image.asset(
+        widget.paths[_frame],
+        key: ValueKey(widget.paths[_frame]),
+        width: widget.size,
+        height: widget.size,
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.medium,
+        gaplessPlayback: true,
+        errorBuilder: (_, __, ___) => widget.fallback(),
+      );
 }
 
 
