@@ -105,6 +105,21 @@ List<String> characterAnimationFramePaths(
           (i) =>
               'assets/sprites/characters/kess/animations/idle/runtime/kess_idle_${(i + 1).toString().padLeft(2, '0')}.png',
         ),
+      ('kess', CharacterAnimationState.attack) => List<String>.generate(
+          8,
+          (i) =>
+              'assets/sprites/characters/kess/animations/attack/runtime/kess_attack_${(i + 1).toString().padLeft(2, '0')}.png',
+        ),
+      ('kess', CharacterAnimationState.hurt) => List<String>.generate(
+          6,
+          (i) =>
+              'assets/sprites/characters/kess/animations/hurt/runtime/kess_hurt_${(i + 1).toString().padLeft(2, '0')}.png',
+        ),
+      ('kess', CharacterAnimationState.death) => List<String>.generate(
+          8,
+          (i) =>
+              'assets/sprites/characters/kess/animations/death/runtime/kess_death_${(i + 1).toString().padLeft(2, '0')}.png',
+        ),
       _ => const <String>[],
     };
 

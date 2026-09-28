@@ -67,4 +67,7 @@ flutter:
     # directory asset entries are not recursive, so include this level too.
     - assets/sprites/characters/kess/
     - assets/sprites/characters/kess/animations/idle/runtime/
+    - assets/sprites/characters/kess/animations/attack/runtime/
+    - assets/sprites/characters/kess/animations/hurt/runtime/
+    - assets/sprites/characters/kess/animations/death/runtime/
     - assets/sprites/enemies/
