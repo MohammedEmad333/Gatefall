@@ -366,11 +366,17 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
         (e.kind == 'damage' || e.kind == 'crit' || e.kind == 'ultimate')) {
       _setFighterAnimation(actorId, CharacterAnimationState.attack);
     }
-    if (e.kind == 'down' && e.targetId case final targetId?) {
-      _setFighterAnimation(targetId, CharacterAnimationState.death);
-    } else if (e.kind == 'revive' && e.targetId case final targetId?) {
-      _fighterAnimationTimers.remove(targetId)?.cancel();
-      _fighterAnimations.remove(targetId);
+    if (e.kind == 'down') {
+      final targetId = e.targetId;
+      if (targetId != null) {
+        _setFighterAnimation(targetId, CharacterAnimationState.death);
+      }
+    } else if (e.kind == 'revive') {
+      final targetId = e.targetId;
+      if (targetId != null) {
+        _fighterAnimationTimers.remove(targetId)?.cancel();
+        _fighterAnimations.remove(targetId);
+      }
     }
     switch (e.kind) {
       case 'ultimate':
