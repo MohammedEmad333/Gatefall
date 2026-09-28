@@ -28,14 +28,30 @@ void main() {
         'assets/sprites/characters/faelen.png');
     expect(characterHeroPath('kess'),
         'assets/sprites/characters/kess/kess_master.jpg');
-    expect(characterIdleFramePaths('kess').length, 8);
-    expect(characterIdleFramePaths('kess').first,
+    expect(characterAnimationFramePaths('kess', CharacterAnimationState.idle).length, 8);
+    expect(characterAnimationFramePaths('kess', CharacterAnimationState.idle).first,
         'assets/sprites/characters/kess/animations/idle/runtime/kess_idle_01.png');
-    expect(characterIdleFramePaths('kess').last,
+    expect(characterAnimationFramePaths('kess', CharacterAnimationState.idle).last,
         'assets/sprites/characters/kess/animations/idle/runtime/kess_idle_08.png');
-    expect(characterIdleFramePaths('faelen'), isEmpty);
+    expect(characterAnimationFramePaths('faelen', CharacterAnimationState.idle), isEmpty);
     expect(creatureSpritePath(Beastform.guardian),
         'assets/sprites/enemies/guardian.png');
+  });
+
+
+  test('combat animation states are ready to accept approved frame sets', () {
+    expect(characterAnimationFrameDuration(CharacterAnimationState.attack),
+        const Duration(milliseconds: 95));
+    expect(characterAnimationFrameDuration(CharacterAnimationState.hurt),
+        const Duration(milliseconds: 110));
+    expect(characterAnimationFrameDuration(CharacterAnimationState.death),
+        const Duration(milliseconds: 130));
+    expect(characterAnimationFramePaths('kess', CharacterAnimationState.attack),
+        isEmpty);
+    expect(characterAnimationFramePaths('kess', CharacterAnimationState.hurt),
+        isEmpty);
+    expect(characterAnimationFramePaths('kess', CharacterAnimationState.death),
+        isEmpty);
   });
 
   testWidgets('with no sprite present, falls back to painted art', (t) async {
@@ -133,7 +149,7 @@ void main() {
   });
 
   testWidgets('Kess calm portrait loops approved idle frames', (t) async {
-    final frames = characterIdleFramePaths('kess');
+    final frames = characterAnimationFramePaths('kess', CharacterAnimationState.idle);
     SpriteBook.instance.setAvailableForTest({
       characterSpritePath('kess'),
       ...frames,
