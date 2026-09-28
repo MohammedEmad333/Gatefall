@@ -66,4 +66,5 @@ flutter:
     # Canonical Kess profile art lives in a nested source folder. Flutter
     # directory asset entries are not recursive, so include this level too.
     - assets/sprites/characters/kess/
+    - assets/sprites/characters/kess/animations/idle/runtime/
     - assets/sprites/enemies/
