@@ -160,6 +160,7 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   /// only decides which approved frame sequence should represent the latest
   /// event for each fighter.
   final Map<String, CharacterAnimationState> _fighterAnimations = {};
+  final Map<String, int> _fighterAnimationRevisions = {};
   final Map<String, Timer> _fighterAnimationTimers = {};
 
   /// Last rendered HP per fighter. Enemy attacks are continuous simulation
@@ -370,6 +371,8 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   }) {
     _fighterAnimationTimers.remove(id)?.cancel();
     _fighterAnimations[id] = state;
+    _fighterAnimationRevisions[id] =
+        (_fighterAnimationRevisions[id] ?? 0) + 1;
     if (state == CharacterAnimationState.death) return;
 
     final sequenceDuration = characterAnimationTotalDuration(id, state);
@@ -407,6 +410,7 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
       if (targetId != null) {
         _fighterAnimationTimers.remove(targetId)?.cancel();
         _fighterAnimations.remove(targetId);
+        _fighterAnimationRevisions.remove(targetId);
       }
     }
     switch (e.kind) {
@@ -1226,6 +1230,10 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
             // oathbound lights up, so the buff reads without reading.
             CharacterSprite(
               f.id,
+              key: ValueKey(
+                'fighter-${f.id}-${animation.name}-'
+                '${_fighterAnimationRevisions[f.id] ?? 0}',
+              ),
               size: 38,
               glow: f.isTaunting || f.isRallied ? 1 : .45,
               dimmed: !f.alive,

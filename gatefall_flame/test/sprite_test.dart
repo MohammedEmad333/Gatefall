@@ -226,6 +226,37 @@ void main() {
     expect((imageOf().image as AssetImage).assetName, characterSpritePath('kess'));
   });
 
+
+  testWidgets('re-keying repeated Kess attack restarts at frame one', (t) async {
+    final frames =
+        characterAnimationFramePaths('kess', CharacterAnimationState.attack);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('kess'),
+      ...frames,
+    });
+
+    Widget build(int revision) => Directionality(
+          textDirection: TextDirection.ltr,
+          child: CharacterSprite(
+            'kess',
+            key: ValueKey('kess-attack-$revision'),
+            size: 80,
+            animation: CharacterAnimationState.attack,
+          ),
+        );
+
+    Image imageOf() => t.widget<Image>(find.byType(Image));
+
+    await t.pumpWidget(build(1));
+    expect((imageOf().image as AssetImage).assetName, frames.first);
+
+    await t.pump(const Duration(milliseconds: 200));
+    expect((imageOf().image as AssetImage).assetName, frames[2]);
+
+    await t.pumpWidget(build(2));
+    expect((imageOf().image as AssetImage).assetName, frames.first);
+  });
+
   testWidgets('expression variant is used when present, else neutral base',
       (t) async {
     // Both a neutral base and a happy variant exist.
