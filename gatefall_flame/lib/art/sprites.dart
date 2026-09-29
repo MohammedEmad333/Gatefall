@@ -132,6 +132,16 @@ Duration characterAnimationFrameDuration(CharacterAnimationState state) =>
       CharacterAnimationState.neutral => Duration.zero,
     };
 
+Duration characterAnimationTotalDuration(
+  String id,
+  CharacterAnimationState state,
+) {
+  final frames = characterAnimationFramePaths(id, state);
+  final frameDuration = characterAnimationFrameDuration(state);
+  if (frames.isEmpty || frameDuration == Duration.zero) return Duration.zero;
+  return frameDuration * frames.length;
+}
+
 String creatureSpritePath(Beastform form) =>
     'assets/sprites/enemies/${form.name}.png';
 
