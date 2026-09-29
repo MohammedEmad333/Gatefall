@@ -391,7 +391,10 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
 
     final actorId = e.actorId;
     if (actorId != null &&
-        (e.kind == 'damage' || e.kind == 'crit' || e.kind == 'ultimate')) {
+        (e.kind == 'attack' ||
+            e.kind == 'damage' ||
+            e.kind == 'crit' ||
+            e.kind == 'ultimate')) {
       _setFighterAnimation(actorId, CharacterAnimationState.attack);
     }
     if (e.kind == 'down') {
@@ -1097,9 +1100,10 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   /// an ascended cast now reads as an event rather than as a number that
   /// moved faster than usual.
   Widget _battleLog(Battle b) {
-    final lines = b.events.length <= 3
-        ? b.events
-        : b.events.sublist(b.events.length - 3);
+    final visibleEvents = b.events.where((e) => e.loggable).toList();
+    final lines = visibleEvents.length <= 3
+        ? visibleEvents
+        : visibleEvents.sublist(visibleEvents.length - 3);
     return Container(
       // Keyed so a widget test can assert the fight is actually narrating
       // itself, without depending on which line happens to be last.
