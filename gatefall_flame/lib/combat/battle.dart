@@ -161,9 +161,14 @@ enum BattleStatus { idle, fighting, won, lost }
 class BattleEvent {
   final String message;
 
-  /// damage | crit | ultimate | passive | heal | revive | boss | down | hurt | reward
+  /// damage | attack | crit | ultimate | passive | heal | revive | boss | down | hurt | reward
   final String kind;
   final double amount;
+
+  /// Whether this presentation event belongs in the visible combat log.
+  /// Routine auto-attacks can still drive sprite animation without flooding
+  /// the three-line narration panel.
+  final bool loggable;
 
   /// Optional structured presentation metadata. Keeping actor/target ids on
   /// the event means UI animation code never has to parse human-readable log
@@ -175,6 +180,7 @@ class BattleEvent {
     this.message,
     this.kind, {
     this.amount = 0,
+    this.loggable = true,
     this.actorId,
     this.targetId,
   });
@@ -390,6 +396,7 @@ class Battle {
     String msg,
     String kind, {
     double amount = 0,
+    bool loggable = true,
     String? actorId,
     String? targetId,
   }) {
@@ -397,6 +404,7 @@ class Battle {
       msg,
       kind,
       amount: amount,
+      loggable: loggable,
       actorId: actorId,
       targetId: targetId,
     ));
@@ -696,6 +704,16 @@ class Battle {
             '${p.name} strikes for ${dmg.round()} (critical)',
             'crit',
             amount: dmg,
+            actorId: p.id,
+          );
+        } else {
+          // Routine attacks are presentation events too: they drive the
+          // actor's attack sprite without turning every swing into a log line.
+          _emit(
+            '',
+            'attack',
+            amount: dmg,
+            loggable: false,
             actorId: p.id,
           );
         }
