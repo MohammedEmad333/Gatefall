@@ -46,6 +46,18 @@ void main() {
         const Duration(milliseconds: 110));
     expect(characterAnimationFrameDuration(CharacterAnimationState.death),
         const Duration(milliseconds: 130));
+    expect(
+      characterAnimationTotalDuration('kess', CharacterAnimationState.attack),
+      const Duration(milliseconds: 760),
+    );
+    expect(
+      characterAnimationTotalDuration('kess', CharacterAnimationState.hurt),
+      const Duration(milliseconds: 660),
+    );
+    expect(
+      characterAnimationTotalDuration('kess', CharacterAnimationState.death),
+      const Duration(milliseconds: 1040),
+    );
     final attack =
         characterAnimationFramePaths('kess', CharacterAnimationState.attack);
     final hurt =
