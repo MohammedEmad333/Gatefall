@@ -347,7 +347,6 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
         _setFighterAnimation(
           fighter.id,
           CharacterAnimationState.hurt,
-          hold: const Duration(milliseconds: 330),
         );
       }
       _fighterHp[fighter.id] = fighter.hp;
@@ -367,13 +366,19 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   void _setFighterAnimation(
     String id,
     CharacterAnimationState state, {
-    Duration hold = const Duration(milliseconds: 520),
+    Duration? hold,
   }) {
     _fighterAnimationTimers.remove(id)?.cancel();
     _fighterAnimations[id] = state;
     if (state == CharacterAnimationState.death) return;
 
-    _fighterAnimationTimers[id] = Timer(hold, () {
+    final sequenceDuration = characterAnimationTotalDuration(id, state);
+    final resolvedHold = hold ??
+        (sequenceDuration == Duration.zero
+            ? const Duration(milliseconds: 520)
+            : sequenceDuration + const Duration(milliseconds: 40));
+
+    _fighterAnimationTimers[id] = Timer(resolvedHold, () {
       if (!mounted) return;
       _fighterAnimationTimers.remove(id);
       setState(() => _fighterAnimations.remove(id));
