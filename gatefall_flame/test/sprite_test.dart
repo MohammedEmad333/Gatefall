@@ -48,6 +48,13 @@ void main() {
         'assets/sprites/characters/momo/animations/idle/runtime/momo_idle_01.png');
     expect(momoIdle.last,
         'assets/sprites/characters/momo/animations/idle/runtime/momo_idle_08.png');
+    final momoAttack =
+        characterAnimationFramePaths('momo', CharacterAnimationState.attack);
+    expect(momoAttack, hasLength(8));
+    expect(momoAttack.first,
+        'assets/sprites/characters/momo/animations/attack/runtime/momo_attack_01.png');
+    expect(momoAttack.last,
+        'assets/sprites/characters/momo/animations/attack/runtime/momo_attack_08.png');
     final faelenAttack =
         characterAnimationFramePaths('faelen', CharacterAnimationState.attack);
     expect(faelenAttack, hasLength(8));
@@ -74,6 +81,10 @@ void main() {
     expect(
       characterAnimationTotalDuration('momo', CharacterAnimationState.idle),
       const Duration(milliseconds: 1520),
+    );
+    expect(
+      characterAnimationTotalDuration('momo', CharacterAnimationState.attack),
+      const Duration(milliseconds: 760),
     );
     expect(
       characterAnimationTotalDuration('faelen', CharacterAnimationState.attack),
@@ -115,6 +126,28 @@ void main() {
         'assets/sprites/characters/kess/animations/death/runtime/kess_death_01.png');
     expect(death.last,
         'assets/sprites/characters/kess/animations/death/runtime/kess_death_08.png');
+  });
+
+  testWidgets('Momo attack waits for a complete approved frame set',
+      (t) async {
+    final attack =
+        characterAnimationFramePaths('momo', CharacterAnimationState.attack);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('momo'),
+      ...attack.take(7),
+    });
+
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite(
+        'momo',
+        size: 80,
+        animation: CharacterAnimationState.attack,
+      ),
+    ));
+
+    final image = t.widget<Image>(find.byType(Image));
+    expect((image.image as AssetImage).assetName, characterSpritePath('momo'));
   });
 
   testWidgets('Faelen attack waits for a complete approved frame set',
@@ -349,6 +382,30 @@ void main() {
     expect((imageOf().image as AssetImage).assetName, characterSpritePath('kess'));
   });
 
+
+  testWidgets('Momo attack plays approved runtime frames', (t) async {
+    final frames =
+        characterAnimationFramePaths('momo', CharacterAnimationState.attack);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('momo'),
+      ...frames,
+    });
+
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite(
+        'momo',
+        size: 80,
+        animation: CharacterAnimationState.attack,
+      ),
+    ));
+
+    Image imageOf() => t.widget<Image>(find.byType(Image));
+    expect((imageOf().image as AssetImage).assetName, frames.first);
+
+    await t.pump(const Duration(milliseconds: 200));
+    expect((imageOf().image as AssetImage).assetName, frames[2]);
+  });
 
   testWidgets('Faelen attack plays approved runtime frames', (t) async {
     final frames =
