@@ -100,6 +100,11 @@ List<String> characterAnimationFramePaths(
   CharacterAnimationState state,
 ) =>
     switch ((id, state)) {
+      ('faelen', CharacterAnimationState.idle) => List<String>.generate(
+          8,
+          (i) =>
+              'assets/sprites/characters/faelen/animations/idle/runtime/faelen_idle_${(i + 1).toString().padLeft(2, '0')}.png',
+        ),
       ('kess', CharacterAnimationState.idle) => List<String>.generate(
           8,
           (i) =>

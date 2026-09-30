@@ -33,7 +33,13 @@ void main() {
         'assets/sprites/characters/kess/animations/idle/runtime/kess_idle_01.png');
     expect(characterAnimationFramePaths('kess', CharacterAnimationState.idle).last,
         'assets/sprites/characters/kess/animations/idle/runtime/kess_idle_08.png');
-    expect(characterAnimationFramePaths('faelen', CharacterAnimationState.idle), isEmpty);
+    final faelenIdle =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.idle);
+    expect(faelenIdle, hasLength(8));
+    expect(faelenIdle.first,
+        'assets/sprites/characters/faelen/animations/idle/runtime/faelen_idle_01.png');
+    expect(faelenIdle.last,
+        'assets/sprites/characters/faelen/animations/idle/runtime/faelen_idle_08.png');
     expect(creatureSpritePath(Beastform.guardian),
         'assets/sprites/enemies/guardian.png');
   });
@@ -46,6 +52,10 @@ void main() {
         const Duration(milliseconds: 110));
     expect(characterAnimationFrameDuration(CharacterAnimationState.death),
         const Duration(milliseconds: 130));
+    expect(
+      characterAnimationTotalDuration('faelen', CharacterAnimationState.idle),
+      const Duration(milliseconds: 1520),
+    );
     expect(
       characterAnimationTotalDuration('kess', CharacterAnimationState.attack),
       const Duration(milliseconds: 760),
@@ -198,6 +208,26 @@ void main() {
       ),
     ));
     expect(find.byType(CharacterPortrait), findsOneWidget);
+  });
+
+  testWidgets('Faelen calm portrait loops approved idle frames', (t) async {
+    final frames =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.idle);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('faelen'),
+      ...frames,
+    });
+
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite('faelen', size: 80, calm: true),
+    ));
+
+    Image imageOf() => t.widget<Image>(find.byType(Image));
+    expect((imageOf().image as AssetImage).assetName, frames[0]);
+
+    await t.pump(const Duration(milliseconds: 200));
+    expect((imageOf().image as AssetImage).assetName, frames[1]);
   });
 
   testWidgets('Kess calm portrait loops approved idle frames', (t) async {
