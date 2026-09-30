@@ -47,6 +47,20 @@ void main() {
         'assets/sprites/characters/faelen/animations/attack/runtime/faelen_attack_01.png');
     expect(faelenAttack.last,
         'assets/sprites/characters/faelen/animations/attack/runtime/faelen_attack_08.png');
+    final faelenHurt =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.hurt);
+    expect(faelenHurt, hasLength(6));
+    expect(faelenHurt.first,
+        'assets/sprites/characters/faelen/animations/hurt/runtime/faelen_hurt_01.png');
+    expect(faelenHurt.last,
+        'assets/sprites/characters/faelen/animations/hurt/runtime/faelen_hurt_06.png');
+    final faelenDeath =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.death);
+    expect(faelenDeath, hasLength(8));
+    expect(faelenDeath.first,
+        'assets/sprites/characters/faelen/animations/death/runtime/faelen_death_01.png');
+    expect(faelenDeath.last,
+        'assets/sprites/characters/faelen/animations/death/runtime/faelen_death_08.png');
     expect(creatureSpritePath(Beastform.guardian),
         'assets/sprites/enemies/guardian.png');
   });
@@ -66,6 +80,14 @@ void main() {
     expect(
       characterAnimationTotalDuration('faelen', CharacterAnimationState.attack),
       const Duration(milliseconds: 760),
+    );
+    expect(
+      characterAnimationTotalDuration('faelen', CharacterAnimationState.hurt),
+      const Duration(milliseconds: 660),
+    );
+    expect(
+      characterAnimationTotalDuration('faelen', CharacterAnimationState.death),
+      const Duration(milliseconds: 1040),
     );
     expect(
       characterAnimationTotalDuration('kess', CharacterAnimationState.attack),
@@ -315,6 +337,86 @@ void main() {
 
     await t.pump(const Duration(milliseconds: 200));
     expect((imageOf().image as AssetImage).assetName, frames[2]);
+  });
+
+  testWidgets('Faelen hurt waits for a complete approved frame set', (t) async {
+    final frames =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.hurt);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('faelen'),
+      ...frames.take(5),
+    });
+
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite(
+        'faelen',
+        size: 80,
+        animation: CharacterAnimationState.hurt,
+      ),
+    ));
+
+    final image = t.widget<Image>(find.byType(Image));
+    expect((image.image as AssetImage).assetName, characterSpritePath('faelen'));
+  });
+
+  testWidgets('Faelen death waits for a complete approved frame set', (t) async {
+    final frames =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.death);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('faelen'),
+      ...frames.take(7),
+    });
+
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite(
+        'faelen',
+        size: 80,
+        animation: CharacterAnimationState.death,
+      ),
+    ));
+
+    final image = t.widget<Image>(find.byType(Image));
+    expect((image.image as AssetImage).assetName, characterSpritePath('faelen'));
+  });
+
+  testWidgets('Faelen hurt and death play approved runtime frames', (t) async {
+    Future<void> expectAdvances(
+      CharacterAnimationState state,
+      Duration step,
+      int expectedIndex,
+    ) async {
+      final frames = characterAnimationFramePaths('faelen', state);
+      SpriteBook.instance.setAvailableForTest({
+        characterSpritePath('faelen'),
+        ...frames,
+      });
+      await t.pumpWidget(Directionality(
+        textDirection: TextDirection.ltr,
+        child: CharacterSprite(
+          'faelen',
+          key: ValueKey(state),
+          size: 80,
+          animation: state,
+        ),
+      ));
+      Image imageOf() => t.widget<Image>(find.byType(Image));
+      expect((imageOf().image as AssetImage).assetName, frames.first);
+      await t.pump(step);
+      expect((imageOf().image as AssetImage).assetName, frames[expectedIndex]);
+    }
+
+    await expectAdvances(
+      CharacterAnimationState.hurt,
+      const Duration(milliseconds: 220),
+      2,
+    );
+    await expectAdvances(
+      CharacterAnimationState.death,
+      const Duration(milliseconds: 260),
+      2,
+    );
   });
 
   testWidgets('re-keying repeated Kess attack restarts at frame one', (t) async {

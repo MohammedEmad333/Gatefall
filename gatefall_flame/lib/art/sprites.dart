@@ -110,6 +110,16 @@ List<String> characterAnimationFramePaths(
           (i) =>
               'assets/sprites/characters/faelen/animations/attack/runtime/faelen_attack_${(i + 1).toString().padLeft(2, '0')}.png',
         ),
+      ('faelen', CharacterAnimationState.hurt) => List<String>.generate(
+          6,
+          (i) =>
+              'assets/sprites/characters/faelen/animations/hurt/runtime/faelen_hurt_${(i + 1).toString().padLeft(2, '0')}.png',
+        ),
+      ('faelen', CharacterAnimationState.death) => List<String>.generate(
+          8,
+          (i) =>
+              'assets/sprites/characters/faelen/animations/death/runtime/faelen_death_${(i + 1).toString().padLeft(2, '0')}.png',
+        ),
       ('kess', CharacterAnimationState.idle) => List<String>.generate(
           8,
           (i) =>
