@@ -105,6 +105,11 @@ List<String> characterAnimationFramePaths(
           (i) =>
               'assets/sprites/characters/faelen/animations/idle/runtime/faelen_idle_${(i + 1).toString().padLeft(2, '0')}.png',
         ),
+      ('faelen', CharacterAnimationState.attack) => List<String>.generate(
+          8,
+          (i) =>
+              'assets/sprites/characters/faelen/animations/attack/runtime/faelen_attack_${(i + 1).toString().padLeft(2, '0')}.png',
+        ),
       ('kess', CharacterAnimationState.idle) => List<String>.generate(
           8,
           (i) =>

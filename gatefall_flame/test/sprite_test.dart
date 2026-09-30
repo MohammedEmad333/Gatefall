@@ -40,6 +40,13 @@ void main() {
         'assets/sprites/characters/faelen/animations/idle/runtime/faelen_idle_01.png');
     expect(faelenIdle.last,
         'assets/sprites/characters/faelen/animations/idle/runtime/faelen_idle_08.png');
+    final faelenAttack =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.attack);
+    expect(faelenAttack, hasLength(8));
+    expect(faelenAttack.first,
+        'assets/sprites/characters/faelen/animations/attack/runtime/faelen_attack_01.png');
+    expect(faelenAttack.last,
+        'assets/sprites/characters/faelen/animations/attack/runtime/faelen_attack_08.png');
     expect(creatureSpritePath(Beastform.guardian),
         'assets/sprites/enemies/guardian.png');
   });
@@ -55,6 +62,10 @@ void main() {
     expect(
       characterAnimationTotalDuration('faelen', CharacterAnimationState.idle),
       const Duration(milliseconds: 1520),
+    );
+    expect(
+      characterAnimationTotalDuration('faelen', CharacterAnimationState.attack),
+      const Duration(milliseconds: 760),
     );
     expect(
       characterAnimationTotalDuration('kess', CharacterAnimationState.attack),
@@ -92,6 +103,31 @@ void main() {
         'assets/sprites/characters/kess/animations/death/runtime/kess_death_01.png');
     expect(death.last,
         'assets/sprites/characters/kess/animations/death/runtime/kess_death_08.png');
+  });
+
+  testWidgets('Faelen attack waits for a complete approved frame set',
+      (t) async {
+    final attack =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.attack);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('faelen'),
+      ...attack.take(7),
+    });
+
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite(
+        'faelen',
+        size: 80,
+        animation: CharacterAnimationState.attack,
+      ),
+    ));
+
+    final image = t.widget<Image>(find.byType(Image));
+    expect(
+      (image.image as AssetImage).assetName,
+      characterSpritePath('faelen'),
+    );
   });
 
   testWidgets('combat animation waits for a complete approved frame set',
@@ -256,6 +292,30 @@ void main() {
     expect((imageOf().image as AssetImage).assetName, characterSpritePath('kess'));
   });
 
+
+  testWidgets('Faelen attack plays approved runtime frames', (t) async {
+    final frames =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.attack);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('faelen'),
+      ...frames,
+    });
+
+    await t.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite(
+        'faelen',
+        size: 80,
+        animation: CharacterAnimationState.attack,
+      ),
+    ));
+
+    Image imageOf() => t.widget<Image>(find.byType(Image));
+    expect((imageOf().image as AssetImage).assetName, frames.first);
+
+    await t.pump(const Duration(milliseconds: 200));
+    expect((imageOf().image as AssetImage).assetName, frames[2]);
+  });
 
   testWidgets('re-keying repeated Kess attack restarts at frame one', (t) async {
     final frames =
