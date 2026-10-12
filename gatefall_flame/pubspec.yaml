@@ -65,6 +65,8 @@ flutter:
     - assets/sprites/characters/
     - assets/sprites/characters/faelen/animations/idle/runtime/
     - assets/sprites/characters/faelen/animations/attack/runtime/
+    - assets/sprites/characters/faelen/animations/hurt/runtime/
+    - assets/sprites/characters/faelen/animations/death/runtime/
     - assets/sprites/characters/momo/animations/idle/runtime/
     - assets/sprites/characters/momo/animations/attack/runtime/
     - assets/sprites/characters/momo/animations/hurt/runtime/
