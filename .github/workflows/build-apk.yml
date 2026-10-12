@@ -88,6 +88,12 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Test dialogue engine
+        working-directory: gatefall_dialogue_engine
+        run: |
+          dart pub get
+          dart test
+
       - name: Check dialogue data mirror
         # Canonical narrative JSON lives in gatefall_dialogue_engine/data.
         # Flutter bundles a mirror under gatefall_flame/data; keep drift from
