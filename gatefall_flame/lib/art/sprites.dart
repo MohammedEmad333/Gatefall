@@ -120,6 +120,21 @@ List<String> characterAnimationFramePaths(
           (i) =>
               'assets/sprites/characters/faelen/animations/death/runtime/faelen_death_${(i + 1).toString().padLeft(2, '0')}.png',
         ),
+      ('momo', CharacterAnimationState.idle) => List<String>.generate(
+          8,
+          (i) =>
+              'assets/sprites/characters/momo/animations/idle/runtime/momo_idle_${(i + 1).toString().padLeft(2, '0')}.png',
+        ),
+      ('momo', CharacterAnimationState.attack) => List<String>.generate(
+          8,
+          (i) =>
+              'assets/sprites/characters/momo/animations/attack/runtime/momo_attack_${(i + 1).toString().padLeft(2, '0')}.png',
+        ),
+      ('momo', CharacterAnimationState.hurt) => List<String>.generate(
+          6,
+          (i) =>
+              'assets/sprites/characters/momo/animations/hurt/runtime/momo_hurt_${(i + 1).toString().padLeft(2, '0')}.png',
+        ),
       ('kess', CharacterAnimationState.idle) => List<String>.generate(
           8,
           (i) =>
