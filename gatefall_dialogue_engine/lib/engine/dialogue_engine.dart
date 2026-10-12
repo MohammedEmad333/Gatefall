@@ -62,7 +62,10 @@ class DialogueEngine {
 
   /// Pick a choice by id: applies its effects to [state], then moves on.
   void choose(String choiceId) {
-    final choice = currentNode.choices.firstWhere(
+    if (!currentNode.isBranch) {
+      throw StateError('Node ${currentNode.id} has no choices');
+    }
+    final choice = visibleChoices().firstWhere(
       (c) => c.choiceId == choiceId,
       orElse: () => throw ArgumentError('No choice "$choiceId" at node ${currentNode.id}'),
     );
