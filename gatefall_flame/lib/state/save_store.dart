@@ -20,25 +20,35 @@ abstract class SaveStore {
 
 class PrefsSaveStore implements SaveStore {
   static const String key = 'gatefall.save.v1';
+  static const String backupKey = 'gatefall.save.v1.backup';
 
-  @override
-  Future<Map<String, dynamic>?> load() async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(key);
+  Map<String, dynamic>? _decode(String? raw) {
     if (raw == null || raw.isEmpty) return null;
     try {
       final decoded = jsonDecode(raw);
       return decoded is Map<String, dynamic> ? decoded : null;
     } on FormatException {
-      // A corrupt save is not worth crashing a player's session over —
-      // start fresh rather than wedging the app on every launch.
       return null;
     }
   }
 
   @override
+  Future<Map<String, dynamic>?> load() async {
+    final prefs = await SharedPreferences.getInstance();
+    final primary = _decode(prefs.getString(key));
+    if (primary != null) return primary;
+    // Recover the last known-good snapshot without overwriting it.
+    return _decode(prefs.getString(backupKey));
+  }
+
+  @override
   Future<void> save(Map<String, dynamic> data) async {
     final prefs = await SharedPreferences.getInstance();
+    // Preserve the previous valid save before replacing the primary copy.
+    final previous = prefs.getString(key);
+    if (_decode(previous) != null) {
+      await prefs.setString(backupKey, previous!);
+    }
     await prefs.setString(key, jsonEncode(data));
   }
 
@@ -46,6 +56,7 @@ class PrefsSaveStore implements SaveStore {
   Future<void> clear() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(key);
+    await prefs.remove(backupKey);
   }
 }
 
