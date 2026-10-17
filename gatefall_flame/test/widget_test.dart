@@ -70,7 +70,7 @@ void main() {
 
     await tester.tap(find.byKey(const Key('story-route-faelen')));
     await tester.pumpAndSettle();
-    expect(find.text('I Won\\'t Be Staying'), findsOneWidget);
+    expect(find.text('I Won\'t Be Staying'), findsOneWidget);
     // Opening a scene alone must not grant rewards or complete it.
     expect(game.state.completedBeats, isEmpty);
   });
