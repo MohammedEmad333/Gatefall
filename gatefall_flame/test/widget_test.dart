@@ -64,7 +64,8 @@ void main() {
   testWidgets('the story map opens only an eligible story scene', (tester) async {
     final game = await pumpGame(tester);
     await tapTab(tester, Icons.menu_book_outlined);
-    expect(find.text('Act I — The Door'), findsOneWidget);
+    // The act name appears in both the chapter hero and the act timeline.
+    expect(find.text('Act I — The Door'), findsNWidgets(2));
     expect(find.byKey(const Key('story-route-faelen')), findsOneWidget);
     expect(find.text('New story ready'), findsOneWidget);
 
