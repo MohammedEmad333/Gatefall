@@ -274,7 +274,7 @@ void main() {
       for (final icon in [
         Icons.blur_circular_outlined,
         Icons.groups_outlined,
-        Icons.people_outline,
+        Icons.menu_book_outlined,
         Icons.home_outlined,
       ]) {
         for (var i = 0; i < 8; i++) {
