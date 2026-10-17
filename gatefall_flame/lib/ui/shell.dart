@@ -24,9 +24,7 @@ class GatefallShell extends StatefulWidget {
 
 class _GatefallShellState extends State<GatefallShell> {
   static const int _house = 0;
-  static const int _story = 1;
   static const int _gates = 2;
-  static const int _allies = 3;
 
   int _index = _house;
 
