@@ -183,7 +183,9 @@ class StoryScreen extends StatelessWidget {
     final ready = atHome &&
         upcoming != null &&
         game.nextBeat(id)?.beatId == upcoming.beatId;
-    final canPlayHere = ready && upcoming.triggerContext == 'story';
+    final canPlayHere = ready &&
+        upcoming != null &&
+        upcoming.triggerContext == 'story';
     final completed = route?.beats
             .where((beat) => game.state.completedBeats.contains(beat.beatId))
             .length ??
@@ -207,10 +209,11 @@ class StoryScreen extends StatelessWidget {
         _ => 'Continue through ${upcoming.triggerContext}',
       };
     }
-    final VoidCallback? action = canPlayHere
-        ? () => _play(context, id, upcoming)
+    final playableBeat = canPlayHere ? upcoming : null;
+    final VoidCallback? action = playableBeat != null
+        ? () => _play(context, id, playableBeat)
         : (ready
-            ? (upcoming.triggerContext == 'post_raid'
+            ? (upcoming?.triggerContext == 'post_raid'
                 ? onOpenGates
                 : onOpenHouse)
             : null);
