@@ -61,6 +61,20 @@ void main() {
     await tester.pumpAndSettle();
   }
 
+  testWidgets('the story map opens only an eligible story scene', (tester) async {
+    final game = await pumpGame(tester);
+    await tapTab(tester, Icons.menu_book_outlined);
+    expect(find.text('Act I — The Door'), findsOneWidget);
+    expect(find.byKey(const Key('story-route-faelen')), findsOneWidget);
+    expect(find.text('New story ready'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('story-route-faelen')));
+    await tester.pumpAndSettle();
+    expect(find.text('I Won\\'t Be Staying'), findsOneWidget);
+    // Opening a scene alone must not grant rewards or complete it.
+    expect(game.state.completedBeats, isEmpty);
+  });
+
   testWidgets('the app boots onto the house with Faelen already home',
       (tester) async {
     await pumpGame(tester);
@@ -68,8 +82,8 @@ void main() {
     expect(find.text('Faelen'), findsWidgets);
     expect(find.text('House'), findsOneWidget);
     expect(find.text('Gates'), findsOneWidget);
-    expect(find.text('Party'), findsOneWidget);
-    expect(find.text('Characters'), findsOneWidget);
+    expect(find.text('Story'), findsOneWidget);
+    expect(find.text('Allies'), findsOneWidget);
   });
 
   testWidgets('first-session guidance leads from Faelen to the gate board',
@@ -177,13 +191,17 @@ void main() {
   testWidgets('all four tabs render without throwing', (tester) async {
     await pumpGame(tester);
 
+    await tapTab(tester, Icons.menu_book_outlined);
+    expect(find.text('Your story'), findsOneWidget);
+
     await tapTab(tester, Icons.blur_circular_outlined);
     expect(find.text('The board'), findsOneWidget);
 
     await tapTab(tester, Icons.groups_outlined);
     expect(find.text('Who you take in there'), findsOneWidget);
 
-    await tapTab(tester, Icons.people_outline);
+    await tester.tap(find.text('Characters'));
+    await tester.pumpAndSettle();
     expect(find.text('Everyone drawn to the house, and every story you have shared.'),
         findsOneWidget);
 
@@ -202,7 +220,9 @@ void main() {
       g.state.addBond('faelen', 100);
     });
 
-    await tapTab(tester, Icons.people_outline);
+    await tapTab(tester, Icons.groups_outlined);
+    await tester.tap(find.text('Characters'));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('character-faelen')));
     await tester.pumpAndSettle();
 
@@ -252,7 +272,9 @@ void main() {
       ]);
     });
 
-    await tapTab(tester, Icons.people_outline);
+    await tapTab(tester, Icons.groups_outlined);
+    await tester.tap(find.text('Characters'));
+    await tester.pumpAndSettle();
     await tester.tap(find.byKey(const Key('character-faelen')));
     await tester.pumpAndSettle();
 
@@ -265,7 +287,8 @@ void main() {
 
     await tester.pageBack();
     await tester.pumpAndSettle();
-    await tapTab(tester, Icons.groups_outlined);
+    await tester.tap(find.text('Party'));
+    await tester.pumpAndSettle();
     expect(find.textContaining('Passive — Guard now shares'), findsOneWidget);
 
     await tapTab(tester, Icons.blur_circular_outlined);
