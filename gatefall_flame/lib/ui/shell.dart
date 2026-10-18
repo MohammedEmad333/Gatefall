@@ -24,6 +24,7 @@ class GatefallShell extends StatefulWidget {
 
 class _GatefallShellState extends State<GatefallShell> {
   static const int _house = 0;
+  static const int _story = 1;
   static const int _gates = 2;
 
   int _index = _house;
@@ -87,6 +88,7 @@ class _GatefallShellState extends State<GatefallShell> {
                   game: game,
                   active: _index == _gates,
                   onOpenHouse: () => _selectTab(_house),
+                  onOpenStory: () => _selectTab(_story),
                 ),
                 AlliesScreen(game: game),
               ],
