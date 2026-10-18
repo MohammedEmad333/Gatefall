@@ -553,10 +553,11 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     // The post_raid hook, actually played: banter after clearing a gate
     // together (docs/combat-spec.md §2), rendered rather than announced.
     final pending = game.postRaidBeat;
-    if (shouldOfferPostRaidScene(
-      status: battle?.status ?? BattleStatus.lost,
-      beatReady: pending != null,
-    )) {
+    if (pending != null &&
+        shouldOfferPostRaidScene(
+          status: battle?.status ?? BattleStatus.lost,
+          beatReady: true,
+        )) {
       await DialogueScreen.play(context,
           game: game,
           characterId: pending.characterId,
