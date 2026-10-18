@@ -57,6 +57,8 @@ class StartScene extends StatefulWidget {
 /// already existed for the game proper — the same rift, the same cast, the
 /// same creatures — so the opening cannot show you a world the game then
 /// fails to be.
+enum OpeningReaderMode { pages, vertical }
+
 enum Shot { skyline, tear, beast, refugees, awakened, house, doorstep, fallen, title }
 
 class _Panel {
@@ -223,17 +225,32 @@ const List<_Page> _script = [
   ]),
 ];
 
+// The original comic panels, in reading order; both modes use one script.
+final _readingOrder = <({int pageIndex, int panelIndex, _Panel panel})>[
+  for (var p = 0; p < _script.length; p++)
+    for (var i = 0; i < _script[p].panels.length; i++)
+      (pageIndex: p, panelIndex: i, panel: _script[p].panels[i]),
+];
+
 class _StartSceneState extends State<StartScene> {
   int _page = 0;
 
   /// How many of this page's panels have landed. Never zero: opening a
   /// page draws its first panel.
   int _shown = 1;
+  OpeningReaderMode _mode = OpeningReaderMode.pages;
+  late final ScrollController _scroll = ScrollController()..addListener(_onScroll);
+  double _panelPitch = 320;
+  int _focusedPanel = 0;
+  final Set<int> _playedScrollCues = {0};
 
   /// The line currently lettering itself in, held so a tap can finish it.
   final GlobalKey<TypewriterState> _typing = GlobalKey<TypewriterState>();
 
   _Page get _current => _script[_page];
+  int get _visiblePage => _mode == OpeningReaderMode.vertical
+      ? _readingOrder[_focusedPanel].pageIndex
+      : _page;
   bool get _pageComplete => _shown >= _current.panels.length;
   bool get _atEnd => _page == _script.length - 1 && _pageComplete;
 
@@ -245,6 +262,51 @@ class _StartSceneState extends State<StartScene> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) _sound(_current.panels.first);
     });
+  }
+
+  @override
+  void dispose() {
+    _scroll.dispose();
+    super.dispose();
+  }
+
+  // Scroll-mode focus drives sound cues, never widget mount/rebuild.
+  void _onScroll() {
+    if (_mode != OpeningReaderMode.vertical || !_scroll.hasClients) return;
+    final next = ((_scroll.offset +
+                _scroll.position.viewportDimension * .28) /
+            _panelPitch)
+        .floor()
+        .clamp(0, _readingOrder.length - 1);
+    if (next == _focusedPanel) return;
+    setState(() => _focusedPanel = next);
+    if (_playedScrollCues.add(next)) _sound(_readingOrder[next].panel);
+  }
+
+  void _toggleMode() {
+    Audio.instance.noteGesture();
+    Audio.instance.play(Sfx.page);
+    if (_mode == OpeningReaderMode.pages) {
+      final index = _readingOrder.indexWhere((item) =>
+          item.pageIndex == _page && item.panelIndex == _shown - 1);
+      setState(() {
+        _focusedPanel = index < 0 ? 0 : index;
+        _mode = OpeningReaderMode.vertical;
+      });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || _mode != OpeningReaderMode.vertical ||
+            !_scroll.hasClients) return;
+        _scroll.jumpTo((_focusedPanel * _panelPitch)
+            .clamp(0.0, _scroll.position.maxScrollExtent));
+      });
+    } else {
+      final item = _readingOrder[_focusedPanel];
+      setState(() {
+        _page = item.pageIndex;
+        _shown = item.panelIndex + 1;
+        _mode = OpeningReaderMode.pages;
+      });
+    }
   }
 
   void _sound(_Panel panel) {
@@ -285,55 +347,139 @@ class _StartSceneState extends State<StartScene> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final panels = _current.panels;
-    return Scaffold(
-      backgroundColor: night,
-      body: AmbientBackdrop(
-        child: SafeArea(
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: _advance,
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 470),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(14, 8, 14, 6),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _header(),
-                      const SizedBox(height: 8),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            for (var i = 0; i < panels.length; i++)
-                              Expanded(
-                                flex: panels[i].flex,
-                                child: Padding(
-                                  // Room on the right and underneath for
-                                  // the hard shadow, and a little slack all
-                                  // round for the tilt.
-                                  padding: const EdgeInsets.fromLTRB(2, 4, 6, 9),
-                                  child: _panelView(panels[i],
-                                      shown: i < _shown, active: i == _shown - 1),
-                                ),
-                              ),
-                          ],
+  Widget build(BuildContext context) => Scaffold(
+        backgroundColor: night,
+        body: AmbientBackdrop(
+          child: SafeArea(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _mode == OpeningReaderMode.pages ? _advance : null,
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 470),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(14, 8, 14, 6),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        _header(),
+                        const SizedBox(height: 8),
+                        Expanded(
+                          child: _mode == OpeningReaderMode.pages
+                              ? _pagePanels()
+                              : _verticalReader(),
                         ),
-                      ),
-                      _footer(),
-                    ],
+                        _mode == OpeningReaderMode.pages
+                            ? _footer()
+                            : _verticalFooter(),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
         ),
-      ),
+      );
+
+  // The original non-reflowing cinematic page layout.
+  Widget _pagePanels() {
+    final panels = _current.panels;
+    return Column(
+      key: Key('opening-pages-${_page + 1}'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (var i = 0; i < panels.length; i++)
+          Expanded(
+            flex: panels[i].flex,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(2, 4, 6, 9),
+              child: _panelView(
+                panels[i],
+                shown: i < _shown,
+                active: i == _shown - 1,
+              ),
+            ),
+          ),
+      ],
     );
   }
+
+  // Same panels, captions and artwork; a real continuous portrait scroll.
+  Widget _verticalReader() => LayoutBuilder(
+        builder: (context, constraints) {
+          final panelHeight =
+              (constraints.maxWidth * .96).clamp(270.0, 400.0);
+          const gap = 18.0;
+          _panelPitch = panelHeight + gap;
+          return ListView.builder(
+            key: const Key('opening-vertical-reader'),
+            controller: _scroll,
+            padding: const EdgeInsets.only(top: 4, bottom: 22),
+            itemCount: _readingOrder.length + 1,
+            itemBuilder: (context, index) {
+              if (index == _readingOrder.length) {
+                return Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 28, 12, 34),
+                  child: Column(
+                    children: [
+                      const Text(
+                        'The door is still open.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: bone, fontSize: 17),
+                      ),
+                      const SizedBox(height: 14),
+                      SlabButton(
+                        widget.finishLabel,
+                        key: const Key('opening-vertical-finish'),
+                        filled: true,
+                        sound: Sfx.gateOpen,
+                        onPressed: _finish,
+                      ),
+                    ],
+                  ),
+                );
+              }
+              final item = _readingOrder[index];
+              final caption = item.panel.caption ??
+                  item.panel.line ?? 'GateFall opening scene';
+              return Semantics(
+                label: 'Panel ${index + 1} of ${_readingOrder.length}. $caption',
+                child: ExcludeSemantics(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(2, 0, 6, gap),
+                    child: SizedBox(
+                      key: Key('opening-panel-$index'),
+                      height: panelHeight,
+                      child: _panelView(
+                        item.panel,
+                        shown: true,
+                        active: false,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      );
+
+  Widget _verticalFooter() => SizedBox(
+        height: 38,
+        child: Center(
+          child: Text(
+            'Scroll to read · panel ${_focusedPanel + 1} / '
+            '${_readingOrder.length}',
+            key: const Key('opening-scroll-progress'),
+            style: const TextStyle(
+              color: boneDim,
+              fontSize: 11,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+      );
 
   // ---------------- page furniture ----------------
 
@@ -349,7 +495,7 @@ class _StartSceneState extends State<StartScene> {
                   child: Container(
                     width: compact ? 6 : 7,
                     height: compact ? 6 : 7,
-                    color: i <= _page ? bone : riftDim,
+                    color: i <= _visiblePage ? bone : riftDim,
                   ),
                 ),
             ],
@@ -363,6 +509,20 @@ class _StartSceneState extends State<StartScene> {
             ),
             child: const Text('skip',
                 style: TextStyle(color: boneDim, fontSize: 11)),
+          );
+
+          final mode = TextButton(
+            key: const Key('opening-reader-mode'),
+            onPressed: _toggleMode,
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 6),
+              minimumSize: const Size(0, 32),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: Text(
+              _mode == OpeningReaderMode.pages ? 'scroll' : 'pages',
+              style: const TextStyle(color: verdant, fontSize: 11),
+            ),
           );
 
           if (compact) {
@@ -383,7 +543,9 @@ class _StartSceneState extends State<StartScene> {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
+                    mode,
+                    const SizedBox(width: 4),
                     skip,
                   ],
                 ),
@@ -405,7 +567,9 @@ class _StartSceneState extends State<StartScene> {
                   style: TextStyle(color: boneDim, fontSize: 11)),
               const Spacer(),
               progress,
-              const SizedBox(width: 10),
+              const SizedBox(width: 8),
+              mode,
+              const SizedBox(width: 4),
               skip,
             ],
           );
