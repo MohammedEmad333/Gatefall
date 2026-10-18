@@ -578,7 +578,7 @@ void main() {
     final game = await pumpGame(tester);
     expect(game.state.completedBeats, isEmpty);
 
-    await tester.tap(find.text('Faelen — "I Won\'t Be Staying"'));
+    await tester.tap(find.byKey(const Key('house-hero-action')));
     await tester.pumpAndSettle();
     expect(find.text('I Won\'t Be Staying'), findsOneWidget);
 
@@ -615,7 +615,7 @@ void main() {
 
     // The title also appears in the resident panel's "next up" line, so
     // target the story card itself.
-    await tester.tap(find.text('Faelen — "This Is My War"'));
+    await tester.tap(find.byKey(const Key('house-hero-action')));
     await tester.pumpAndSettle();
 
     var guard = 0;
