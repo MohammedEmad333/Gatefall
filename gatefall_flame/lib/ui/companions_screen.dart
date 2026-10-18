@@ -12,6 +12,7 @@ import '../data/progression.dart';
 import '../data/roster.dart';
 import '../state/game_controller.dart';
 import 'theme.dart';
+import 'allies_progress.dart';
 
 /// Where Mana is spent. Three of the four progression tracks in
 /// docs/combat-spec.md §6 live here — companion level and gear, both bought
@@ -44,6 +45,8 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
               height: 1.5),
         ),
         const SizedBox(height: 14),
+        AlliesFormationOverview(game: game),
+        const SizedBox(height: 16),
         for (final (i, def) in game.roster.indexed) ...[
           Reveal(
               delay: Duration(milliseconds: 55 * i),
@@ -191,6 +194,13 @@ class _CompanionsScreenState extends State<CompanionsScreen> {
             tone: boneDim,
             onPressed: null,
           ),
+          if (hasRoute) ...[
+            const SizedBox(height: 7),
+            AlliesBondProgress(
+              points: game.bondPoints(def.id),
+              tier: tier,
+            ),
+          ],
 
           // Ascension — the fourth track, and the only one that cannot be
           // bought at all. It is what finishing a route pays out.
