@@ -8,6 +8,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:gatefall/combat/battle.dart';
+import 'package:gatefall/audio/sfx.dart';
+import 'package:gatefall/ui/dialogue_scene_backdrop.dart';
+import 'package:gatefall/ui/dialogue_webtoon_panel.dart';
 import 'package:gatefall/data/gear.dart';
 import 'package:gatefall/state/game_controller.dart';
 import 'package:gatefall/state/save_store.dart';
@@ -135,6 +138,83 @@ void main() {
     await tester.tap(find.text('End of scene'));
     await tester.pumpAndSettle();
     expect(game.state.completedBeats, contains('faelen_b4_the_fracture'));
+  });
+
+  testWidgets('chapter atmospheres match authored scene contexts',
+      (tester) async {
+    expect(chapterAtmosphere('story'), 'rift');
+    expect(chapterAtmosphere('post_raid'), 'aftermath');
+    expect(chapterAtmosphere('home_visit'), 'home');
+    expect(chapterAtmosphere('gift'), 'gift');
+    expect(chapterAtmosphere('date'), 'date');
+
+    await tester.pumpWidget(const MaterialApp(
+      home: Scaffold(
+        body: SizedBox(
+          width: 320,
+          height: 390,
+          child: DialogueSceneBackdrop(
+            contextTag: 'home_visit',
+            accent: gold,
+            isLatest: false,
+          ),
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('chapter-setting-home')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('cinematic panels fit narrow phones with scaled captions',
+      (tester) async {
+    final view = TestWidgetsFlutterBinding.instance.platformDispatcher.views.first;
+    view.physicalSize = const Size(280, 640);
+    await tester.pumpWidget(const MaterialApp(
+      home: Scaffold(
+        body: MediaQuery(
+          data: MediaQueryData(textScaler: TextScaler.linear(1.6)),
+          child: SingleChildScrollView(
+            child: DialogueWebtoonPanel(
+              index: 1,
+              characterId: 'faelen',
+              speakerId: 'faelen',
+              speakerName: 'Faelen',
+              contextTag: 'post_raid',
+              text: 'There is a shadow beyond the gate, and we have to hold the line. '
+                  'The road is narrow and the world is falling apart around us. '
+                  'Stay here, and listen carefully before you move.',
+            ),
+          ),
+        ),
+      ),
+    ));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('chapter-setting-aftermath')), findsOneWidget);
+    expect(find.textContaining('There is a shadow'), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('webtoon page sound follows new dialogue, not scrolling',
+      (tester) async {
+    await pumpGame(tester);
+    await tester.tap(find.byKey(const Key('house-hero-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+    Audio.instance.resetLog();
+
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+    expect(Audio.instance.log.where((sound) => sound == Sfx.page).length, 1);
+
+    await tester.drag(
+      find.byKey(const Key('dialogue-webtoon-timeline')),
+      const Offset(0, -120),
+    );
+    await tester.pumpAndSettle();
+    expect(Audio.instance.log.where((sound) => sound == Sfx.page).length, 1);
+    expect(find.byKey(const Key('dialogue-webtoon-panel-1')), findsOneWidget);
   });
 
   testWidgets('the app boots onto the house with Faelen already home',

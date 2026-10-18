@@ -191,7 +191,8 @@ class _DialogueScreenState extends State<DialogueScreen> {
       return;
     }
     if (engine.currentNode.isBranch) return;
-    Audio.instance.play(Sfx.uiTap);
+    // A webtoon panel turns once per reached node, never per scroll or paint.
+    Audio.instance.play(_webtoonMode ? Sfx.page : Sfx.uiTap);
     setState(() {
       engine.advance();
       _pushCurrent(engine);
@@ -401,7 +402,8 @@ class _DialogueScreenState extends State<DialogueScreen> {
         itemCount: _history.length,
         itemBuilder: (context, index) {
           final line = _history[index];
-          return DialogueWebtoonPanel(
+          final latest = index == _history.length - 1;
+          final panel = DialogueWebtoonPanel(
             key: Key('dialogue-webtoon-panel-$index'),
             index: index,
             characterId: widget.characterId,
@@ -410,7 +412,14 @@ class _DialogueScreenState extends State<DialogueScreen> {
             text: line.text,
             emotion: line.emotion,
             isChoice: line.isChoice,
+            contextTag: widget.beat.triggerContext,
+            isLatest: latest,
           );
+          // Animate an arriving node once. Historical panels stay static
+          // when a player browses backwards or switches reading modes.
+          return latest
+              ? DialoguePanelEntrance(index: index, child: panel)
+              : panel;
         },
       );
 
