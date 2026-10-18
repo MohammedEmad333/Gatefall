@@ -10,6 +10,7 @@ import '../data/roster.dart';
 import '../state/game_controller.dart';
 import 'dialogue_screen.dart';
 import 'theme.dart';
+import 'allies_progress.dart';
 
 /// The cast directory and permanent story archive.
 ///
@@ -113,9 +114,11 @@ class CharactersScreen extends StatelessWidget {
                     Text(status,
                         style: TextStyle(
                             color: atHome ? verdant : boneDim, fontSize: 10.5)),
-                    const SizedBox(height: 3),
-                    Text('$completed/$total stories remembered',
-                        style: const TextStyle(color: rose, fontSize: 10.5)),
+                    const SizedBox(height: 7),
+                    AlliesStoryProgress(
+                      completed: completed,
+                      total: total,
+                    ),
                   ],
                 ),
               ),
@@ -145,6 +148,9 @@ class CharacterDetailScreen extends StatelessWidget {
     final ascension = Ascension.byId(resident.id);
     final beats = route == null ? <Beat>[] : List<Beat>.of(route.beats);
     beats.sort((a, b) => a.order.compareTo(b.order));
+    final completed = beats
+        .where((beat) => game.state.completedBeats.contains(beat.beatId))
+        .length;
 
     return Scaffold(
       backgroundColor: night,
@@ -170,11 +176,38 @@ class CharacterDetailScreen extends StatelessWidget {
               borderColor: atHome ? rift : riftDim,
               child: Column(
                 children: [
-                  CharacterHero(
-                    resident.id,
-                    height: 270,
-                    glow: atHome ? 1 : .35,
-                    dimmed: !atHome,
+                  Stack(
+                    children: [
+                      CharacterHero(
+                        resident.id,
+                        height: 270,
+                        glow: atHome ? 1 : .35,
+                        dimmed: !atHome,
+                      ),
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          key: const Key('allies-profile-status'),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: night.withValues(alpha: .82),
+                            border: Border.all(
+                              color: atHome ? verdant : riftDim,
+                            ),
+                          ),
+                          child: Text(
+                            atHome ? 'AT HOME' : 'NOT SETTLED',
+                            style: TextStyle(
+                              color: atHome ? verdant : boneDim,
+                              fontSize: 10,
+                              letterSpacing: 1.2,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 12),
                   Text(resident.name,
@@ -194,6 +227,37 @@ class CharacterDetailScreen extends StatelessWidget {
                         fontSize: 12.5,
                         height: 1.55,
                         fontStyle: FontStyle.italic),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            Panel(
+              key: Key('allies-character-progress-${resident.id}'),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text('Your connection',
+                      style: TextStyle(color: bone, fontSize: 14)),
+                  const SizedBox(height: 10),
+                  AlliesBondProgress(
+                    points: game.bondPoints(resident.id),
+                    tier: game.bondTier(resident.id),
+                  ),
+                  const SizedBox(height: 12),
+                  AlliesStoryProgress(
+                    completed: completed,
+                    total: beats.length,
+                  ),
+                  const SizedBox(height: 7),
+                  Text(
+                    game.routeComplete(resident.id)
+                        ? 'Every chapter in this route is remembered.'
+                        : game.nextBeat(resident.id) != null
+                            ? 'A chapter is ready. Check its story context below.'
+                            : 'Next chapter: ${game.lockReason(resident.id) ?? "not yet"}.',
+                    style: const TextStyle(
+                        color: boneDim, fontSize: 11, height: 1.4),
                   ),
                 ],
               ),
