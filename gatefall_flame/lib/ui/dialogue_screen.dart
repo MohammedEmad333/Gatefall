@@ -13,6 +13,7 @@ import '../data/companion_routes.dart';
 import '../data/house.dart';
 import '../state/game_controller.dart';
 import 'theme.dart';
+import 'dialogue_webtoon_panel.dart';
 
 /// The scene renderer — the piece docs/HANDOFF.md called the real gap left
 /// by step 6: "there's nowhere in the app to trigger a home_visit/gift/date
@@ -95,6 +96,10 @@ class _DialogueScreenState extends State<DialogueScreen> {
   /// line at a time with no memory of what was just said.
   final List<_Line> _history = [];
 
+  /// Reader mode is presentation-only; toggling never restarts the engine.
+  bool _webtoonMode = false;
+  final ScrollController _webtoonScroll = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -130,6 +135,31 @@ class _DialogueScreenState extends State<DialogueScreen> {
       if (!mounted) return;
       setState(() => _error = '$e');
     }
+  }
+
+  @override
+  void dispose() {
+    _webtoonScroll.dispose();
+    super.dispose();
+  }
+
+  void _toggleReaderMode() {
+    Audio.instance.noteGesture();
+    Audio.instance.play(Sfx.page);
+    setState(() => _webtoonMode = !_webtoonMode);
+    if (_webtoonMode) _scrollWebtoonToLatest();
+  }
+
+  /// Scroll only when a new node arrives. Manual browsing stays undisturbed.
+  void _scrollWebtoonToLatest() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_webtoonMode || !_webtoonScroll.hasClients) return;
+      _webtoonScroll.animateTo(
+        _webtoonScroll.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOut,
+      );
+    });
   }
 
   void _pushCurrent(DialogueEngine engine) {
@@ -169,6 +199,7 @@ class _DialogueScreenState extends State<DialogueScreen> {
         // A terminal node with no line of its own — nothing left to read.
       }
     });
+    if (_webtoonMode) _scrollWebtoonToLatest();
   }
 
   void _choose(Choice choice) {
@@ -180,6 +211,7 @@ class _DialogueScreenState extends State<DialogueScreen> {
       engine.choose(choice.choiceId);
       _pushCurrent(engine);
     });
+    if (_webtoonMode) _scrollWebtoonToLatest();
   }
 
   Future<void> _finish() async {
@@ -252,7 +284,9 @@ class _DialogueScreenState extends State<DialogueScreen> {
                           : GestureDetector(
                               behavior: HitTestBehavior.opaque,
                               onTap: choices.isEmpty ? _advance : null,
-                              child: _transcript(),
+                              child: _webtoonMode
+                                   ? _webtoonTimeline()
+                                   : _transcript(),
                             ),
                 ),
                 if (choices.isNotEmpty)
@@ -309,7 +343,13 @@ class _DialogueScreenState extends State<DialogueScreen> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(alignment: Alignment.centerLeft, child: portrait),
+                Row(
+                  children: [
+                    portrait,
+                    const Spacer(),
+                    _readerModeButton(),
+                  ],
+                ),
                 const SizedBox(height: 8),
                 copy,
               ],
@@ -320,12 +360,59 @@ class _DialogueScreenState extends State<DialogueScreen> {
               portrait,
               const SizedBox(width: 12),
               Expanded(child: copy),
+              const SizedBox(width: 4),
+              _readerModeButton(),
             ],
           );
         },
       ),
     );
   }
+
+  Widget _readerModeButton() => TextButton(
+        key: const Key('dialogue-reader-mode'),
+        onPressed: _toggleReaderMode,
+        style: TextButton.styleFrom(
+          foregroundColor: verdant,
+          minimumSize: const Size(0, 40),
+          padding: const EdgeInsets.symmetric(horizontal: 6),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              _webtoonMode ? Icons.subject : Icons.auto_stories_outlined,
+              size: 19,
+              color: verdant,
+            ),
+            Text(
+              _webtoonMode ? 'Text' : 'Webtoon',
+              style: const TextStyle(fontSize: 10),
+            ),
+          ],
+        ),
+      );
+
+  /// Only lines already reached by DialogueEngine appear in the comic.
+  Widget _webtoonTimeline() => ListView.builder(
+        key: const Key('dialogue-webtoon-timeline'),
+        controller: _webtoonScroll,
+        padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
+        itemCount: _history.length,
+        itemBuilder: (context, index) {
+          final line = _history[index];
+          return DialogueWebtoonPanel(
+            key: Key('dialogue-webtoon-panel-$index'),
+            index: index,
+            characterId: widget.characterId,
+            speakerId: line.speaker,
+            speakerName: _speakerName(line.speaker),
+            text: line.text,
+            emotion: line.emotion,
+            isChoice: line.isChoice,
+          );
+        },
+      );
 
   Widget _transcript() => ListView.builder(
         padding: const EdgeInsets.fromLTRB(16, 6, 16, 16),

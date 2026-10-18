@@ -76,6 +76,67 @@ void main() {
     expect(game.state.completedBeats, isEmpty);
   });
 
+  testWidgets('companion dialogue offers webtoon and transcript modes',
+      (tester) async {
+    final game = await pumpGame(tester);
+    await tester.tap(find.byKey(const Key('house-hero-action')));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('dialogue-webtoon-timeline')), findsOneWidget);
+    expect(find.byKey(const Key('dialogue-webtoon-panel-0')), findsOneWidget);
+    expect(game.state.completedBeats, isEmpty);
+
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('dialogue-webtoon-panel-1')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('dialogue-webtoon-timeline')), findsNothing);
+    expect(find.text('Continue'), findsOneWidget);
+    expect(game.state.completedBeats, isEmpty);
+  });
+
+  testWidgets('webtoon mode still requires canonical Faelen story choices',
+      (tester) async {
+    final game = await pumpGame(tester, setup: (g) {
+      g.state.storyAct = 2;
+      g.state.addBond('faelen', 500);
+      g.state.completedBeats.addAll([
+        'faelen_b0_recruitment',
+        'faelen_b1_the_wall',
+        'faelen_b2_proving_ground',
+        'faelen_b3_first_truth',
+      ]);
+    });
+    await tester.tap(find.byKey(const Key('house-hero-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+
+    var guard = 0;
+    while (find.text('What do you say?').evaluate().isEmpty && guard++ < 25) {
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+    }
+    expect(find.text('What do you say?'), findsOneWidget);
+    const join = '(Hand her the room key.) "You forgot this. We go together."';
+    await tester.tap(find.text(join));
+    await tester.pumpAndSettle();
+    expect(game.state.flags['FAELEN_FRACTURE'], 'join');
+
+    guard = 0;
+    while (find.text('Continue').evaluate().isNotEmpty && guard++ < 25) {
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+    }
+    await tester.tap(find.text('End of scene'));
+    await tester.pumpAndSettle();
+    expect(game.state.completedBeats, contains('faelen_b4_the_fracture'));
+  });
+
   testWidgets('the app boots onto the house with Faelen already home',
       (tester) async {
     await pumpGame(tester);
