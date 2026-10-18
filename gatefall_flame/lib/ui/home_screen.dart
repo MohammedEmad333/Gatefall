@@ -157,19 +157,6 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    if (firstJourney) {
-      return HouseHero(
-        characterId: 'faelen',
-        actTitle: Acts.title[game.act] ?? 'GateFall',
-        title: 'Your first gate',
-        description: 'Faelen is staying for now. Fight together to earn '
-            'Mana, Gold, and Bond for the next chapter.',
-        actionLabel: 'Open the gate board',
-        tone: verdant,
-        onAction: widget.onOpenGates,
-      );
-    }
-
     if (pending.isNotEmpty) {
       final next = pending.first;
       return HouseHero(
@@ -180,6 +167,19 @@ class _HomeScreenState extends State<HomeScreen> {
             '"${next.beat.title}". Your next conversation is ready.',
         actionLabel: 'Continue story',
         onAction: () => _play(next.characterId, next.beat),
+      );
+    }
+
+    if (firstJourney) {
+      return HouseHero(
+        characterId: 'faelen',
+        actTitle: Acts.title[game.act] ?? 'GateFall',
+        title: 'Your first gate',
+        description: 'Faelen is staying for now. Fight together to earn '
+            'Mana, Gold, and Bond for the next chapter.',
+        actionLabel: 'Open the gate board',
+        tone: verdant,
+        onAction: widget.onOpenGates,
       );
     }
 
