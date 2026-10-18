@@ -96,7 +96,7 @@ void main() {
 
     await tester.tap(find.byKey(const Key('house-hero-action')));
     await tester.pumpAndSettle();
-    expect(find.text('I Won\\'t Be Staying'), findsOneWidget);
+    expect(find.text("I Won't Be Staying"), findsOneWidget);
     expect(game.state.completedBeats, isEmpty);
   });
 
