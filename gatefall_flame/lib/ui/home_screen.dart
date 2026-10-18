@@ -13,6 +13,7 @@ import '../data/story.dart';
 import '../state/game_controller.dart';
 import 'dialogue_screen.dart';
 import 'ending_screen.dart';
+import 'house_hero.dart';
 import 'start_scene.dart';
 import 'theme.dart';
 
@@ -93,14 +94,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return ScreenBody(
       children: [
+        _houseHero(pending),
+        const SizedBox(height: 12),
         _actHeader(),
         const SizedBox(height: 12),
-        if (game.clears == 0) ...[
-          _firstJourneyCard(),
-          const SizedBox(height: 10),
-        ],
-        if (pending.isNotEmpty) ...[
-          for (final p in pending) ...[
+        // The first ready scene is featured in the hero. Keep other ready
+        // scenes accessible without duplicating the first CTA.
+        if (pending.length > 1) ...[
+          for (final p in pending.skip(1)) ...[
             _storyCard(p.characterId, p.beat),
             const SizedBox(height: 10),
           ],
@@ -136,7 +137,83 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ---------------- header ----------------
+  // ---------------- house cover & resources ----------------
+
+  Widget _houseHero(List<({String characterId, Beat beat})> pending) {
+    final metFaelen =
+        game.state.completedBeats.contains('faelen_b0_recruitment');
+    final firstJourney = game.clears == 0;
+
+    if (firstJourney && !metFaelen) {
+      final intro = game.beatFor('faelen', 'story');
+      return HouseHero(
+        characterId: 'faelen',
+        actTitle: Acts.title[game.act] ?? 'GateFall',
+        title: 'Start here',
+        description: 'The elf from the doorstep is awake. Talk to her '
+            'before anything else — her story begins at your door.',
+        actionLabel: 'Talk to Faelen',
+        onAction: intro == null ? null : () => _play('faelen', intro),
+      );
+    }
+
+    if (pending.isNotEmpty) {
+      final next = pending.first;
+      return HouseHero(
+        characterId: next.characterId,
+        actTitle: Acts.title[game.act] ?? 'GateFall',
+        title: 'A story is waiting',
+        description: '${House.byId(next.characterId).name} — '
+            '"${next.beat.title}". Your next conversation is ready.',
+        actionLabel: 'Continue story',
+        onAction: () => _play(next.characterId, next.beat),
+      );
+    }
+
+    if (firstJourney) {
+      return HouseHero(
+        characterId: 'faelen',
+        actTitle: Acts.title[game.act] ?? 'GateFall',
+        title: 'Your first gate',
+        description: 'Faelen is staying for now. Fight together to earn '
+            'Mana, Gold, and Bond for the next chapter.',
+        actionLabel: 'Open the gate board',
+        tone: verdant,
+        onAction: widget.onOpenGates,
+      );
+    }
+
+    if (game.finaleAvailable) {
+      return HouseHero(
+        characterId: 'faelen',
+        actTitle: Acts.title[game.act] ?? 'GateFall',
+        title: 'The house, after',
+        description: 'The gates have their answer. Your companions have '
+            'their own endings. See how this story resolves.',
+        actionLabel: 'See how it ends',
+        tone: rose,
+        onAction: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => EndingScreen(game: game)),
+        ),
+      );
+    }
+
+    return HouseHero(
+      characterId: 'faelen',
+      actTitle: Acts.title[game.act] ?? 'GateFall',
+      title: game.act >= Acts.maxAct && game.gateAnswer == null
+          ? 'The last question'
+          : 'The next gate awaits',
+      description: game.act >= Acts.maxAct && game.gateAnswer == null
+          ? 'Your answer about the gates awaits in the House below. '
+              'Prepare your companions for what comes after.'
+          : 'Take your allies through a gate, deepen your bonds, '
+              'and unlock the next chapter at home.',
+      actionLabel: 'Open the gate board',
+      tone: verdant,
+      onAction: widget.onOpenGates,
+    );
+  }
 
   Widget _actHeader() {
     final req = game.nextActRequirement;
@@ -144,17 +221,22 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ScreenHeader(Acts.title[game.act] ?? 'Gatefall',
-              trailing: CurrencyChip('${game.gold}', 'gold', gold)),
-          const SizedBox(height: 5),
-          Text(Acts.blurb[game.act] ?? '',
-              style: const TextStyle(
-                  color: boneDim,
-                  fontSize: 12,
-                  fontStyle: FontStyle.italic,
-                  height: 1.5)),
+          const Text(
+            'THE HOUSE',
+            style: TextStyle(color: gold, letterSpacing: 1.3, fontSize: 12),
+          ),
+          const SizedBox(height: 11),
+          Wrap(
+            spacing: 15,
+            runSpacing: 10,
+            children: [
+              CurrencyChip('${game.gold}', 'gold', gold),
+              CurrencyChip('${game.mana}', 'mana', verdant),
+              CurrencyChip('${game.settled.length}', 'residents', rose),
+            ],
+          ),
           if (req != null) ...[
-            const SizedBox(height: 9),
+            const SizedBox(height: 12),
             Callout(req, tone: boneDim),
           ],
         ],
@@ -163,43 +245,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // ---------------- story ----------------
-
-  Widget _firstJourneyCard() {
-    final intro = game.beatFor('faelen', 'story');
-    final metFaelen =
-        game.state.completedBeats.contains('faelen_b0_recruitment');
-
-    return Panel(
-      borderColor: metFaelen ? verdant : gold,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          PanelTitle(
-            metFaelen ? 'Your first gate' : 'Start here',
-            subtitle: metFaelen
-                ? 'Faelen is staying for now. Take her through one gate so '
-                    'the two halves of Gatefall meet: fighting together earns '
-                    'Mana, Gold, and Bond that opens the next parts of her story.'
-                : 'The elf from the doorstep is awake. Talk to her before '
-                    'doing anything else — this is where the first route begins.',
-          ),
-          const SizedBox(height: 10),
-          SlabButton(
-            metFaelen ? 'Open the gate board' : 'Talk to Faelen',
-            filled: true,
-            tone: metFaelen ? verdant : gold,
-            sound: metFaelen ? Sfx.page : Sfx.bond,
-            padding: const EdgeInsets.symmetric(vertical: 13),
-            onPressed: metFaelen
-                ? widget.onOpenGates
-                : intro == null
-                    ? null
-                    : () => _play('faelen', intro),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _storyCard(String characterId, Beat beat) => Beacon(
         color: gold,

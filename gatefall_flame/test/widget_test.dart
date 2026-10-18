@@ -87,6 +87,31 @@ void main() {
     expect(find.text('Allies'), findsOneWidget);
   });
 
+  testWidgets('House hero leads to the canonical first Faelen scene',
+      (tester) async {
+    final game = await pumpGame(tester);
+    expect(find.byKey(const Key('house-hero')), findsOneWidget);
+    expect(find.text('Start here'), findsOneWidget);
+    expect(find.text('Talk to Faelen'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('house-hero-action')));
+    await tester.pumpAndSettle();
+    expect(find.text("I Won't Be Staying"), findsOneWidget);
+    expect(game.state.completedBeats, isEmpty);
+  });
+
+  testWidgets('House hero advances to Gates after Faelen introduction',
+      (tester) async {
+    await pumpGame(tester, setup: (game) {
+      game.state.completedBeats.add('faelen_b0_recruitment');
+    });
+    expect(find.text('Your first gate'), findsOneWidget);
+    expect(find.text('Open the gate board'), findsOneWidget);
+    await tester.tap(find.byKey(const Key('house-hero-action')));
+    await tester.pumpAndSettle();
+    expect(find.text('The board'), findsOneWidget);
+  });
+
   testWidgets('first-session guidance leads from Faelen to the gate board',
       (tester) async {
     final game = await pumpGame(tester);
@@ -553,7 +578,7 @@ void main() {
     final game = await pumpGame(tester);
     expect(game.state.completedBeats, isEmpty);
 
-    await tester.tap(find.text('Faelen — "I Won\'t Be Staying"'));
+    await tester.tap(find.byKey(const Key('house-hero-action')));
     await tester.pumpAndSettle();
     expect(find.text('I Won\'t Be Staying'), findsOneWidget);
 
@@ -590,7 +615,7 @@ void main() {
 
     // The title also appears in the resident panel's "next up" line, so
     // target the story card itself.
-    await tester.tap(find.text('Faelen — "This Is My War"'));
+    await tester.tap(find.byKey(const Key('house-hero-action')));
     await tester.pumpAndSettle();
 
     var guard = 0;
