@@ -67,6 +67,72 @@ void main() {
   });
 
   group('reading it', () {
+    testWidgets('vertical mode shows the original scrollable comic',
+        (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        theme: gatefallTheme(),
+        home: StartScene(onDone: () {}),
+      ));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.byKey(const Key('opening-reader-mode')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('opening-vertical-reader')), findsOneWidget);
+      expect(find.byKey(const Key('opening-panel-0')), findsOneWidget);
+      expect(find.text('Scroll to read · panel 1 / 11'), findsOneWidget);
+      expect(find.text('skip'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('vertical mode finishes only at the final reader action',
+        (tester) async {
+      var done = false;
+      await tester.pumpWidget(MaterialApp(
+        theme: gatefallTheme(),
+        home: StartScene(onDone: () => done = true),
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('opening-reader-mode')));
+      await tester.pumpAndSettle();
+
+      await tester.scrollUntilVisible(
+        find.byKey(const Key('opening-vertical-finish')),
+        350,
+        scrollable: find.byType(Scrollable).first,
+      );
+      await tester.pumpAndSettle();
+
+      expect(done, isFalse);
+      await tester.tap(find.byKey(const Key('opening-vertical-finish')));
+      await tester.pumpAndSettle();
+      expect(done, isTrue);
+    });
+
+    testWidgets('switching reader modes keeps the scroll position',
+        (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        theme: gatefallTheme(),
+        home: StartScene(onDone: () {}),
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('opening-reader-mode')));
+      await tester.pumpAndSettle();
+
+      await tester.drag(
+        find.byKey(const Key('opening-vertical-reader')),
+        const Offset(0, -900),
+      );
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('opening-reader-mode')));
+      await tester.pumpAndSettle();
+
+      expect(find.byKey(const Key('opening-pages-1')), findsNothing);
+      expect(find.byType(ComicPanel), findsWidgets);
+      expect(tester.takeException(), isNull);
+    });
+
+
     testWidgets('opens on the first page, one panel at a time',
         (tester) async {
       await tester.pumpWidget(MaterialApp(
