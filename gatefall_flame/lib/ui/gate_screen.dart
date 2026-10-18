@@ -16,6 +16,7 @@ import '../data/progression.dart';
 import '../data/roster.dart';
 import '../state/game_controller.dart';
 import 'dialogue_screen.dart';
+import 'raid_cinematic.dart';
 import 'theme.dart';
 
 /// The Mana half: pick a gate off the board, set the formation, watch the
@@ -39,11 +40,15 @@ class GateScreen extends StatefulWidget {
   /// after the player's first successful clear.
   final VoidCallback? onOpenHouse;
 
+  /// Navigate to eligible chapters once the raid has resolved.
+  final VoidCallback? onOpenStory;
+
   const GateScreen({
     super.key,
     required this.game,
     this.active = true,
     this.onOpenHouse,
+    this.onOpenStory,
   });
 
   @override
@@ -57,6 +62,13 @@ bool shouldReturnHomeAfterRaid({
     won && clears == 1;
 
 bool canRetryRaid(BattleStatus status) => status == BattleStatus.lost;
+
+/// Victory follow-ups must not fire when a player retreats.
+bool shouldOfferPostRaidScene({
+  required BattleStatus status,
+  required bool beatReady,
+}) =>
+    status == BattleStatus.won && beatReady;
 
 bool canQuickRetryRaid({
   required BattleStatus status,
@@ -532,7 +544,7 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     Audio.instance.play(Sfx.defeat);
     setState(() => stage = _Stage.result);
   }
-  Future<void> _leaveResult() async {
+  Future<void> _leaveResult({bool openStory = false}) async {
     final firstClear = shouldReturnHomeAfterRaid(
       won: battle?.status == BattleStatus.won,
       clears: game.clears,
@@ -541,7 +553,10 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     // The post_raid hook, actually played: banter after clearing a gate
     // together (docs/combat-spec.md §2), rendered rather than announced.
     final pending = game.postRaidBeat;
-    if (pending != null) {
+    if (shouldOfferPostRaidScene(
+      status: battle?.status ?? BattleStatus.lost,
+      beatReady: pending != null,
+    )) {
       await DialogueScreen.play(context,
           game: game,
           characterId: pending.characterId,
@@ -560,7 +575,11 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     // stays open, so backing out of the result must not silently replace it.
     // The very first clear is the end of the onboarding loop: story -> gate
     // -> rewards -> back home to see Bond and the next route requirement.
-    if (firstClear) widget.onOpenHouse?.call();
+    if (openStory && widget.onOpenStory != null) {
+      widget.onOpenStory!();
+    } else if (firstClear) {
+      widget.onOpenHouse?.call();
+    }
   }
 
   @override
@@ -977,6 +996,13 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
             const SizedBox(height: 12),
             _enemyPanel(b),
             const SizedBox(height: 9),
+            RaidEncounterBanner(
+              element: gate!.element,
+              waveIndex: b.waveIndex,
+              waveCount: CombatConfig.waves,
+              onBoss: b.onBoss,
+            ),
+            const SizedBox(height: 9),
             _waveTrack(b),
             const SizedBox(height: 12),
             ..._partyList(b),
@@ -1376,7 +1402,8 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   Widget _resultView(Battle b) {
     final won = b.status == BattleStatus.won;
     final g = gate!;
-    final post = game.postRaidBeat;
+    final post = won ? game.postRaidBeat : null;
+    final readyStory = won ? game.pendingStoryBeats.firstOrNull : null;
     var step = 0;
     // Each line arrives after the one above it, so the payout reads in
     // order instead of landing as a wall.
@@ -1388,27 +1415,12 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     return ScreenBody(
       children: [
         const SizedBox(height: 12),
-        staged(Center(
-          child: RiftView(
-            element: g.element,
-            size: 96,
-            // A cleared gate is a closing one: the tear is still there, but
-            // it has stopped pulling.
-            intensity: won ? .35 : .8,
-          ),
-        )),
-        const SizedBox(height: 14),
-        staged(Text(won ? 'Gate cleared' : 'Party withdrawn',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: won ? verdant : blood, fontSize: 25))),
-        const SizedBox(height: 11),
-        staged(Text(
-          won
-              ? 'The rift closes behind you. ${b.elapsed.round()}s in the gate.'
-              : 'You pull back through the tear. The gate stays open, and '
-                  'everything you earned in there is still yours.',
-          textAlign: TextAlign.center,
-          style: const TextStyle(color: boneDim, fontSize: 14, height: 1.6),
+        staged(RaidOutcomeHero(
+          won: won,
+          element: g.element,
+          gateName: g.fullName,
+          elapsedSeconds: b.elapsed.round(),
+          partyIds: game.formation.keys.toList(),
         )),
         const SizedBox(height: 16),
         staged(Center(
@@ -1445,6 +1457,22 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
         if (won && game.clears == CombatConfig.clearsToUnlockFastSpeed) ...[
           const SizedBox(height: 14),
           staged(const Callout('4× speed unlocked.')),
+        ],
+        if (post != null) ...[
+          const SizedBox(height: 16),
+          staged(RaidStoryBridge(
+            characterId: post.characterId,
+            title: post.beat.title,
+            postRaid: true,
+          )),
+        ],
+        if (readyStory != null) ...[
+          const SizedBox(height: 12),
+          staged(RaidStoryBridge(
+            characterId: readyStory.characterId,
+            title: readyStory.beat.title,
+            postRaid: false,
+          )),
         ],
         const SizedBox(height: 26),
         if (canRetryRaid(b.status)) ...[
@@ -1492,6 +1520,16 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
             padding: const EdgeInsets.symmetric(vertical: 14),
             onPressed: _leaveResult,
           )),
+        if (readyStory != null && widget.onOpenStory != null) ...[
+          const SizedBox(height: 8),
+          staged(SlabButton(
+            'Continue in Story',
+            key: const Key('raid-open-ready-chapter'),
+            tone: gold,
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            onPressed: () => _leaveResult(openStory: true),
+          )),
+        ],
       ],
     );
   }
