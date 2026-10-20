@@ -398,6 +398,10 @@ class _DialogueScreenState extends State<DialogueScreen> {
   Widget _webtoonTimeline() => ListView.builder(
         key: const Key('dialogue-webtoon-timeline'),
         controller: _webtoonScroll,
+        // Keep at most a fraction of the next illustrated panel prepared;
+        // old panels are rebuilt lazily from the small immutable transcript.
+        cacheExtent: 220,
+        addAutomaticKeepAlives: false,
         padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
         itemCount: _history.length,
         itemBuilder: (context, index) {
