@@ -453,19 +453,19 @@ class _StartSceneState extends State<StartScene> {
                 child: Semantics(
                   label: 'Panel ${index + 1} of ${_readingOrder.length}. $caption',
                   child: ExcludeSemantics(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(2, 0, 6, gap),
-                    child: SizedBox(
-                      key: Key('opening-panel-$index'),
-                      height: panelHeight,
-                      child: _panelView(
-                        item.panel,
-                        shown: true,
-                        active: false,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(2, 0, 6, gap),
+                      child: SizedBox(
+                        key: Key('opening-panel-$index'),
+                        height: panelHeight,
+                        child: _panelView(
+                          item.panel,
+                          shown: true,
+                          active: false,
+                        ),
                       ),
                     ),
                   ),
-                ),
                 ),
               );
             },
