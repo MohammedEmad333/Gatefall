@@ -123,7 +123,12 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('withdraw-raid')));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Withdraw'));
+    // The live raid's underlying action has the same label, so scope the
+    // confirmation tap to the visible AlertDialog.
+    await tester.tap(find.descendant(
+      of: find.byType(AlertDialog),
+      matching: find.text('Withdraw'),
+    ));
     await tester.pumpAndSettle();
     expect(find.text('Party withdrawn'), findsOneWidget);
 
