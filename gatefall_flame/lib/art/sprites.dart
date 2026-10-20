@@ -80,6 +80,14 @@ class SpriteBook {
   bool has(String assetPath) => _available.contains(assetPath);
 }
 
+/// Choose a physical-pixel decode target for a fixed-size portrait. Capping
+/// the decode size prevents large PNGs from filling the image cache while
+/// a comic scrolls. Asset fallback is unaffected.
+int spriteDecodeWidth(double logicalSize, double devicePixelRatio) {
+  final pixels = (logicalSize * devicePixelRatio).ceil();
+  return pixels < 1 ? 1 : (pixels > 768 ? 768 : pixels);
+}
+
 String characterSpritePath(String id, {String? expression}) =>
     expression == null || expression.isEmpty
         ? 'assets/sprites/characters/$id.png'
@@ -198,6 +206,14 @@ class CharacterSprite extends StatelessWidget {
   /// DialogueNode.emotion); harmless everywhere else.
   final String? expression;
 
+  /// Previously read panels can remain still. Default true preserves
+  /// animation in combat and other existing character presentations.
+  final bool animate;
+
+  /// Optional physical-pixel target for the small images in comic panels.
+  /// Null keeps the existing full-resolution default elsewhere.
+  final int? decodeWidth;
+
   const CharacterSprite(
     this.id, {
     super.key,
@@ -208,6 +224,8 @@ class CharacterSprite extends StatelessWidget {
     this.plate = true,
     this.expression,
     this.animation = CharacterAnimationState.neutral,
+    this.animate = true,
+    this.decodeWidth,
   });
 
   Widget _painted() => CharacterPortrait(id,
@@ -231,7 +249,7 @@ class CharacterSprite extends StatelessWidget {
             : animation;
     final animationFrames =
         characterAnimationFramePaths(id, requestedAnimation);
-    final useAnimation = expression == null &&
+    final useAnimation = animate && expression == null &&
         requestedAnimation != CharacterAnimationState.neutral &&
         animationFrames.isNotEmpty &&
         animationFrames.every(SpriteBook.instance.has);
@@ -243,6 +261,7 @@ class CharacterSprite extends StatelessWidget {
             fallback: _painted,
             frameDuration: characterAnimationFrameDuration(requestedAnimation),
             loop: requestedAnimation == CharacterAnimationState.idle,
+            decodeWidth: decodeWidth,
           )
         : Image.asset(
             path,
@@ -250,6 +269,7 @@ class CharacterSprite extends StatelessWidget {
             height: size,
             fit: BoxFit.contain,
             filterQuality: FilterQuality.medium,
+            cacheWidth: decodeWidth,
             // A declared-but-broken asset must never crash the fight; fall back.
             errorBuilder: (_, __, ___) => _painted(),
           );
@@ -298,6 +318,7 @@ class _CharacterAnimationFrames extends StatefulWidget {
   final Widget Function() fallback;
   final Duration frameDuration;
   final bool loop;
+  final int? decodeWidth;
 
   const _CharacterAnimationFrames({
     required this.paths,
@@ -305,6 +326,7 @@ class _CharacterAnimationFrames extends StatefulWidget {
     required this.fallback,
     required this.frameDuration,
     required this.loop,
+    this.decodeWidth,
   });
 
   @override
@@ -367,6 +389,7 @@ class _CharacterAnimationFramesState extends State<_CharacterAnimationFrames> {
         fit: BoxFit.contain,
         filterQuality: FilterQuality.medium,
         gaplessPlayback: true,
+        cacheWidth: widget.decodeWidth,
         errorBuilder: (_, __, ___) => widget.fallback(),
       );
 }
