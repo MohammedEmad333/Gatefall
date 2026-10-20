@@ -144,6 +144,10 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
   bool _paused = false;
   bool _resumeAfterWithdrawDialog = false;
 
+  // The results screen may open an asynchronous companion chapter. Disable
+  // a second result exit while the first Navigator push is in flight.
+  bool _leavingResult = false;
+
   /// The presentation layer's own state. None of this is the simulation —
   /// it is what the simulation looked like last frame, so this frame can
   /// tell what just happened.
@@ -545,6 +549,9 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
     setState(() => stage = _Stage.result);
   }
   Future<void> _leaveResult({bool openStory = false}) async {
+    if (_leavingResult || stage != _Stage.result) return;
+    _leavingResult = true;
+    try {
     final firstClear = shouldReturnHomeAfterRaid(
       won: battle?.status == BattleStatus.won,
       clears: game.clears,
@@ -580,6 +587,10 @@ class _GateScreenState extends State<GateScreen> with WidgetsBindingObserver {
       widget.onOpenStory!();
     } else if (firstClear) {
       widget.onOpenHouse?.call();
+    }
+    } finally {
+      // Also reset when a dialogue was dismissed via Android Back.
+      _leavingResult = false;
     }
   }
 
