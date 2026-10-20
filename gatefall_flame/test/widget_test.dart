@@ -92,7 +92,7 @@ void main() {
       find.byKey(const Key('dialogue-webtoon-timeline')),
     );
     expect(comic.cacheExtent, 220);
-    expect(comic.addAutomaticKeepAlives, isFalse);
+    expect((comic.childrenDelegate as SliverChildBuilderDelegate).addAutomaticKeepAlives, isFalse);
     expect(find.byKey(const Key('dialogue-webtoon-panel-0')), findsOneWidget);
     expect(game.state.completedBeats, isEmpty);
 
