@@ -14,6 +14,7 @@ import '../data/house.dart';
 import '../state/game_controller.dart';
 import 'theme.dart';
 import 'dialogue_webtoon_panel.dart';
+import 'webtoon_scroll_controls.dart';
 
 /// The scene renderer — the piece docs/HANDOFF.md called the real gap left
 /// by step 6: "there's nowhere in the app to trigger a home_visit/gift/date
@@ -286,8 +287,20 @@ class _DialogueScreenState extends State<DialogueScreen> {
                               behavior: HitTestBehavior.opaque,
                               onTap: choices.isEmpty ? _advance : null,
                               child: _webtoonMode
-                                   ? _webtoonTimeline()
-                                   : _transcript(),
+                                  ? Stack(
+                                      children: [
+                                        _webtoonTimeline(),
+                                        Positioned(
+                                          right: 14,
+                                          bottom: 8,
+                                          child: WebtoonLatestButton(
+                                            controller: _webtoonScroll,
+                                            onPressed: _scrollWebtoonToLatest,
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : _transcript(),
                             ),
                 ),
                 if (choices.isNotEmpty)

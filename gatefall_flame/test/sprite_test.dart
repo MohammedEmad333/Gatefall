@@ -77,6 +77,56 @@ void main() {
     expect((provider.imageProvider as AssetImage).assetName, frames.first);
   });
 
+  testWidgets('sprite frame timers pause under TickerMode and resume on return',
+      (tester) async {
+    final frames =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.idle);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('faelen'),
+      ...frames,
+    });
+
+    Widget screen(bool enabled) => MaterialApp(
+          home: TickerMode(
+            enabled: enabled,
+            child: const Scaffold(
+              body: CharacterSprite(
+                'faelen',
+                size: 108,
+                calm: true,
+                decodeWidth: 216,
+              ),
+            ),
+          ),
+        );
+
+    String currentFrame() {
+      final image = tester.widget<Image>(find.byType(Image));
+      final provider = image.image as ResizeImage;
+      return (provider.imageProvider as AssetImage).assetName;
+    }
+
+    final frameDuration =
+        characterAnimationFrameDuration(CharacterAnimationState.idle);
+
+    await tester.pumpWidget(screen(false));
+    expect(currentFrame(), frames.first);
+    await tester.pump(frameDuration * 3);
+    expect(currentFrame(), frames.first);
+
+    await tester.pumpWidget(screen(true));
+    await tester.pump(frameDuration + const Duration(milliseconds: 4));
+    expect(currentFrame(), frames[1]);
+
+    await tester.pumpWidget(screen(false));
+    await tester.pump(frameDuration * 4);
+    expect(currentFrame(), frames[1]);
+
+    await tester.pumpWidget(screen(true));
+    await tester.pump(frameDuration + const Duration(milliseconds: 4));
+    expect(currentFrame(), frames[2]);
+  });
+
   test('asset paths follow the documented convention', () {
     expect(characterSpritePath('faelen'), 'assets/sprites/characters/faelen.png');
     expect(characterSpritePath('faelen', expression: 'happy'),
