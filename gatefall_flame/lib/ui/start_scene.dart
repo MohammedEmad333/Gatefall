@@ -415,6 +415,9 @@ class _StartSceneState extends State<StartScene> {
           return ListView.builder(
             key: const Key('opening-vertical-reader'),
             controller: _scroll,
+            // Hold only the next slice of art, not the whole comic strip.
+            cacheExtent: panelHeight * .6,
+            addAutomaticKeepAlives: false,
             padding: const EdgeInsets.only(top: 4, bottom: 22),
             itemCount: _readingOrder.length + 1,
             itemBuilder: (context, index) {
@@ -443,9 +446,13 @@ class _StartSceneState extends State<StartScene> {
               final item = _readingOrder[index];
               final caption = item.panel.caption ??
                   item.panel.line ?? 'GateFall opening scene';
-              return Semantics(
-                label: 'Panel ${index + 1} of ${_readingOrder.length}. $caption',
-                child: ExcludeSemantics(
+              return TickerMode(
+                // Offscreen rifts stop ticking. The focus remains derived
+                // from scrolling, not from widget lifecycle callbacks.
+                enabled: index == _focusedPanel,
+                child: Semantics(
+                  label: 'Panel ${index + 1} of ${_readingOrder.length}. $caption',
+                  child: ExcludeSemantics(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(2, 0, 6, gap),
                     child: SizedBox(
@@ -458,6 +465,7 @@ class _StartSceneState extends State<StartScene> {
                       ),
                     ),
                   ),
+                ),
                 ),
               );
             },
