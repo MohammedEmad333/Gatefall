@@ -83,7 +83,7 @@ void main() {
         find.byKey(const Key('opening-vertical-reader')),
       );
       expect(vertical.cacheExtent, lessThanOrEqualTo(240));
-      expect(vertical.addAutomaticKeepAlives, isFalse);
+      expect((vertical.childrenDelegate as SliverChildBuilderDelegate).addAutomaticKeepAlives, isFalse);
       expect(find.byKey(const Key('opening-panel-0')), findsOneWidget);
       expect(TickerMode.of(tester.element(
         find.byKey(const Key('opening-panel-0')),
