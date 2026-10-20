@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show AssetManifest, rootBundle;
 
@@ -374,7 +375,7 @@ class _CharacterAnimationFramesState extends State<_CharacterAnimationFrames> {
   @override
   void didUpdateWidget(covariant _CharacterAnimationFrames oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (oldWidget.paths != widget.paths ||
+    if (!listEquals(oldWidget.paths, widget.paths) ||
         oldWidget.frameDuration != widget.frameDuration ||
         oldWidget.loop != widget.loop) {
       _frame = 0;
