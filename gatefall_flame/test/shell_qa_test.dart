@@ -111,6 +111,35 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('repeated result exits are ignored after withdrawal',
+      (tester) async {
+    final game = await boot(tester);
+    await tester.tap(find.byIcon(Icons.blur_circular_outlined));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text(game.board.first.fullName).first);
+    await tester.pump();
+    await tester.tap(find.text('Enter the gate'));
+    await tester.pump();
+
+    await tester.tap(find.byKey(const ValueKey('withdraw-raid')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Withdraw'));
+    await tester.pumpAndSettle();
+    expect(find.text('Party withdrawn'), findsOneWidget);
+
+    // Retain the previous frame's callback to simulate a rapid second tap
+    // arriving before Flutter has rebuilt the result page.
+    final leave = tester.widget<SlabButton>(
+      find.byKey(const ValueKey('leave-failed-gate')),
+    ).onPressed!;
+    leave();
+    leave();
+    await tester.pumpAndSettle();
+    expect(find.text('The board'), findsOneWidget);
+    expect(game.clears, 0);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('formation and paused raid survive tab navigation and Back',
       (tester) async {
     final game = await boot(tester);
