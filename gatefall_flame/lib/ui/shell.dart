@@ -65,7 +65,15 @@ class _GatefallShellState extends State<GatefallShell> {
     final storyWaiting = game.pendingStoryBeats.isNotEmpty ||
         (game.act >= 3 && game.gateAnswer == null);
 
-    return Scaffold(
+    // Keep the OS Back action inside the portrait hub until House is
+    // selected. A dialogue or character-details route above the hub still
+    // pops normally because only the top route receives that pop.
+    return PopScope(
+      canPop: _index == _house,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop && _index != _house) _selectTab(_house);
+      },
+      child: Scaffold(
       body: Listener(
         // Browsers allow sound only after a user gesture.
         onPointerDown: (_) => Audio.instance.noteGesture(),
@@ -75,22 +83,37 @@ class _GatefallShellState extends State<GatefallShell> {
             child: IndexedStack(
               index: _index,
               children: [
-                HomeScreen(
-                  game: game,
-                  onOpenGates: () => _selectTab(_gates),
+                // IndexedStack retains tab state, but inactive routes do
+                // not need repeating rift / portrait animations. An active
+                // raid's real timer is paused separately by GateScreen.
+                TickerMode(
+                  enabled: _index == _house,
+                  child: HomeScreen(
+                    game: game,
+                    onOpenGates: () => _selectTab(_gates),
+                  ),
                 ),
-                StoryScreen(
-                  game: game,
-                  onOpenHouse: () => _selectTab(_house),
-                  onOpenGates: () => _selectTab(_gates),
+                TickerMode(
+                  enabled: _index == _story,
+                  child: StoryScreen(
+                    game: game,
+                    onOpenHouse: () => _selectTab(_house),
+                    onOpenGates: () => _selectTab(_gates),
+                  ),
                 ),
-                GateScreen(
-                  game: game,
-                  active: _index == _gates,
-                  onOpenHouse: () => _selectTab(_house),
-                  onOpenStory: () => _selectTab(_story),
+                TickerMode(
+                  enabled: _index == _gates,
+                  child: GateScreen(
+                    game: game,
+                    active: _index == _gates,
+                    onOpenHouse: () => _selectTab(_house),
+                    onOpenStory: () => _selectTab(_story),
+                  ),
                 ),
-                AlliesScreen(game: game),
+                TickerMode(
+                  enabled: _index == 3,
+                  child: AlliesScreen(game: game),
+                ),
               ],
             ),
           ),
@@ -151,6 +174,7 @@ class _GatefallShellState extends State<GatefallShell> {
             ),
           ),
         ),
+      ),
       ),
     );
   }
