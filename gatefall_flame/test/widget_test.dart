@@ -88,6 +88,11 @@ void main() {
     await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
     await tester.pumpAndSettle();
     expect(find.byKey(const Key('dialogue-webtoon-timeline')), findsOneWidget);
+    final comic = tester.widget<ListView>(
+      find.byKey(const Key('dialogue-webtoon-timeline')),
+    );
+    expect(comic.cacheExtent, 220);
+    expect((comic.childrenDelegate as SliverChildBuilderDelegate).addAutomaticKeepAlives, isFalse);
     expect(find.byKey(const Key('dialogue-webtoon-panel-0')), findsOneWidget);
     expect(game.state.completedBeats, isEmpty);
 

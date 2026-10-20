@@ -79,7 +79,19 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.byKey(const Key('opening-vertical-reader')), findsOneWidget);
+      final vertical = tester.widget<ListView>(
+        find.byKey(const Key('opening-vertical-reader')),
+      );
+      expect(vertical.cacheExtent, lessThanOrEqualTo(240));
+      expect((vertical.childrenDelegate as SliverChildBuilderDelegate).addAutomaticKeepAlives, isFalse);
       expect(find.byKey(const Key('opening-panel-0')), findsOneWidget);
+      expect(TickerMode.of(tester.element(
+        find.byKey(const Key('opening-panel-0')),
+      )), isTrue);
+      final next = find.byKey(const Key('opening-panel-1'));
+      if (next.evaluate().isNotEmpty) {
+        expect(TickerMode.of(tester.element(next)), isFalse);
+      }
       expect(find.text('Scroll to read · panel 1 / 11'), findsOneWidget);
       expect(find.text('skip'), findsOneWidget);
       expect(tester.takeException(), isNull);

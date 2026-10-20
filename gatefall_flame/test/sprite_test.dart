@@ -18,6 +18,65 @@ void main() {
   // Each test declares the sprite set it wants; reset so order can't leak.
   tearDown(() => SpriteBook.instance.setAvailableForTest(const {}));
 
+  test('comic sprite decode width respects display density and memory cap', () {
+    expect(spriteDecodeWidth(160, 2), 320);
+    expect(spriteDecodeWidth(100, 3), 300);
+    expect(spriteDecodeWidth(800, 4), 768);
+    expect(spriteDecodeWidth(0, 2), 1);
+  });
+
+  testWidgets('historical comic portrait stays still with bounded decode',
+      (tester) async {
+    final frames =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.idle);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('faelen'),
+      ...frames,
+    });
+
+    await tester.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite(
+        'faelen',
+        size: 110,
+        calm: true,
+        animate: false,
+        decodeWidth: 220,
+      ),
+    ));
+
+    final image = tester.widget<Image>(find.byType(Image));
+    final provider = image.image as ResizeImage;
+    expect(provider.width, 220);
+    expect((provider.imageProvider as AssetImage).assetName,
+        characterSpritePath('faelen'));
+  });
+
+  testWidgets('active comic portrait retains idle animation with bounded decode',
+      (tester) async {
+    final frames =
+        characterAnimationFramePaths('faelen', CharacterAnimationState.idle);
+    SpriteBook.instance.setAvailableForTest({
+      characterSpritePath('faelen'),
+      ...frames,
+    });
+
+    await tester.pumpWidget(const Directionality(
+      textDirection: TextDirection.ltr,
+      child: CharacterSprite(
+        'faelen',
+        size: 110,
+        calm: true,
+        decodeWidth: 220,
+      ),
+    ));
+
+    final image = tester.widget<Image>(find.byType(Image));
+    final provider = image.image as ResizeImage;
+    expect(provider.width, 220);
+    expect((provider.imageProvider as AssetImage).assetName, frames.first);
+  });
+
   test('asset paths follow the documented convention', () {
     expect(characterSpritePath('faelen'), 'assets/sprites/characters/faelen.png');
     expect(characterSpritePath('faelen', expression: 'happy'),

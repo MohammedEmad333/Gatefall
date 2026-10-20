@@ -92,6 +92,11 @@ class DialogueWebtoonPanel extends StatelessWidget {
                             glow: .95,
                             calm: true,
                             expression: playerLine ? null : emotion,
+                            animate: isLatest,
+                            decodeWidth: spriteDecodeWidth(
+                              figureSize,
+                              MediaQuery.devicePixelRatioOf(context),
+                            ),
                           ),
                         ),
                       if (!isChoice && narration)
@@ -106,6 +111,11 @@ class DialogueWebtoonPanel extends StatelessWidget {
                               plate: false,
                               calm: true,
                               glow: .35,
+                              animate: false,
+                              decodeWidth: spriteDecodeWidth(
+                                figureSize * .82,
+                                MediaQuery.devicePixelRatioOf(context),
+                              ),
                             ),
                           ),
                         ),
@@ -124,6 +134,11 @@ class DialogueWebtoonPanel extends StatelessWidget {
                               plate: false,
                               calm: true,
                               glow: .25,
+                              animate: false,
+                              decodeWidth: spriteDecodeWidth(
+                                figureSize * .55,
+                                MediaQuery.devicePixelRatioOf(context),
+                              ),
                             ),
                           ),
                         ),
