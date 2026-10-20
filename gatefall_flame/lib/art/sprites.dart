@@ -337,16 +337,26 @@ class _CharacterAnimationFrames extends StatefulWidget {
 class _CharacterAnimationFramesState extends State<_CharacterAnimationFrames> {
   Timer? _timer;
   int _frame = 0;
+  bool _tickerEnabled = false;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Unlike AnimationControllers, periodic sprite timers ignore TickerMode.
+    // Follow the nearest TickerMode so hidden tabs and reader panels do not
+    // keep decoding frames while retaining the current still image.
+    final enabled = TickerMode.of(context);
+    if (_tickerEnabled == enabled) return;
+    _tickerEnabled = enabled;
     _startTimer();
   }
 
   void _startTimer() {
     _timer?.cancel();
-    if (widget.paths.length < 2 || widget.frameDuration == Duration.zero) return;
+    _timer = null;
+    if (!_tickerEnabled ||
+        widget.paths.length < 2 ||
+        widget.frameDuration == Duration.zero) return;
     _timer = Timer.periodic(widget.frameDuration, (_) {
       if (!mounted || widget.paths.isEmpty) return;
       if (_frame >= widget.paths.length - 1) {
