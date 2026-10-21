@@ -14,6 +14,7 @@ import '../data/house.dart';
 import '../state/game_controller.dart';
 import 'theme.dart';
 import 'dialogue_webtoon_panel.dart';
+import '../art/motion.dart';
 import 'webtoon_scroll_controls.dart';
 
 /// The scene renderer — the piece docs/HANDOFF.md called the real gap left
@@ -100,6 +101,7 @@ class _DialogueScreenState extends State<DialogueScreen> {
   /// Reader mode is presentation-only; toggling never restarts the engine.
   bool _webtoonMode = false;
   final ScrollController _webtoonScroll = ScrollController();
+  bool _webtoonScrollPending = false;
 
   @override
   void initState() {
@@ -148,18 +150,28 @@ class _DialogueScreenState extends State<DialogueScreen> {
     Audio.instance.noteGesture();
     Audio.instance.play(Sfx.page);
     setState(() => _webtoonMode = !_webtoonMode);
-    if (_webtoonMode) _scrollWebtoonToLatest();
+    if (_webtoonMode) _scrollWebtoonToLatest(jump: true);
   }
 
-  /// Scroll only when a new node arrives. Manual browsing stays undisturbed.
-  void _scrollWebtoonToLatest() {
+  /// Coalesce repeated requests during a frame, avoiding competing scroll
+  /// animations when a choice and new node arrive together.
+  void _scrollWebtoonToLatest({bool jump = false}) {
+    if (_webtoonScrollPending) return;
+    _webtoonScrollPending = true;
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _webtoonScrollPending = false;
       if (!mounted || !_webtoonMode || !_webtoonScroll.hasClients) return;
-      _webtoonScroll.animateTo(
-        _webtoonScroll.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 180),
-        curve: Curves.easeOut,
-      );
+      final target = _webtoonScroll.position.maxScrollExtent;
+      if ((_webtoonScroll.offset - target).abs() < 1) return;
+      if (jump || !Motion.transitions) {
+        _webtoonScroll.jumpTo(target);
+      } else {
+        _webtoonScroll.animateTo(
+          target,
+          duration: Motion.quick(const Duration(milliseconds: 180)),
+          curve: Curves.easeOut,
+        );
+      }
     });
   }
 
@@ -434,9 +446,16 @@ class _DialogueScreenState extends State<DialogueScreen> {
           );
           // Animate an arriving node once. Historical panels stay static
           // when a player browses backwards or switches reading modes.
-          return latest
-              ? DialoguePanelEntrance(index: index, child: panel)
-              : panel;
+          return RepaintBoundary(
+            child: TickerMode(
+              // Historical panels remain available to scroll back through,
+              // but their painters and animation frames do not keep ticking.
+              enabled: latest,
+              child: latest
+                  ? DialoguePanelEntrance(index: index, child: panel)
+                  : panel,
+            ),
+          );
         },
       );
 
