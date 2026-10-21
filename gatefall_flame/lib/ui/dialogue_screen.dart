@@ -153,6 +153,22 @@ class _DialogueScreenState extends State<DialogueScreen> {
     if (_webtoonMode) _scrollWebtoonToLatest(jump: true);
   }
 
+  /// A lazy list initially estimates the height of its unseen panels.
+  /// Scrolling to that estimate can reveal more panels and increase the true
+  /// extent slightly. Check the settled layout again, bounded to two frames.
+  /// If the reader has moved more than a short distance away, do not fight
+  /// their own scrolling gesture.
+  void _settleWebtoonAtLatest([int remainingChecks = 2]) {
+    if (remainingChecks == 0) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_webtoonMode || !_webtoonScroll.hasClients) return;
+      final remaining = _webtoonScroll.position.extentAfter;
+      if (remaining <= 1 || remaining > 220) return;
+      _webtoonScroll.jumpTo(_webtoonScroll.position.maxScrollExtent);
+      _settleWebtoonAtLatest(remainingChecks - 1);
+    });
+  }
+
   /// Coalesce repeated requests during a frame, avoiding competing scroll
   /// animations when a choice and new node arrive together.
   void _scrollWebtoonToLatest({bool jump = false}) {
@@ -165,12 +181,13 @@ class _DialogueScreenState extends State<DialogueScreen> {
       if ((_webtoonScroll.offset - target).abs() < 1) return;
       if (jump || !Motion.transitions) {
         _webtoonScroll.jumpTo(target);
+        _settleWebtoonAtLatest();
       } else {
         _webtoonScroll.animateTo(
           target,
           duration: Motion.quick(const Duration(milliseconds: 180)),
           curve: Curves.easeOut,
-        );
+        ).then((_) => _settleWebtoonAtLatest());
       }
     });
   }
