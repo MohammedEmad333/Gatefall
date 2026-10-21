@@ -57,6 +57,52 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('replacement scroll controller refreshes latest shortcut',
+      (tester) async {
+    final first = ScrollController();
+    final second = ScrollController();
+    addTearDown(first.dispose);
+    addTearDown(second.dispose);
+
+    Widget reader(ScrollController controller, int count) => MaterialApp(
+          home: Scaffold(
+            body: Stack(
+              children: [
+                ListView.builder(
+                  controller: controller,
+                  itemExtent: 210,
+                  itemCount: count,
+                  itemBuilder: (_, index) => Text('Panel $index'),
+                ),
+                Positioned(
+                  bottom: 12,
+                  right: 12,
+                  child: WebtoonLatestButton(
+                    controller: controller,
+                    onPressed: () => controller.jumpTo(
+                      controller.position.maxScrollExtent,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+
+    await tester.pumpWidget(reader(first, 1));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('dialogue-back-to-latest')), findsNothing);
+
+    await tester.pumpWidget(reader(second, 20));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('dialogue-back-to-latest')), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('dialogue-back-to-latest')));
+    await tester.pumpAndSettle();
+    expect(second.offset, closeTo(second.position.maxScrollExtent, 1));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('latest panel control is absent when history fits in one view',
       (tester) async {
     final controller = ScrollController();
