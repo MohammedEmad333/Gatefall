@@ -175,6 +175,14 @@ class _DialogueScreenState extends State<DialogueScreen> {
     });
   }
 
+  /// True only if the reader is already following the end of the timeline.
+  /// Called before adding a panel, while the old extent is still available.
+  /// A missing scroll position is treated as the first, short panel.
+  bool get _shouldAutoFollowWebtoon =>
+      _webtoonMode &&
+      (!_webtoonScroll.hasClients ||
+          _webtoonScroll.position.extentAfter <= 220);
+
   void _pushCurrent(DialogueEngine engine) {
     final node = engine.currentNode;
     if (node.text != null && node.text!.isNotEmpty) {
@@ -209,8 +217,7 @@ class _DialogueScreenState extends State<DialogueScreen> {
     // Capture the reading position *before* the new panel extends the
     // scroll range. A player reviewing older panels should never be pulled
     // away from them just because they continued the scene.
-    final followLatest = _webtoonMode && _webtoonScroll.hasClients &&
-        _webtoonScroll.position.extentAfter <= 220;
+    final followLatest = _shouldAutoFollowWebtoon;
     setState(() {
       engine.advance();
       _pushCurrent(engine);
@@ -225,8 +232,7 @@ class _DialogueScreenState extends State<DialogueScreen> {
     final engine = _engine;
     if (engine == null) return;
     Audio.instance.play(Sfx.uiSelect);
-    final followLatest = _webtoonMode && _webtoonScroll.hasClients &&
-        _webtoonScroll.position.extentAfter <= 220;
+    final followLatest = _shouldAutoFollowWebtoon;
     setState(() {
       _history.add(_Line(speaker: null, text: choice.text, isChoice: true));
       engine.choose(choice.choiceId);
