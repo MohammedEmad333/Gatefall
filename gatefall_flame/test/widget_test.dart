@@ -200,6 +200,29 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('webtoon keeps previous panels inert and repaints isolated',
+      (tester) async {
+    await pumpGame(tester);
+    await tester.tap(find.byKey(const Key('house-hero-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+
+    final previous = find.byKey(const Key('dialogue-webtoon-panel-0'));
+    final current = find.byKey(const Key('dialogue-webtoon-panel-1'));
+    expect(previous, findsOneWidget);
+    expect(current, findsOneWidget);
+    expect(TickerMode.of(tester.element(previous)), isFalse);
+    expect(TickerMode.of(tester.element(current)), isTrue);
+    expect(
+      find.ancestor(of: previous, matching: find.byType(RepaintBoundary)),
+      findsWidgets,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('webtoon page sound follows new dialogue, not scrolling',
       (tester) async {
     await pumpGame(tester);
