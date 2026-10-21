@@ -153,6 +153,22 @@ class _DialogueScreenState extends State<DialogueScreen> {
     if (_webtoonMode) _scrollWebtoonToLatest(jump: true);
   }
 
+  /// A lazy list initially estimates the height of its unseen panels.
+  /// Scrolling to that estimate can reveal more panels and increase the true
+  /// extent slightly. Check the settled layout again, bounded to two frames.
+  /// If the reader has moved more than a short distance away, do not fight
+  /// their own scrolling gesture.
+  void _settleWebtoonAtLatest([int remainingChecks = 2]) {
+    if (remainingChecks == 0) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_webtoonMode || !_webtoonScroll.hasClients) return;
+      final remaining = _webtoonScroll.position.extentAfter;
+      if (remaining <= 1 || remaining > 220) return;
+      _webtoonScroll.jumpTo(_webtoonScroll.position.maxScrollExtent);
+      _settleWebtoonAtLatest(remainingChecks - 1);
+    });
+  }
+
   /// Coalesce repeated requests during a frame, avoiding competing scroll
   /// animations when a choice and new node arrive together.
   void _scrollWebtoonToLatest({bool jump = false}) {
@@ -165,15 +181,24 @@ class _DialogueScreenState extends State<DialogueScreen> {
       if ((_webtoonScroll.offset - target).abs() < 1) return;
       if (jump || !Motion.transitions) {
         _webtoonScroll.jumpTo(target);
+        _settleWebtoonAtLatest();
       } else {
         _webtoonScroll.animateTo(
           target,
           duration: Motion.quick(const Duration(milliseconds: 180)),
           curve: Curves.easeOut,
-        );
+        ).then((_) => _settleWebtoonAtLatest());
       }
     });
   }
+
+  /// True only if the reader is already following the end of the timeline.
+  /// Called before adding a panel, while the old extent is still available.
+  /// A missing scroll position is treated as the first, short panel.
+  bool get _shouldAutoFollowWebtoon =>
+      _webtoonMode &&
+      (!_webtoonScroll.hasClients ||
+          _webtoonScroll.position.extentAfter <= 220);
 
   void _pushCurrent(DialogueEngine engine) {
     final node = engine.currentNode;
@@ -206,6 +231,10 @@ class _DialogueScreenState extends State<DialogueScreen> {
     if (engine.currentNode.isBranch) return;
     // A webtoon panel turns once per reached node, never per scroll or paint.
     Audio.instance.play(_webtoonMode ? Sfx.page : Sfx.uiTap);
+    // Capture the reading position *before* the new panel extends the
+    // scroll range. A player reviewing older panels should never be pulled
+    // away from them just because they continued the scene.
+    final followLatest = _shouldAutoFollowWebtoon;
     setState(() {
       engine.advance();
       _pushCurrent(engine);
@@ -213,19 +242,20 @@ class _DialogueScreenState extends State<DialogueScreen> {
         // A terminal node with no line of its own — nothing left to read.
       }
     });
-    if (_webtoonMode) _scrollWebtoonToLatest();
+    if (followLatest) _scrollWebtoonToLatest();
   }
 
   void _choose(Choice choice) {
     final engine = _engine;
     if (engine == null) return;
     Audio.instance.play(Sfx.uiSelect);
+    final followLatest = _shouldAutoFollowWebtoon;
     setState(() {
       _history.add(_Line(speaker: null, text: choice.text, isChoice: true));
       engine.choose(choice.choiceId);
       _pushCurrent(engine);
     });
-    if (_webtoonMode) _scrollWebtoonToLatest();
+    if (followLatest) _scrollWebtoonToLatest();
   }
 
   Future<void> _finish() async {
@@ -427,6 +457,10 @@ class _DialogueScreenState extends State<DialogueScreen> {
         // old panels are rebuilt lazily from the small immutable transcript.
         cacheExtent: 220,
         addAutomaticKeepAlives: false,
+        // Each panel supplies its own boundary below. Disable the
+        // ListView.builder default boundary to avoid nested composited
+        // layers for every illustrated panel on memory-limited phones.
+        addRepaintBoundaries: false,
         padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
         itemCount: _history.length,
         itemBuilder: (context, index) {
