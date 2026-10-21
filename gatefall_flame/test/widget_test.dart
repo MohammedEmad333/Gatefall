@@ -93,6 +93,7 @@ void main() {
     );
     expect(comic.cacheExtent, 220);
     expect((comic.childrenDelegate as SliverChildBuilderDelegate).addAutomaticKeepAlives, isFalse);
+    expect((comic.childrenDelegate as SliverChildBuilderDelegate).addRepaintBoundaries, isFalse);
     expect(find.byKey(const Key('dialogue-webtoon-panel-0')), findsOneWidget);
     expect(game.state.completedBeats, isEmpty);
 
@@ -105,6 +106,50 @@ void main() {
     expect(find.byKey(const Key('dialogue-webtoon-timeline')), findsNothing);
     expect(find.text('Continue'), findsOneWidget);
     expect(game.state.completedBeats, isEmpty);
+  });
+
+  testWidgets('webtoon preserves older reading position until Latest is tapped',
+      (tester) async {
+    final game = await pumpGame(tester);
+    await tester.tap(find.byKey(const Key('house-hero-action')));
+    await tester.pumpAndSettle();
+
+    // Use a real phone-height viewport so a few illustrated panels scroll.
+    final view = TestWidgetsFlutterBinding.instance.platformDispatcher.views.first;
+    view.physicalSize = const Size(360, 740);
+    await tester.pump();
+
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+    final timeline = find.byKey(const Key('dialogue-webtoon-timeline'));
+    final controller = tester.widget<ListView>(timeline).controller!;
+    for (var i = 0; i < 4; i++) {
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+    }
+    expect(controller.position.maxScrollExtent, greaterThan(220));
+    // Following the scene normally still lands on the latest illustrated line.
+    expect(controller.offset, closeTo(controller.position.maxScrollExtent, 1));
+
+    // The player rereads the opening while advancing the canonical scene.
+    // New panels must not animate the timeline out from under their finger.
+    controller.jumpTo(0);
+    await tester.pump();
+    expect(find.byKey(const Key('dialogue-back-to-latest')), findsOneWidget);
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+    expect(controller.offset, closeTo(0, 1));
+    expect(find.byKey(const Key('dialogue-back-to-latest')), findsOneWidget);
+
+    // Explicit navigation restores follow-mode for subsequent lines.
+    await tester.tap(find.byKey(const Key('dialogue-back-to-latest')));
+    await tester.pumpAndSettle();
+    expect(controller.offset, closeTo(controller.position.maxScrollExtent, 1));
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+    expect(controller.offset, closeTo(controller.position.maxScrollExtent, 1));
+    expect(game.state.completedBeats, isEmpty);
+    expect(tester.takeException(), isNull);
   });
 
   testWidgets('webtoon mode still requires canonical Faelen story choices',
