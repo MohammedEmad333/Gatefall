@@ -206,6 +206,11 @@ class _DialogueScreenState extends State<DialogueScreen> {
     if (engine.currentNode.isBranch) return;
     // A webtoon panel turns once per reached node, never per scroll or paint.
     Audio.instance.play(_webtoonMode ? Sfx.page : Sfx.uiTap);
+    // Capture the reading position *before* the new panel extends the
+    // scroll range. A player reviewing older panels should never be pulled
+    // away from them just because they continued the scene.
+    final followLatest = _webtoonMode && _webtoonScroll.hasClients &&
+        _webtoonScroll.position.extentAfter <= 220;
     setState(() {
       engine.advance();
       _pushCurrent(engine);
@@ -213,19 +218,21 @@ class _DialogueScreenState extends State<DialogueScreen> {
         // A terminal node with no line of its own — nothing left to read.
       }
     });
-    if (_webtoonMode) _scrollWebtoonToLatest();
+    if (followLatest) _scrollWebtoonToLatest();
   }
 
   void _choose(Choice choice) {
     final engine = _engine;
     if (engine == null) return;
     Audio.instance.play(Sfx.uiSelect);
+    final followLatest = _webtoonMode && _webtoonScroll.hasClients &&
+        _webtoonScroll.position.extentAfter <= 220;
     setState(() {
       _history.add(_Line(speaker: null, text: choice.text, isChoice: true));
       engine.choose(choice.choiceId);
       _pushCurrent(engine);
     });
-    if (_webtoonMode) _scrollWebtoonToLatest();
+    if (followLatest) _scrollWebtoonToLatest();
   }
 
   Future<void> _finish() async {
@@ -427,6 +434,10 @@ class _DialogueScreenState extends State<DialogueScreen> {
         // old panels are rebuilt lazily from the small immutable transcript.
         cacheExtent: 220,
         addAutomaticKeepAlives: false,
+        // Each panel supplies its own boundary below. Disable the
+        // ListView.builder default boundary to avoid nested composited
+        // layers for every illustrated panel on memory-limited phones.
+        addRepaintBoundaries: false,
         padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
         itemCount: _history.length,
         itemBuilder: (context, index) {
