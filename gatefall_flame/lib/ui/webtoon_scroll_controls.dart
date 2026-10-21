@@ -31,6 +31,18 @@ class _WebtoonLatestButtonState extends State<WebtoonLatestButton> {
   }
 
   @override
+  void didUpdateWidget(covariant WebtoonLatestButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.controller != widget.controller) {
+      // A replacement controller may not have a ScrollPosition until the
+      // next layout. Recheck the shortcut after its first attachment.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) setState(() {});
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) => AnimatedBuilder(
         animation: widget.controller,
         builder: (context, _) {
