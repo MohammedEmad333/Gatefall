@@ -118,7 +118,7 @@ void main() {
       final progress =
           tester.widget<Text>(find.byKey(const Key('opening-scroll-progress')));
       final panel = int.parse(
-        RegExp(r'panel (\\d+)').firstMatch(progress.data!)!.group(1)!,
+        RegExp(r'panel (\d+)').firstMatch(progress.data!)!.group(1)!,
       );
       expect(panel, greaterThan(1));
       // A changed scroll focus must not rebuild the title, controls, or art
