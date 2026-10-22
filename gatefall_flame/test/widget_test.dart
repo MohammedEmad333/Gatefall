@@ -92,6 +92,9 @@ void main() {
       find.byKey(const Key('dialogue-webtoon-timeline')),
     );
     expect(comic.cacheExtent, 220);
+    // Exact, cached extents let the sliver locate a far-away chapter panel
+    // without first building its sprites or approximating variable heights.
+    expect(comic.itemExtentBuilder, isNotNull);
     expect((comic.childrenDelegate as SliverChildBuilderDelegate).addAutomaticKeepAlives, isFalse);
     expect((comic.childrenDelegate as SliverChildBuilderDelegate).addRepaintBoundaries, isFalse);
     expect(find.byKey(const Key('dialogue-webtoon-panel-0')), findsOneWidget);

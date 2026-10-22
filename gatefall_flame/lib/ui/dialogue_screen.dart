@@ -103,6 +103,14 @@ class _DialogueScreenState extends State<DialogueScreen> {
   final ScrollController _webtoonScroll = ScrollController();
   bool _webtoonScrollPending = false;
 
+  // Varied-extent scrolling can calculate exact locations for unreached list
+  // children without inflating their artwork. Cache each caption measurement
+  // for this scene and invalidate on viewport, direction or scale changes.
+  final Map<int, double> _chapterExtents = <int, double>{};
+  double? _chapterWidth;
+  TextScaler? _chapterTextScaler;
+  TextDirection? _chapterDirection;
+
   @override
   void initState() {
     super.initState();
@@ -449,46 +457,71 @@ class _DialogueScreenState extends State<DialogueScreen> {
         ),
       );
 
-  /// Only lines already reached by DialogueEngine appear in the comic.
-  Widget _webtoonTimeline() => ListView.builder(
-        key: const Key('dialogue-webtoon-timeline'),
-        controller: _webtoonScroll,
-        // Keep at most a fraction of the next illustrated panel prepared;
-        // old panels are rebuilt lazily from the small immutable transcript.
-        cacheExtent: 220,
-        addAutomaticKeepAlives: false,
-        // Each panel supplies its own boundary below. Disable the
-        // ListView.builder default boundary to avoid nested composited
-        // layers for every illustrated panel on memory-limited phones.
-        addRepaintBoundaries: false,
-        padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
-        itemCount: _history.length,
-        itemBuilder: (context, index) {
-          final line = _history[index];
-          final latest = index == _history.length - 1;
-          final panel = DialogueWebtoonPanel(
-            key: Key('dialogue-webtoon-panel-$index'),
-            index: index,
-            characterId: widget.characterId,
-            speakerId: line.speaker,
-            speakerName: _speakerName(line.speaker),
-            text: line.text,
-            emotion: line.emotion,
-            isChoice: line.isChoice,
-            contextTag: widget.beat.triggerContext,
-            isLatest: latest,
-          );
-          // Animate an arriving node once. Historical panels stay static
-          // when a player browses backwards or switches reading modes.
-          return RepaintBoundary(
-            child: TickerMode(
-              // Historical panels remain available to scroll back through,
-              // but their painters and animation frames do not keep ticking.
-              enabled: latest,
-              child: latest
-                  ? DialoguePanelEntrance(index: index, child: panel)
-                  : panel,
+  /// Only visited dialogue nodes are part of this comic; all unreached
+  /// branches remain in DialogueEngine. Extents are calculated from text
+  /// without building the art, reducing layout corrections on long chapters.
+  Widget _webtoonTimeline() => LayoutBuilder(
+        builder: (context, constraints) {
+          // The ListView's left and right padding reduce each item's width.
+          final width = (constraints.maxWidth - 28).clamp(1.0, double.infinity);
+          final scaler = MediaQuery.textScalerOf(context);
+          final direction = Directionality.of(context);
+          if (_chapterWidth != width ||
+              _chapterTextScaler != scaler ||
+              _chapterDirection != direction) {
+            _chapterExtents.clear();
+            _chapterWidth = width;
+            _chapterTextScaler = scaler;
+            _chapterDirection = direction;
+          }
+
+          return ListView.builder(
+            key: const Key('dialogue-webtoon-timeline'),
+            controller: _webtoonScroll,
+            cacheExtent: 220,
+            addAutomaticKeepAlives: false,
+            addRepaintBoundaries: false,
+            padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
+            itemCount: _history.length,
+            itemExtentBuilder: (index, _) => _chapterExtents.putIfAbsent(
+              index,
+              () {
+                final line = _history[index];
+                final height = chapterPanelHeight(
+                  text: line.text,
+                  width: width,
+                  textScaler: scaler,
+                  textDirection: direction,
+                  isNarration: line.text.startsWith('(') && !line.isChoice,
+                );
+                // DialogueWebtoonPanel adds 18px below each comic frame.
+                return height + 18;
+              },
             ),
+            itemBuilder: (context, index) {
+              final line = _history[index];
+              final latest = index == _history.length - 1;
+              final panel = DialogueWebtoonPanel(
+                key: Key('dialogue-webtoon-panel-$index'),
+                index: index,
+                characterId: widget.characterId,
+                speakerId: line.speaker,
+                speakerName: _speakerName(line.speaker),
+                text: line.text,
+                emotion: line.emotion,
+                isChoice: line.isChoice,
+                contextTag: widget.beat.triggerContext,
+                isLatest: latest,
+              );
+              return RepaintBoundary(
+                child: TickerMode(
+                  enabled: latest,
+                  child: latest
+                      ? DialoguePanelEntrance(index: index, child: panel)
+                      : panel,
+                ),
+              );
+            },
           );
         },
       );

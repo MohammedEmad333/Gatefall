@@ -7,6 +7,41 @@ import '../data/house.dart';
 import 'dialogue_scene_backdrop.dart';
 import 'theme.dart';
 
+/// Measure the caption that will be painted in a comic panel. Unlike
+/// character-count estimates, this respects actual line breaks, punctuation,
+/// text direction, fonts and the user's accessible text scaling.
+///
+/// The same result drives both the panel's height and the list's item extent,
+/// so long chapters can jump to their ending without guessing unseen sizes.
+double chapterPanelHeight({
+  required String text,
+  required double width,
+  required TextScaler textScaler,
+  required TextDirection textDirection,
+  required bool isNarration,
+}) {
+  final style = TextStyle(
+    fontSize: isNarration ? 13 : 14,
+    height: 1.48,
+    fontStyle: isNarration ? FontStyle.italic : FontStyle.normal,
+  );
+  // 12pt outer padding and 13pt inner padding on each side, plus the
+  // three-point accent border and a small allowance for the inked frame.
+  final captionWidth = (width - 64).clamp(1.0, double.infinity);
+  final painter = TextPainter(
+    text: TextSpan(text: text, style: style),
+    textDirection: textDirection,
+    textScaler: textScaler,
+  )..layout(maxWidth: captionWidth);
+  final captionHeight = painter.height;
+  painter.dispose();
+
+  // The art needs 255px of stage, with another 22px of breathing room above
+  // the caption. Do not cap the height and silently clip long translations
+  // or large accessibility text.
+  return (255 + captionHeight + 22).clamp(298.0, double.infinity);
+}
+
 /// An illustrated panel for a node the real dialogue engine has reached.
 /// Never reads or mutates game progression or decides a story branch.
 class DialogueWebtoonPanel extends StatelessWidget {
@@ -52,17 +87,14 @@ class DialogueWebtoonPanel extends StatelessWidget {
         child: ExcludeSemantics(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              // Text length alone cannot size a portrait panel: a 280px
-              // handset and large text scaling need more vertical room.
               final width = constraints.maxWidth;
-              final textScale =
-                  MediaQuery.textScalerOf(context).scale(14) / 14;
-              final charsPerRow = ((width - 62) / (7.0 * textScale))
-                  .floor()
-                  .clamp(12, 60);
-              final rows = (text.runes.length / charsPerRow).ceil() + 1;
-              final panelHeight =
-                  (255 + rows * 22 * textScale).clamp(298, 1250).toDouble();
+              final panelHeight = chapterPanelHeight(
+                text: text,
+                width: width,
+                textScaler: MediaQuery.textScalerOf(context),
+                textDirection: Directionality.of(context),
+                isNarration: narration,
+              );
               final figureSize = (width * .49).clamp(100, 192).toDouble();
 
               return SizedBox(
