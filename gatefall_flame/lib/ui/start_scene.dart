@@ -241,16 +241,14 @@ class _StartSceneState extends State<StartScene> {
   OpeningReaderMode _mode = OpeningReaderMode.pages;
   late final ScrollController _scroll = ScrollController()..addListener(_onScroll);
   double _panelPitch = 320;
-  int _focusedPanel = 0;
+  // Notify only progress and active-panel animation controls during scroll.
+  final ValueNotifier<int> _focusedPanel = ValueNotifier<int>(0);
   final Set<int> _playedScrollCues = {0};
 
   /// The line currently lettering itself in, held so a tap can finish it.
   final GlobalKey<TypewriterState> _typing = GlobalKey<TypewriterState>();
 
   _Page get _current => _script[_page];
-  int get _visiblePage => _mode == OpeningReaderMode.vertical
-      ? _readingOrder[_focusedPanel].pageIndex
-      : _page;
   bool get _pageComplete => _shown >= _current.panels.length;
   bool get _atEnd => _page == _script.length - 1 && _pageComplete;
 
@@ -267,6 +265,7 @@ class _StartSceneState extends State<StartScene> {
   @override
   void dispose() {
     _scroll.dispose();
+    _focusedPanel.dispose();
     super.dispose();
   }
 
@@ -278,8 +277,8 @@ class _StartSceneState extends State<StartScene> {
             _panelPitch)
         .floor()
         .clamp(0, _readingOrder.length - 1);
-    if (next == _focusedPanel) return;
-    setState(() => _focusedPanel = next);
+    if (next == _focusedPanel.value) return;
+    _focusedPanel.value = next;
     if (_playedScrollCues.add(next)) _sound(_readingOrder[next].panel);
   }
 
@@ -290,17 +289,17 @@ class _StartSceneState extends State<StartScene> {
       final index = _readingOrder.indexWhere((item) =>
           item.pageIndex == _page && item.panelIndex == _shown - 1);
       setState(() {
-        _focusedPanel = index < 0 ? 0 : index;
+        _focusedPanel.value = index < 0 ? 0 : index;
         _mode = OpeningReaderMode.vertical;
       });
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted || _mode != OpeningReaderMode.vertical ||
             !_scroll.hasClients) return;
-        _scroll.jumpTo((_focusedPanel * _panelPitch)
+        _scroll.jumpTo((_focusedPanel.value * _panelPitch)
             .clamp(0.0, _scroll.position.maxScrollExtent));
       });
     } else {
-      final item = _readingOrder[_focusedPanel];
+      final item = _readingOrder[_focusedPanel.value];
       setState(() {
         _page = item.pageIndex;
         _shown = item.panelIndex + 1;
@@ -446,10 +445,9 @@ class _StartSceneState extends State<StartScene> {
               final item = _readingOrder[index];
               final caption = item.panel.caption ??
                   item.panel.line ?? 'GateFall opening scene';
-              return TickerMode(
-                // Offscreen rifts stop ticking. The focus remains derived
-                // from scrolling, not from widget lifecycle callbacks.
-                enabled: index == _focusedPanel,
+              return ValueListenableBuilder<int>(
+                valueListenable: _focusedPanel,
+                // Preserve expensive artwork while only the ticker flag changes.
                 child: Semantics(
                   label: 'Panel ${index + 1} of ${_readingOrder.length}. $caption',
                   child: ExcludeSemantics(
@@ -467,6 +465,10 @@ class _StartSceneState extends State<StartScene> {
                     ),
                   ),
                 ),
+                builder: (_, focused, child) => TickerMode(
+                  enabled: index == focused,
+                  child: child!,
+                ),
               );
             },
           );
@@ -476,14 +478,17 @@ class _StartSceneState extends State<StartScene> {
   Widget _verticalFooter() => SizedBox(
         height: 38,
         child: Center(
-          child: Text(
-            'Scroll to read · panel ${_focusedPanel + 1} / '
+          child: ValueListenableBuilder<int>(
+            valueListenable: _focusedPanel,
+            builder: (_, focused, __) => Text(
+            'Scroll to read · panel ${focused + 1} / '
             '${_readingOrder.length}',
             key: const Key('opening-scroll-progress'),
             style: const TextStyle(
               color: boneDim,
               fontSize: 11,
               fontStyle: FontStyle.italic,
+            ),
             ),
           ),
         ),
@@ -494,19 +499,27 @@ class _StartSceneState extends State<StartScene> {
   Widget _header() => LayoutBuilder(
         builder: (context, constraints) {
           final compact = constraints.maxWidth < 320;
-          final progress = Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < _script.length; i++)
-                Padding(
-                  padding: const EdgeInsets.only(left: 4),
-                  child: Container(
-                    width: compact ? 6 : 7,
-                    height: compact ? 6 : 7,
-                    color: i <= _visiblePage ? bone : riftDim,
-                  ),
-                ),
-            ],
+          final progress = ValueListenableBuilder<int>(
+            valueListenable: _focusedPanel,
+            builder: (_, focused, __) {
+              final currentPage = _mode == OpeningReaderMode.vertical
+                  ? _readingOrder[focused].pageIndex
+                  : _page;
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  for (var i = 0; i < _script.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4),
+                      child: Container(
+                        width: compact ? 6 : 7,
+                        height: compact ? 6 : 7,
+                        color: i <= currentPage ? bone : riftDim,
+                      ),
+                    ),
+                ],
+              );
+            },
           );
           final skip = TextButton(
             onPressed: _finish,

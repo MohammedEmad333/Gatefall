@@ -97,6 +97,46 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
+    testWidgets('scroll focus updates indicators without rebuilding the header',
+        (tester) async {
+      await tester.pumpWidget(MaterialApp(
+        theme: gatefallTheme(),
+        home: StartScene(onDone: () {}),
+      ));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const Key('opening-reader-mode')));
+      await tester.pumpAndSettle();
+
+      final headerModeBefore =
+          tester.widget<TextButton>(find.byKey(const Key('opening-reader-mode')));
+      await tester.drag(
+        find.byKey(const Key('opening-vertical-reader')),
+        const Offset(0, -650),
+      );
+      await tester.pumpAndSettle();
+
+      final progress =
+          tester.widget<Text>(find.byKey(const Key('opening-scroll-progress')));
+      final panel = int.parse(
+        RegExp(r'panel (\d+)').firstMatch(progress.data!)!.group(1)!,
+      );
+      expect(panel, greaterThan(1));
+      // A changed scroll focus must not rebuild the title, controls, or art
+      // owned by StartScene's Scaffold.
+      expect(identical(
+        headerModeBefore,
+        tester.widget<TextButton>(
+          find.byKey(const Key('opening-reader-mode')),
+        ),
+      ), isTrue);
+
+      final focused = find.byKey(Key('opening-panel-${panel - 1}'));
+      if (focused.evaluate().isNotEmpty) {
+        expect(TickerMode.of(tester.element(focused)), isTrue);
+      }
+      expect(tester.takeException(), isNull);
+    });
+
     testWidgets('vertical mode finishes only at the final reader action',
         (tester) async {
       var done = false;
