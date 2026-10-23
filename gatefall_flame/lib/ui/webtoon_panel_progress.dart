@@ -22,7 +22,7 @@ int webtoonVisiblePanelIndex(
       high = mid;
     }
   }
-  return low.clamp(0, panelEnds.length - 1);
+  return low >= panelEnds.length ? panelEnds.length - 1 : low;
 }
 
 /// Small, non-interactive reading progress. Listening to scroll locally keeps
