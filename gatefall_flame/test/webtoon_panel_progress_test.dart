@@ -14,7 +14,8 @@ void main() {
 
     expect(panel(0), 0);
     expect(panel(400), 1);
-    expect(panel(950), 2);
+    expect(panel(700), 2);
+    expect(panel(950), 3);
     expect(panel(1400), 3);
     expect(panel(1990), 4);
     expect(panel(100000), 4);
@@ -53,7 +54,7 @@ void main() {
 
     controller.jumpTo(controller.position.maxScrollExtent);
     await tester.pumpAndSettle();
-    expect(find.text('PANEL 5 / 8'), findsOneWidget);
+    expect(find.text('PANEL 6 / 8'), findsOneWidget);
 
     controller.jumpTo(0);
     await tester.pumpAndSettle();
