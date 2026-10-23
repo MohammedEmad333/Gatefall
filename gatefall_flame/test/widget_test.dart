@@ -11,6 +11,7 @@ import 'package:gatefall/combat/battle.dart';
 import 'package:gatefall/audio/sfx.dart';
 import 'package:gatefall/ui/dialogue_scene_backdrop.dart';
 import 'package:gatefall/ui/dialogue_webtoon_panel.dart';
+import 'package:gatefall/ui/webtoon_visible_ticker.dart';
 import 'package:gatefall/data/gear.dart';
 import 'package:gatefall/state/game_controller.dart';
 import 'package:gatefall/state/save_store.dart';
@@ -264,6 +265,7 @@ void main() {
     expect(current, findsOneWidget);
     expect(TickerMode.of(tester.element(previous)), isFalse);
     expect(TickerMode.of(tester.element(current)), isTrue);
+    expect(find.byType(WebtoonVisibleTicker), findsOneWidget);
     expect(
       find.ancestor(of: previous, matching: find.byType(RepaintBoundary)),
       findsWidgets,
