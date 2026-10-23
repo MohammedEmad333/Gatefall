@@ -109,7 +109,7 @@ jobs:
           fi
           for attempt in 1 2 3; do
             echo "Installing Android CMake 3.22.1 (attempt $attempt/3)"
-            if printf 'y\\ny\\ny\\n' | "$manager" --sdk_root="$sdk_root" --install "cmake;3.22.1"; then
+            if printf '%s\n' y y y | "$manager" --sdk_root="$sdk_root" --install "cmake;3.22.1"; then
               exit 0
             fi
             # A failed download may leave an invalid partial ZIP extracted
