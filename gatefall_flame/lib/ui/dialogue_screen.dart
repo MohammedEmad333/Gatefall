@@ -16,6 +16,7 @@ import 'theme.dart';
 import 'dialogue_webtoon_panel.dart';
 import '../art/motion.dart';
 import 'webtoon_scroll_controls.dart';
+import 'webtoon_visible_ticker.dart';
 
 /// The scene renderer — the piece docs/HANDOFF.md called the real gap left
 /// by step 6: "there's nowhere in the app to trigger a home_visit/gift/date
@@ -475,6 +476,22 @@ class _DialogueScreenState extends State<DialogueScreen> {
             _chapterDirection = direction;
           }
 
+          double extentFor(int index) => _chapterExtents.putIfAbsent(
+                index,
+                () {
+                  final line = _history[index];
+                  final height = chapterPanelHeight(
+                    text: line.text,
+                    width: width,
+                    textScaler: scaler,
+                    textDirection: direction,
+                    isNarration: line.text.startsWith('(') && !line.isChoice,
+                  );
+                  // The visual widget adds an 18px gap below its comic.
+                  return height + 18;
+                },
+              );
+
           return ListView.builder(
             key: const Key('dialogue-webtoon-timeline'),
             controller: _webtoonScroll,
@@ -483,21 +500,7 @@ class _DialogueScreenState extends State<DialogueScreen> {
             addRepaintBoundaries: false,
             padding: const EdgeInsets.fromLTRB(14, 10, 14, 28),
             itemCount: _history.length,
-            itemExtentBuilder: (index, _) => _chapterExtents.putIfAbsent(
-              index,
-              () {
-                final line = _history[index];
-                final height = chapterPanelHeight(
-                  text: line.text,
-                  width: width,
-                  textScaler: scaler,
-                  textDirection: direction,
-                  isNarration: line.text.startsWith('(') && !line.isChoice,
-                );
-                // DialogueWebtoonPanel adds 18px below each comic frame.
-                return height + 18;
-              },
-            ),
+            itemExtentBuilder: (index, _) => extentFor(index),
             itemBuilder: (context, index) {
               final line = _history[index];
               final latest = index == _history.length - 1;
@@ -514,12 +517,15 @@ class _DialogueScreenState extends State<DialogueScreen> {
                 isLatest: latest,
               );
               return RepaintBoundary(
-                child: TickerMode(
-                  enabled: latest,
-                  child: latest
-                      ? DialoguePanelEntrance(index: index, child: panel)
-                      : panel,
-                ),
+                child: latest
+                    ? WebtoonVisibleTicker(
+                        key: Key('dialogue-latest-motion-$index'),
+                        controller: _webtoonScroll,
+                        // Bottom list padding follows the measured last item.
+                        trailingExtent: extentFor(index) + 28,
+                        child: DialoguePanelEntrance(index: index, child: panel),
+                      )
+                    : TickerMode(enabled: false, child: panel),
               );
             },
           );
