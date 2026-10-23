@@ -218,10 +218,27 @@ void main() {
       await tester.pumpAndSettle();
     }
     expect(find.text('What do you say?'), findsOneWidget);
+    // Choosing a canonical branch while looking back through the comic must
+    // not force-scroll the player away from their earlier panels.
+    final chapter = tester.widget<ListView>(
+      find.byKey(const Key('dialogue-webtoon-timeline')),
+    ).controller!;
+    final reviewing = chapter.position.maxScrollExtent > 260;
+    if (reviewing) {
+      chapter.jumpTo(0);
+      await tester.pump();
+    }
+
     const join = '(Hand her the room key.) "You forgot this. We go together."';
     await tester.tap(find.text(join));
     await tester.pumpAndSettle();
     expect(game.state.flags['FAELEN_FRACTURE'], 'join');
+    if (reviewing) {
+      expect(chapter.offset, closeTo(0, 1));
+      await tester.tap(find.byKey(const Key('dialogue-back-to-latest')));
+      await tester.pumpAndSettle();
+      expect(chapter.offset, closeTo(chapter.position.maxScrollExtent, 1));
+    }
 
     guard = 0;
     while (find.text('Continue').evaluate().isNotEmpty && guard++ < 25) {
