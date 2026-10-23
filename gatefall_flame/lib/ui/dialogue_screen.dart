@@ -103,6 +103,14 @@ class _DialogueScreenState extends State<DialogueScreen> {
   bool _webtoonMode = false;
   final ScrollController _webtoonScroll = ScrollController();
   bool _webtoonScrollPending = false;
+  // A user-initiated drag always wins over an automatic follow-to-latest.
+  // This generation cancels queued callbacks and post-animation settling.
+  int _webtoonScrollGeneration = 0;
+
+  void _cancelWebtoonAutoFollow() {
+    _webtoonScrollGeneration++;
+    _webtoonScrollPending = false;
+  }
 
   // Varied-extent scrolling can calculate exact locations for unreached list
   // children without inflating their artwork. Cache each caption measurement
@@ -158,45 +166,56 @@ class _DialogueScreenState extends State<DialogueScreen> {
   void _toggleReaderMode() {
     Audio.instance.noteGesture();
     Audio.instance.play(Sfx.page);
+    _cancelWebtoonAutoFollow();
     setState(() => _webtoonMode = !_webtoonMode);
     if (_webtoonMode) _scrollWebtoonToLatest(jump: true);
   }
 
-  /// A lazy list initially estimates the height of its unseen panels.
-  /// Scrolling to that estimate can reveal more panels and increase the true
-  /// extent slightly. Check the settled layout again, bounded to two frames.
-  /// If the reader has moved more than a short distance away, do not fight
-  /// their own scrolling gesture.
-  void _settleWebtoonAtLatest([int remainingChecks = 2]) {
+  /// Long panels use measured extents, but a newly added line can still
+  /// change the scroll range after layout. Settle for at most two frames,
+  /// stopping immediately when the reader has started a manual gesture.
+  void _settleWebtoonAtLatest(int generation, [int remainingChecks = 2]) {
     if (remainingChecks == 0) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted || !_webtoonMode || !_webtoonScroll.hasClients) return;
+      if (!mounted ||
+          !_webtoonMode ||
+          !_webtoonScroll.hasClients ||
+          generation != _webtoonScrollGeneration) {
+        return;
+      }
       final remaining = _webtoonScroll.position.extentAfter;
       if (remaining <= 1 || remaining > 220) return;
       _webtoonScroll.jumpTo(_webtoonScroll.position.maxScrollExtent);
-      _settleWebtoonAtLatest(remainingChecks - 1);
+      _settleWebtoonAtLatest(generation, remainingChecks - 1);
     });
   }
 
-  /// Coalesce repeated requests during a frame, avoiding competing scroll
-  /// animations when a choice and new node arrive together.
+  /// Coalesce follow requests in a frame. A genuine drag cancels queued
+  /// scrolling and stale animation completions; programmatic scroll
+  /// notifications are not treated as reader intent.
   void _scrollWebtoonToLatest({bool jump = false}) {
     if (_webtoonScrollPending) return;
     _webtoonScrollPending = true;
+    final generation = ++_webtoonScrollGeneration;
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (generation != _webtoonScrollGeneration) return;
       _webtoonScrollPending = false;
       if (!mounted || !_webtoonMode || !_webtoonScroll.hasClients) return;
       final target = _webtoonScroll.position.maxScrollExtent;
       if ((_webtoonScroll.offset - target).abs() < 1) return;
       if (jump || !Motion.transitions) {
         _webtoonScroll.jumpTo(target);
-        _settleWebtoonAtLatest();
+        _settleWebtoonAtLatest(generation);
       } else {
         _webtoonScroll.animateTo(
           target,
           duration: Motion.quick(const Duration(milliseconds: 180)),
           curve: Curves.easeOut,
-        ).then((_) => _settleWebtoonAtLatest());
+        ).then((_) {
+          if (mounted && generation == _webtoonScrollGeneration) {
+            _settleWebtoonAtLatest(generation);
+          }
+        });
       }
     });
   }
@@ -338,18 +357,28 @@ class _DialogueScreenState extends State<DialogueScreen> {
                               behavior: HitTestBehavior.opaque,
                               onTap: choices.isEmpty ? _advance : null,
                               child: _webtoonMode
-                                  ? Stack(
-                                      children: [
-                                        _webtoonTimeline(),
-                                        Positioned(
-                                          right: 14,
-                                          bottom: 8,
-                                          child: WebtoonLatestButton(
-                                            controller: _webtoonScroll,
-                                            onPressed: _scrollWebtoonToLatest,
+                                  ? NotificationListener<ScrollStartNotification>(
+                                      onNotification: (notification) {
+                                        // ScrollStartNotification without a
+                                        // dragDetail also fires for animateTo.
+                                        if (notification.dragDetails != null) {
+                                          _cancelWebtoonAutoFollow();
+                                        }
+                                        return false;
+                                      },
+                                      child: Stack(
+                                        children: [
+                                          _webtoonTimeline(),
+                                          Positioned(
+                                            right: 14,
+                                            bottom: 8,
+                                            child: WebtoonLatestButton(
+                                              controller: _webtoonScroll,
+                                              onPressed: _scrollWebtoonToLatest,
+                                            ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     )
                                   : _transcript(),
                             ),
