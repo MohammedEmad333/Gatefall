@@ -156,6 +156,57 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('mode changes preserve an earlier comic bookmark', (tester) async {
+    final game = await pumpGame(tester);
+    final view =
+        TestWidgetsFlutterBinding.instance.platformDispatcher.views.first;
+    view.physicalSize = const Size(360, 740);
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('house-hero-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+
+    final timeline = find.byKey(const Key('dialogue-webtoon-timeline'));
+    final scroll = tester.widget<ListView>(timeline).controller!;
+    for (var i = 0; i < 4; i++) {
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+    }
+    expect(scroll.position.maxScrollExtent, greaterThan(220));
+    expect(find.byKey(const Key('dialogue-panel-progress')), findsOneWidget);
+    scroll.jumpTo(0);
+    await tester.pump();
+    expect(scroll.position.extentAfter, greaterThan(220));
+
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+    expect(timeline, findsNothing);
+    // Additional dialogue reached in Text mode must not steal a saved
+    // bookmark from the earlier comic.
+    await tester.tap(find.text('Continue'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+
+    expect(timeline, findsOneWidget);
+    expect(scroll.offset, closeTo(0, 1));
+    expect(find.byKey(const Key('dialogue-back-to-latest')), findsOneWidget);
+    expect(game.state.completedBeats, isEmpty);
+
+    await tester.tap(find.byKey(const Key('dialogue-back-to-latest')));
+    await tester.pumpAndSettle();
+    expect(scroll.offset, closeTo(scroll.position.maxScrollExtent, 1));
+
+    // When reading at the end, a fresh Webtoon visit follows the latest.
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+    expect(scroll.offset, closeTo(scroll.position.maxScrollExtent, 1));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('manual drag interrupts queued follow and keeps the chapter in place',
       (tester) async {
     final game = await pumpGame(tester);
