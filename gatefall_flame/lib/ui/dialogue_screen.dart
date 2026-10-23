@@ -17,6 +17,7 @@ import 'dialogue_webtoon_panel.dart';
 import '../art/motion.dart';
 import 'webtoon_scroll_controls.dart';
 import 'webtoon_visible_ticker.dart';
+import 'webtoon_panel_progress.dart';
 
 /// The scene renderer — the piece docs/HANDOFF.md called the real gap left
 /// by step 6: "there's nowhere in the app to trigger a home_visit/gift/date
@@ -106,6 +107,10 @@ class _DialogueScreenState extends State<DialogueScreen> {
   // A user-initiated drag always wins over an automatic follow-to-latest.
   // This generation cancels queued callbacks and post-animation settling.
   int _webtoonScrollGeneration = 0;
+  bool _webtoonOpened = false;
+  bool _bookmarkAtLatest = true;
+  double _bookmarkOffset = 0;
+
 
   void _cancelWebtoonAutoFollow() {
     _webtoonScrollGeneration++;
@@ -166,9 +171,35 @@ class _DialogueScreenState extends State<DialogueScreen> {
   void _toggleReaderMode() {
     Audio.instance.noteGesture();
     Audio.instance.play(Sfx.page);
+    // Changing the presentation never rewinds dialogue. Save the *reader's*
+    // position separately from canonical dialogue and chapter progression.
+    if (_webtoonMode && _webtoonScroll.hasClients) {
+      _bookmarkOffset = _webtoonScroll.offset;
+      _bookmarkAtLatest = _webtoonScroll.position.extentAfter <= 1;
+    }
+    final firstOpen = !_webtoonOpened;
     _cancelWebtoonAutoFollow();
     setState(() => _webtoonMode = !_webtoonMode);
-    if (_webtoonMode) _scrollWebtoonToLatest(jump: true);
+    if (!_webtoonMode) return;
+    _webtoonOpened = true;
+    if (firstOpen || _bookmarkAtLatest) {
+      // A player already at the end should see lines reached in Text mode.
+      _scrollWebtoonToLatest(jump: true);
+    } else {
+      _restoreWebtoonBookmark();
+    }
+  }
+
+  void _restoreWebtoonBookmark() {
+    final generation = ++_webtoonScrollGeneration;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted ||
+          !_webtoonMode ||
+          generation != _webtoonScrollGeneration ||
+          !_webtoonScroll.hasClients) return;
+      final max = _webtoonScroll.position.maxScrollExtent;
+      _webtoonScroll.jumpTo(_bookmarkOffset.clamp(0.0, max));
+    });
   }
 
   /// Long panels use measured extents, but a newly added line can still
@@ -521,7 +552,18 @@ class _DialogueScreenState extends State<DialogueScreen> {
                 },
               );
 
-          return ListView.builder(
+          // Compute just text extents, not sprite widgets. One compact prefix
+          // table is enough for binary-searching the visible panel on scroll.
+          final panelEnds = <double>[];
+          var end = 10.0; // ListView top padding.
+          for (var i = 0; i < _history.length; i++) {
+            end += extentFor(i);
+            panelEnds.add(end);
+          }
+
+          return Stack(
+            children: [
+              ListView.builder(
             key: const Key('dialogue-webtoon-timeline'),
             controller: _webtoonScroll,
             cacheExtent: 220,
@@ -557,6 +599,16 @@ class _DialogueScreenState extends State<DialogueScreen> {
                     : TickerMode(enabled: false, child: panel),
               );
             },
+          ),
+          Positioned(
+            bottom: 8,
+            left: 14,
+            child: WebtoonPanelProgress(
+              controller: _webtoonScroll,
+              panelEnds: panelEnds,
+            ),
+          ),
+            ],
           );
         },
       );
