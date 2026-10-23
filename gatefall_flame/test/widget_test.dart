@@ -156,6 +156,45 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('manual drag interrupts queued follow and keeps the chapter in place',
+      (tester) async {
+    final game = await pumpGame(tester);
+    final view =
+        TestWidgetsFlutterBinding.instance.platformDispatcher.views.first;
+    view.physicalSize = const Size(360, 740);
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('house-hero-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+
+    final timeline = find.byKey(const Key('dialogue-webtoon-timeline'));
+    final controller = tester.widget<ListView>(timeline).controller!;
+    for (var i = 0; i < 4; i++) {
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+    }
+    expect(controller.offset, closeTo(controller.position.maxScrollExtent, 1));
+
+    // Schedule follow for a new story line, then interrupt it with a real
+    // manual drag before its animation settles.
+    await tester.tap(find.text('Continue'));
+    await tester.pump();
+    await tester.drag(timeline, const Offset(0, 370));
+    await tester.pumpAndSettle();
+
+    expect(controller.position.extentAfter, greaterThan(220),
+        reason: 'a delayed auto-follow must never override the swipe');
+    expect(find.byKey(const Key('dialogue-back-to-latest')), findsOneWidget);
+
+    // The explicit shortcut is still allowed to return to the newest line.
+    await tester.tap(find.byKey(const Key('dialogue-back-to-latest')));
+    await tester.pumpAndSettle();
+    expect(controller.offset, closeTo(controller.position.maxScrollExtent, 1));
+    expect(game.state.completedBeats, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('webtoon mode still requires canonical Faelen story choices',
       (tester) async {
     final game = await pumpGame(tester, setup: (g) {
