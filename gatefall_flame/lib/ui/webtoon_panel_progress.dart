@@ -51,12 +51,12 @@ WebtoonReadingAnchor webtoonAnchorAt(
       high = mid;
     }
   }
-  final index = low.clamp(0, panelEnds.length - 1);
+  final index = low >= panelEnds.length ? panelEnds.length - 1 : low;
   final start = index == 0 ? 0.0 : panelEnds[index - 1];
   final length = panelEnds[index] - start;
   return WebtoonReadingAnchor(
     index,
-    length <= 0 ? 0 : ((target - start) / length).clamp(0.0, 1.0),
+    length <= 0 ? 0.0 : ((target - start) / length).clamp(0.0, 1.0),
   );
 }
 
@@ -65,7 +65,11 @@ double webtoonOffsetForAnchor(
   WebtoonReadingAnchor anchor,
 ) {
   if (panelEnds.isEmpty) return 0;
-  final index = anchor.panelIndex.clamp(0, panelEnds.length - 1);
+  final index = anchor.panelIndex < 0
+      ? 0
+      : anchor.panelIndex >= panelEnds.length
+          ? panelEnds.length - 1
+          : anchor.panelIndex;
   final start = index == 0 ? 0.0 : panelEnds[index - 1];
   return start + (panelEnds[index] - start) * anchor.fraction.clamp(0, 1);
 }
@@ -73,7 +77,9 @@ double webtoonOffsetForAnchor(
 /// The start of a reached panel, for direct reader navigation.
 double webtoonPanelStart(List<double> panelEnds, int panelIndex) {
   if (panelEnds.isEmpty || panelIndex <= 0) return 0;
-  final index = panelIndex.clamp(0, panelEnds.length - 1);
+  final index = panelIndex >= panelEnds.length
+      ? panelEnds.length - 1
+      : panelIndex;
   return panelEnds[index - 1];
 }
 
