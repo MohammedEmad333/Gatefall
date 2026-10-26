@@ -153,7 +153,10 @@ class _WebtoonPanelProgressState extends State<WebtoonPanelProgress> {
                   onChanged: (value) =>
                       setSheetState(() => selected = value.round()),
                 ),
-                Row(
+                Wrap(
+                  alignment: WrapAlignment.end,
+                  spacing: 8,
+                  runSpacing: 8,
                   children: [
                     IconButton(
                       key: const Key('dialogue-previous-panel'),
@@ -171,7 +174,6 @@ class _WebtoonPanelProgressState extends State<WebtoonPanelProgress> {
                           : () => setSheetState(() => selected++),
                       icon: const Icon(Icons.chevron_right),
                     ),
-                    const Spacer(),
                     TextButton(
                       onPressed: () => Navigator.of(sheetContext).pop(),
                       child: const Text('Cancel'),
