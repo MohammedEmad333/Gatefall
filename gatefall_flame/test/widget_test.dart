@@ -207,6 +207,62 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('direct panel jump and screen resize preserve the same dialogue',
+      (tester) async {
+    final game = await pumpGame(tester);
+    final view =
+        TestWidgetsFlutterBinding.instance.platformDispatcher.views.first;
+    view.physicalSize = const Size(360, 740);
+    await tester.pump();
+    await tester.tap(find.byKey(const Key('house-hero-action')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+    for (var i = 0; i < 4; i++) {
+      await tester.tap(find.text('Continue'));
+      await tester.pumpAndSettle();
+    }
+
+    final timeline = find.byKey(const Key('dialogue-webtoon-timeline'));
+    final controller = tester.widget<ListView>(timeline).controller!;
+    expect(controller.position.maxScrollExtent, greaterThan(250));
+    controller.jumpTo(0);
+    await tester.pump();
+
+    await tester.tap(find.byKey(const Key('dialogue-panel-progress')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('dialogue-panel-slider')), findsOneWidget);
+    await tester.tap(find.byKey(const Key('dialogue-next-panel')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dialogue-jump-to-panel')));
+    await tester.pumpAndSettle();
+
+    String progress() => tester
+        .widget<Text>(find.descendant(
+          of: find.byKey(const Key('dialogue-panel-progress')),
+          matching: find.byType(Text),
+        ))
+        .data!;
+    expect(progress(), startsWith('PANEL 2 /'));
+    final before = controller.offset;
+
+    // Narrow portrait layout changes measured caption heights; do not
+    // restore an obsolete pixel coordinate at the wrong story line.
+    view.physicalSize = const Size(290, 740);
+    await tester.pumpAndSettle();
+    expect(progress(), startsWith('PANEL 2 /'));
+    expect(controller.offset, greaterThan(0));
+    expect((controller.offset - before).abs(), lessThan(450));
+
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('dialogue-reader-mode')));
+    await tester.pumpAndSettle();
+    expect(progress(), startsWith('PANEL 2 /'));
+    expect(game.state.completedBeats, isEmpty);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('manual drag interrupts queued follow and keeps the chapter in place',
       (tester) async {
     final game = await pumpGame(tester);
