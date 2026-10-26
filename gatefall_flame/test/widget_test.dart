@@ -226,6 +226,8 @@ void main() {
     final timeline = find.byKey(const Key('dialogue-webtoon-timeline'));
     final controller = tester.widget<ListView>(timeline).controller!;
     expect(controller.position.maxScrollExtent, greaterThan(250));
+    controller.jumpTo(0);
+    await tester.pump();
 
     await tester.tap(find.byKey(const Key('dialogue-panel-progress')));
     await tester.pumpAndSettle();
