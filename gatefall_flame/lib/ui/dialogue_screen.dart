@@ -110,6 +110,8 @@ class _DialogueScreenState extends State<DialogueScreen> {
   bool _webtoonOpened = false;
   bool _bookmarkAtLatest = true;
   double _bookmarkOffset = 0;
+  WebtoonReadingAnchor? _bookmarkAnchor;
+  List<double> _measuredPanelEnds = const [];
 
 
   void _cancelWebtoonAutoFollow() {
@@ -176,6 +178,8 @@ class _DialogueScreenState extends State<DialogueScreen> {
     if (_webtoonMode && _webtoonScroll.hasClients) {
       _bookmarkOffset = _webtoonScroll.offset;
       _bookmarkAtLatest = _webtoonScroll.position.extentAfter <= 1;
+      _bookmarkAnchor =
+          webtoonAnchorAt(_measuredPanelEnds, _bookmarkOffset);
     }
     final firstOpen = !_webtoonOpened;
     _cancelWebtoonAutoFollow();
@@ -198,7 +202,10 @@ class _DialogueScreenState extends State<DialogueScreen> {
           generation != _webtoonScrollGeneration ||
           !_webtoonScroll.hasClients) return;
       final max = _webtoonScroll.position.maxScrollExtent;
-      _webtoonScroll.jumpTo(_bookmarkOffset.clamp(0.0, max));
+      final target = _bookmarkAnchor == null
+          ? _bookmarkOffset
+          : webtoonOffsetForAnchor(_measuredPanelEnds, _bookmarkAnchor!);
+      _webtoonScroll.jumpTo(target.clamp(0.0, max));
     });
   }
 
@@ -249,6 +256,18 @@ class _DialogueScreenState extends State<DialogueScreen> {
         });
       }
     });
+  }
+
+  /// Jump only among panels reached by the real dialogue engine. A direct
+  /// navigation request never advances or changes a scene choice.
+  void _jumpToChapterPanel(int index) {
+    if (!_webtoonMode ||
+        !_webtoonScroll.hasClients ||
+        _measuredPanelEnds.isEmpty) return;
+    _cancelWebtoonAutoFollow();
+    final max = _webtoonScroll.position.maxScrollExtent;
+    final target = webtoonPanelStart(_measuredPanelEnds, index);
+    _webtoonScroll.jumpTo(target.clamp(0.0, max));
   }
 
   /// True only if the reader is already following the end of the timeline.
@@ -527,9 +546,25 @@ class _DialogueScreenState extends State<DialogueScreen> {
           final width = (constraints.maxWidth - 28).clamp(1.0, double.infinity);
           final scaler = MediaQuery.textScalerOf(context);
           final direction = Directionality.of(context);
-          if (_chapterWidth != width ||
+          final layoutChanged = _chapterWidth != width ||
               _chapterTextScaler != scaler ||
-              _chapterDirection != direction) {
+              _chapterDirection != direction;
+          WebtoonReadingAnchor? resizeAnchor;
+          var resizeAtLatest = false;
+          if (layoutChanged) {
+            // Capture a logical panel position using *old* dimensions before
+            // the extents are recalculated. Raw pixels point at the wrong
+            // dialogue when rotating or increasing accessibility text size.
+            if (_chapterWidth != null &&
+                _measuredPanelEnds.isNotEmpty &&
+                _webtoonScroll.hasClients &&
+                _webtoonScroll.position.hasContentDimensions) {
+              resizeAtLatest = _webtoonScroll.position.extentAfter <= 1;
+              resizeAnchor = webtoonAnchorAt(
+                _measuredPanelEnds,
+                _webtoonScroll.offset,
+              );
+            }
             _chapterExtents.clear();
             _chapterWidth = width;
             _chapterTextScaler = scaler;
@@ -559,6 +594,23 @@ class _DialogueScreenState extends State<DialogueScreen> {
           for (var i = 0; i < _history.length; i++) {
             end += extentFor(i);
             panelEnds.add(end);
+          }
+          _measuredPanelEnds = panelEnds;
+          if (resizeAnchor != null) {
+            _cancelWebtoonAutoFollow();
+            final generation = _webtoonScrollGeneration;
+            final anchor = resizeAnchor;
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted ||
+                  !_webtoonMode ||
+                  !_webtoonScroll.hasClients ||
+                  generation != _webtoonScrollGeneration) return;
+              final max = _webtoonScroll.position.maxScrollExtent;
+              final destination = resizeAtLatest
+                  ? max
+                  : webtoonOffsetForAnchor(_measuredPanelEnds, anchor!);
+              _webtoonScroll.jumpTo(destination.clamp(0.0, max));
+            });
           }
 
           return Stack(
@@ -606,6 +658,7 @@ class _DialogueScreenState extends State<DialogueScreen> {
             child: WebtoonPanelProgress(
               controller: _webtoonScroll,
               panelEnds: panelEnds,
+              onJumpToPanel: _jumpToChapterPanel,
             ),
           ),
             ],
